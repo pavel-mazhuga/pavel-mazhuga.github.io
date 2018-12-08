@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html class="no-js" lang="{{ APP.LANGUAGE }}">
+<head>
+    <meta charset="utf-8">
+    <title>{{ PAGE.title }} :: {{ APP.TITLE }}</title>
+    <meta name="description" content="{{ PAGE.description or APP.DESCRIPTION }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% if APP.USE_FAVICONS %}
+    <link rel="manifest" href="{{ APP.PUBLIC_PATH }}img/favicon/manifest.json">
+    {% endif %}
+
+    {% include 'partials/webp-test.html' %}
+
+    <!-- block-head -->
+    {% block head %}{% endblock %}
+    <!-- /block-head -->
+
+    {% include 'partials/counters-head.html' %}
+    {% include 'partials/open-graph.html' %}
+
+</head>
+<body class="{{ PAGE.namespace }}">
+    {% block body %}{% endblock %}
+    {% include 'partials/service-worker.html' %}
+    {% include 'partials/counters-body.html' %}
+</body>
+</html>

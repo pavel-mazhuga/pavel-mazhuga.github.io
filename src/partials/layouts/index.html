@@ -1,0 +1,13 @@
+{% extends "partials/layout.html" %}
+
+{% import "partials/macros/resize.html" as resize %}
+
+{% block body %}
+
+{% include 'partials/header.html' %}
+<main class="main">
+    {% block content %}{% endblock %}
+</main>
+{% include 'partials/footer.html' %}
+
+{% endblock %}
