@@ -62,6 +62,25 @@ module.exports = {
         compress: false,
         open: true,
         overlay: { warnings: false, errors: true },
+        setup(app) {
+            // Отправка форм через webpack-dev-server
+            const bodyParser = require('body-parser');    
+            app.use(bodyParser.json());
+
+            const data = {
+                success: true,
+                message: 'Это тестовое сообщение с сервера',
+                html: '<div>Это тестовый HTML с сервера</div>',
+            };
+
+            app.get('/api', (req, res) => {
+                res.send(data);
+            });
+
+            app.post('/api', bodyParser.json(), (req, res) => {
+                res.send(data);
+            })
+        }
     },
 
     entry: {
@@ -158,6 +177,7 @@ module.exports = {
                 'google*.html',
                 'yandex_*.html',
                 '*.txt',
+                '*.php',
             ].map(from => ({
                 from,
                 to: BUILD_PATH,
