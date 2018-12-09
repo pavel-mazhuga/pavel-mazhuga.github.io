@@ -8,3 +8,8 @@ declare var require: {
 };
 
 declare var NODE_ENV: string;
+
+declare module 'form-serialize' {
+    import { serialize } from 'form-serialize';
+    export default serialize;
+}
