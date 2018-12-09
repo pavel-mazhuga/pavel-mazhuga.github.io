@@ -62,7 +62,7 @@ module.exports = {
         compress: false,
         open: true,
         overlay: { warnings: false, errors: true },
-        setup(app) {
+        before(app) {
             // Отправка форм через webpack-dev-server
             const bodyParser = require('body-parser');    
             app.use(bodyParser.json());
@@ -95,16 +95,16 @@ module.exports = {
     },
 
     plugins: [
-        new CleanWebpackPlugin([
-            'build/**/*',
-        ], {
-            root: __dirname,
-        }),
         new MiniCssExtractPlugin({
             filename: 'css/app.min.css',
             allChunks: true,
         }),
         ...(PROD ? [
+            new CleanWebpackPlugin([
+                'build/**/*',
+            ], {
+                root: __dirname,
+            }),
             new CaseSensitivePathsPlugin(),
             new webpack.NoEmitOnErrorsPlugin(),
             new UglifyJsPlugin({
@@ -272,7 +272,8 @@ module.exports = {
                             ],
                             presets: [
                                 ['@babel/preset-env', {
-                                    modules: 'commonjs',
+                                    // modules: 'commonjs',
+                                    modules: false,
                                     useBuiltIns: 'entry',
                                     targets: { browsers: BROWSERS },
                                 }],

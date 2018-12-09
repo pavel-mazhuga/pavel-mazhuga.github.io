@@ -9,7 +9,7 @@
     "scripts": {
         "dev": "cross-env NODE_ENV=development DEBUG=0 webpack -d",
         "debug": "cross-env NODE_ENV=development DEBUG=1 webpack -d",
-        "prod": "cross-env NODE_ENV=production DEBUG=0 webpack -p",
+        "prod": "cross-env NODE_ENV=production DEBUG=0 webpack --mode=production",
         "watch": "npm run watch-prod",
         "watch-dev": "cross-env NODE_ENV=development DEBUG=0 webpack --watch -d",
         "watch-debug": "cross-env NODE_ENV=development DEBUG=1 webpack --watch -d",
@@ -18,10 +18,11 @@
         "css-lint": "cross-env NODE_ENV=development stylelint source/**/*.scss --fix --syntax scss --formatter verbose --ignore-path .stylelintignore --config .stylelintrc",
         "html-lint": "cross-env NODE_ENV=development node ./script.html-lint.js",
         "lint": "npm run js-lint && npm run css-lint && npm run html-lint",
-        "start": "cross-env NODE_ENV=development webpack-dev-server --hot --inline -d",
+        "start": "cross-env NODE_ENV=development webpack-dev-server --hot --inline --mode=development",
         "server-debug": "cross-env NODE_ENV=development DEBUG=1 webpack-dev-server --hot --inline -d",
         "build": "npm-run-all js-lint css-lint prod html-lint",
-        "browserslist": "npx browserslist"
+        "browserslist": "npx browserslist",
+        "explore": "source-map-explorer build/js/*.js build/js/*.js.map"
     },
     "author": "Pavel Mazhuga",
     "license": "MIT",
@@ -102,7 +103,6 @@
         "postcss-url": "latest",
         "postcss-will-change": "latest",
         "posthtml": "latest",
-        "promise-polyfill": "latest",
         "sass-loader": "latest",
         "schema-utils": "latest",
         "slash": "latest",
