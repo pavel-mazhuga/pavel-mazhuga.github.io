@@ -10,6 +10,11 @@ declare var require: {
 declare var NODE_ENV: string;
 
 declare module 'form-serialize' {
-    import { serialize } from 'form-serialize';
+    import serialize = require('form-serialize');
     export default serialize;
+}
+
+declare module 'gsap/all' {
+    import { TimelineMax, TweenMax, TimelineLite, TweenLite } from 'gsap';
+    export { TimelineMax, TweenMax, TimelineLite, TweenLite };
 }

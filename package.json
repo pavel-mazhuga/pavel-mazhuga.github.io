@@ -22,7 +22,7 @@
         "server-debug": "cross-env NODE_ENV=development DEBUG=1 webpack-dev-server --hot --inline -d",
         "build": "npm-run-all js-lint css-lint prod html-lint",
         "browserslist": "npx browserslist",
-        "explore": "source-map-explorer build/js/*.js build/js/*.js.map"
+        "explore": "source-map-explorer build/js/app.min.js build/js/app.min.js.map"
     },
     "author": "Pavel Mazhuga",
     "license": "MIT",
@@ -120,6 +120,7 @@
         "webpack-log": "latest"
     },
     "devDependencies": {
+        "@babel/plugin-proposal-optional-chaining": "^7.2.0",
         "ts-loader": "latest",
         "tslint-config-airbnb": "latest",
         "typescript": "latest"

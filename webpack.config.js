@@ -61,9 +61,11 @@ module.exports = {
     devServer: {
         compress: false,
         open: true,
+        hot: true,
+        inline: true,
         overlay: { warnings: false, errors: true },
         before(app) {
-            // Отправка форм через webpack-dev-server
+            // Имитация отправки форм через webpack-dev-server
             const bodyParser = require('body-parser');    
             app.use(bodyParser.json());
 
@@ -250,6 +252,18 @@ module.exports = {
                 },
             }] : []),
             {
+                test: /\.tsx?$/i,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            appendTsSuffixTo: [/\.vue$/],
+                        },
+                    },
+                ],
+            },
+            {
                 test: /\.js$/i,
                 exclude: {
                     test: path.join(__dirname, 'node_modules'),
@@ -269,10 +283,10 @@ module.exports = {
                             plugins: [
                                 '@babel/transform-runtime',
                                 '@babel/plugin-syntax-dynamic-import',
+                                '@babel/plugin-proposal-optional-chaining',
                             ],
                             presets: [
                                 ['@babel/preset-env', {
-                                    // modules: 'commonjs',
                                     modules: false,
                                     useBuiltIns: 'entry',
                                     targets: { browsers: BROWSERS },
@@ -283,18 +297,6 @@ module.exports = {
                                 }],
                             ],
                             envName: NODE_ENV,
-                        },
-                    },
-                ],
-            },
-            {
-                test: /\.tsx?$/i,
-                exclude: /node_modules/,
-                use: [
-                    {
-                        loader: 'ts-loader',
-                        options: {
-                            appendTsSuffixTo: [/\.vue$/],
                         },
                     },
                 ],
