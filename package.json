@@ -21,6 +21,7 @@
         "start": "cross-env NODE_ENV=development webpack-dev-server --hot --inline --mode=development",
         "server-debug": "cross-env NODE_ENV=development DEBUG=1 webpack-dev-server --hot --inline -d",
         "build": "npm-run-all js-lint css-lint prod html-lint",
+        "build:sandbox": "cross-env NODE_ENV=production DEBUG=0 ENV=sandbox webpack --mode=production",
         "browserslist": "npx browserslist",
         "explore": "source-map-explorer build/js/app.min.js build/js/app.min.js.map"
     },
@@ -45,7 +46,6 @@
         "@babel/polyfill": "latest",
         "@babel/preset-env": "latest",
         "@babel/runtime": "latest",
-        "@types/axios": "latest",
         "@types/form-serialize": "latest",
         "autoprefixer": "latest",
         "axios": "latest",
