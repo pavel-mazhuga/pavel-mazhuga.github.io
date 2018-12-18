@@ -1,5 +1,6 @@
 /* eslint global-require: "off", max-lines: "off", import/no-dynamic-require: "off", max-len: "off" */
-const PROD = (process.env.NODE_ENV === 'production');
+const PROD = process.env.NODE_ENV === 'production';
+const SANDBOX = process.env.ENV === 'sandbox';
 const NODE_ENV = PROD ? 'production' : 'development';
 
 const { browserslist: BROWSERS } = require('./package.json');
@@ -26,7 +27,8 @@ const USE_SOURCE_MAP = DEV_SERVER;
 const USE_LINTERS = PROD;
 
 const SRC_PATH = path.resolve(__dirname, 'src');
-const BUILD_PATH = path.resolve(__dirname, 'build');
+const BUILD_PATH = SANDBOX ? path.resolve(__dirname, 'dist/sandbox/assets') : path.resolve(__dirname, 'build');
+const PUBLIC_PATH = SANDBOX ? `/sand/${APP.PROJECT_NAME || 'xxx'}/dev/` : APP.PUBLIC_PATH;
 
 const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
     ignore: [
@@ -38,7 +40,7 @@ const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
 
 const resourceName = (prefix, hash = false) => {
     const basename = path.basename(prefix);
-    const suffix = (hash ? '?[hash]' : '');
+    const suffix = hash ? '?[hash]' : '';
     return (resourcePath) => {
         const url = slash(path.relative(SRC_PATH, resourcePath));
         if (url.startsWith(`${basename}/`)) {
@@ -93,7 +95,7 @@ module.exports = {
         filename: 'js/app.min.js',
         chunkFilename: 'js/[name].chunk.js',
         path: BUILD_PATH,
-        publicPath: APP.PUBLIC_PATH,
+        publicPath: PUBLIC_PATH,
     },
 
     plugins: [
@@ -104,6 +106,7 @@ module.exports = {
         ...(PROD ? [
             new CleanWebpackPlugin([
                 'build/**/*',
+                'dist/**/*',
             ], {
                 root: __dirname,
             }),
@@ -122,6 +125,8 @@ module.exports = {
         ] : []),
         new webpack.DefinePlugin({
             NODE_ENV: JSON.stringify(NODE_ENV),
+            ENV: JSON.stringify(process.env.ENV),
+            PUBLIC_PATH: JSON.stringify(PUBLIC_PATH),
         }),
         ...(APP.USE_FAVICONS ? [
             new FaviconsPlugin.AppIcon({
@@ -219,6 +224,7 @@ module.exports = {
                         APP,
                         {
                             NODE_ENV,
+                            PUBLIC_PATH,
                         },
                     ),
                     searchPath: SRC_PATH,

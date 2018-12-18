@@ -1,6 +1,6 @@
 import '../css/app.scss';
 import './polyfills';
-// import '~/bootstrap';
+// import './bootstrap';
 
 window.addEventListener('DOMContentLoaded', () => {
     if (document.documentElement) {
