@@ -283,7 +283,6 @@ module.exports = {
                             plugins: [
                                 '@babel/transform-runtime',
                                 '@babel/plugin-syntax-dynamic-import',
-                                '@babel/plugin-proposal-optional-chaining',
                             ],
                             presets: [
                                 ['@babel/preset-env', {
