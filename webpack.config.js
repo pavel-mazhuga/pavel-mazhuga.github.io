@@ -7,7 +7,6 @@ const APP = require('./app.config.js');
 const HTML_DATA = require('./src/app.data.js');
 
 const webpack = require('webpack');
-// const fs = require('fs');
 const slash = require('slash');
 const path = require('path');
 const glob = require('glob');
@@ -225,16 +224,6 @@ module.exports = {
                 },
             },
             // javascript loaders
-            // {
-            //     test: require.resolve('jquery'),
-            //     use: [{
-            //         loader: 'expose-loader',
-            //         options: 'jQuery',
-            //     }, {
-            //         loader: 'expose-loader',
-            //         options: '$',
-            //     }],
-            // },
             ...(USE_LINTERS ? [{
                 enforce: 'pre',
                 test: /\.js$/i,
@@ -270,13 +259,6 @@ module.exports = {
                     // exclude: path.join(__dirname, 'node_modules', 'gsap'),
                 },
                 loaders: [
-                    // {
-                    //     loader: 'imports-loader',
-                    //     options: {
-                    //         $: 'jquery',
-                    //         jQuery: 'jquery',
-                    //     },
-                    // },
                     {
                         loader: 'babel-loader',
                         options: {
@@ -287,8 +269,13 @@ module.exports = {
                             presets: [
                                 ['@babel/preset-env', {
                                     modules: false,
-                                    useBuiltIns: 'entry',
+                                    useBuiltIns: 'usage',
+                                    loose: 'true',
                                     targets: { browsers: BROWSERS },
+                                    // exclude: [
+                                    //     "transform-async-to-generator",
+                                    //     "transform-generator",
+                                    // ]
                                 }],
                                 ['airbnb', {
                                     modules: true,

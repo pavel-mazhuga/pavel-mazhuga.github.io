@@ -1,6 +1,6 @@
 /* global NODE_ENV DEBUG */
 if (NODE_ENV === 'production') {
-    require('picturefill');
+    // require('picturefill');
     require('@babel/polyfill');
 }
 
