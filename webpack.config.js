@@ -1,6 +1,7 @@
 /* eslint global-require: "off", max-lines: "off", import/no-dynamic-require: "off", max-len: "off" */
 const PROD = process.env.NODE_ENV === 'production';
 const SANDBOX = process.env.ENV === 'sandbox';
+const BITRIX = process.env.ENV === 'bitrix';
 const NODE_ENV = PROD ? 'production' : 'development';
 
 const { browserslist: BROWSERS } = require('./package.json');
@@ -26,8 +27,20 @@ const USE_SOURCE_MAP = DEV_SERVER;
 const USE_LINTERS = PROD;
 
 const SRC_PATH = path.resolve(__dirname, 'src');
-const BUILD_PATH = SANDBOX ? path.resolve(__dirname, 'dist/sandbox/assets') : path.resolve(__dirname, 'build');
-const PUBLIC_PATH = SANDBOX ? `/sand/${APP.PROJECT_NAME || 'xxx'}/dev/` : APP.PUBLIC_PATH;
+
+const BUILD_PATH =
+    SANDBOX
+        ? path.resolve(__dirname, 'dist/sandbox')           // sandbox
+        : BITRIX
+            ? path.resolve(__dirname, 'dist/bitrix')        // bitrix
+            : path.resolve(__dirname, 'build');             // default
+
+const PUBLIC_PATH =
+    SANDBOX
+        ? `/sand/${APP.PROJECT_NAME || 'xxx'}/dev/`         // sandbox
+        : BITRIX
+            ? '/local/templates/main/'                      // bitrix
+            : APP.PUBLIC_PATH;                              // default
 
 const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
     ignore: [
@@ -87,12 +100,12 @@ module.exports = {
     },
 
     entry: {
-        app: `${SRC_PATH}/js/app.ts`,
+        app: `${SRC_PATH}/assets/js/app.ts`,
     },
 
     output: {
-        filename: 'js/app.min.js',
-        chunkFilename: 'js/[name].chunk.js',
+        filename: 'assets/js/app.min.js',
+        chunkFilename: 'assets/js/[name].chunk.js',
         path: BUILD_PATH,
         publicPath: PUBLIC_PATH,
     },
@@ -104,8 +117,11 @@ module.exports = {
         }),
         ...(PROD ? [
             new CleanWebpackPlugin([
-                'build/**/*',
-                'dist/**/*',
+                ...(SANDBOX
+                    ? ['dist/sandbox/**/*']
+                    : BITRIX
+                        ? ['dist/sandbox/bitrix/**/*']
+                        : ['build/**/*']),
             ], {
                 root: __dirname,
             }),
@@ -179,7 +195,7 @@ module.exports = {
         new CopyWebpackPlugin([
             ...[
                 '**/.htaccess',
-                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp}',
+                'assets/img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp}',
                 'google*.html',
                 'yandex_*.html',
                 '*.txt',
@@ -191,11 +207,11 @@ module.exports = {
                 ignore: SITEMAP,
             })),
         ], {
-            copyUnmodified: !(PROD),
+            copyUnmodified: !PROD,
             debug: 'info',
         }),
         new BundleAnalyzerPlugin({
-            analyzerMode: (DEV_SERVER ? 'server' : 'static'),
+            analyzerMode: DEV_SERVER ? 'server' : 'static',
             openAnalyzer: DEV_SERVER,
             reportFilename: path.join(__dirname, 'node_modules', '.cache', `bundle-analyzer-${NODE_ENV}.html`),
         }),
@@ -276,7 +292,7 @@ module.exports = {
                                 ['@babel/preset-env', {
                                     modules: false,
                                     useBuiltIns: 'usage',
-                                    loose: 'true',
+                                    loose: true,
                                     targets: { browsers: BROWSERS },
                                     // exclude: [
                                     //     "transform-async-to-generator",
