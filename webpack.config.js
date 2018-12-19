@@ -4,27 +4,6 @@ const SANDBOX = process.env.ENV === 'sandbox';
 const BITRIX = process.env.ENV === 'bitrix';
 const NODE_ENV = PROD ? 'production' : 'development';
 
-const { browserslist: BROWSERS } = require('./package.json');
-const APP = require('./app.config.js');
-const HTML_DATA = require('./src/app.data.js');
-
-const webpack = require('webpack');
-const slash = require('slash');
-const path = require('path');
-const glob = require('glob');
-const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const BrotliPlugin = (PROD ? require('brotli-webpack-plugin') : () => {});
-const CompressionPlugin = (PROD ? require('compression-webpack-plugin') : () => {});
-const zopfli = require('@gfx/zopfli');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const UglifyJsPlugin = (PROD ? require('uglifyjs-webpack-plugin') : () => {});
-const SvgoPlugin = require('./plugin.svgo.js');
-const FaviconsPlugin = (APP.USE_FAVICONS ? require('./plugin.favicons.js') : () => {});
-
 const DEV_SERVER = path.basename(require.main.filename, '.js') === 'webpack-dev-server';
 const USE_SOURCE_MAP = DEV_SERVER;
 const USE_LINTERS = PROD;
@@ -44,6 +23,28 @@ const PUBLIC_PATH =
         : BITRIX
             ? '/local/templates/main/'                      // bitrix
             : APP.PUBLIC_PATH;                              // default
+
+const { browserslist: BROWSERS } = require('./package.json');
+const APP = require('./app.config.js');
+const HTML_DATA = require('./src/app.data.js');
+
+const webpack = require('webpack');
+const slash = require('slash');
+const path = require('path');
+const glob = require('glob');
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const BrotliPlugin = (PROD ? require('brotli-webpack-plugin') : () => {});
+const CompressionPlugin = (PROD ? require('compression-webpack-plugin') : () => {});
+const zopfli = require('@gfx/zopfli');
+const StyleLintPlugin = (USE_LINTERS ? require('stylelint-webpack-plugin') : () => {});
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const UglifyJsPlugin = (PROD ? require('uglifyjs-webpack-plugin') : () => {});
+const SvgoPlugin = require('./plugin.svgo.js');
+const FaviconsPlugin = (APP.USE_FAVICONS ? require('./plugin.favicons.js') : () => {});
 
 const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
     ignore: [
@@ -178,6 +179,18 @@ module.exports = {
             ENV: JSON.stringify(process.env.ENV),
             PUBLIC_PATH: JSON.stringify(PUBLIC_PATH),
         }),
+        ...(USE_LINTERS ? [
+            new StyleLintPlugin({
+                syntax: 'scss',
+                files: '**/*.scss',
+                configFile: './.stylelintrc',
+                ignorePath: './.stylelintignore',
+                emitErrors: false,
+                failOnError: false,
+                lintDirtyModulesOnly: DEV_SERVER,
+                fix: !DEV_SERVER,
+            }),
+        ] : []),
         ...(APP.USE_FAVICONS ? [
             new FaviconsPlugin.AppIcon({
                 logo: './.favicons-source-1024x1024.png',
