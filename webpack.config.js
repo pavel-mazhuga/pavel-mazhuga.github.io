@@ -17,6 +17,9 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const BrotliPlugin = (PROD ? require('brotli-webpack-plugin') : () => {});
+const CompressionPlugin = (PROD ? require('compression-webpack-plugin') : () => {});
+const zopfli = require('@gfx/zopfli');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const UglifyJsPlugin = (PROD ? require('uglifyjs-webpack-plugin') : () => {});
 const SvgoPlugin = require('./plugin.svgo.js');
@@ -75,7 +78,6 @@ module.exports = {
     devServer: {
         compress: false,
         open: true,
-        hot: true,
         inline: true,
         overlay: { warnings: false, errors: true },
         before(app) {
@@ -96,7 +98,15 @@ module.exports = {
             app.post('/api', bodyParser.json(), (req, res) => {
                 res.send(data);
             })
-        }
+        },
+        // TODO: test it
+        // historyApiFallback: {
+        //     rewrites: [
+        //         // { from: /^\/$/, to: '/views/landing.html' },
+        //         // { from: /^\/subpage/, to: '/views/subpage.html' },
+        //         { from: /./, to: '/errors/404/' },
+        //     ],
+        // },
     },
 
     entry: {
@@ -146,6 +156,20 @@ module.exports = {
                     output: {
                         comments: false,
                     },
+                },
+            }),
+            new BrotliPlugin({
+                asset: '[path].br[query]',
+                test: /\.(js|css)$/,
+            }),
+            new CompressionPlugin({
+                test: /\.(css|js)(\?.*)?$/i,
+                filename: '[path].gz[query]',
+                compressionOptions: {
+                    numiterations: 15,
+                },
+                algorithm(input, compressionOptions, callback) {
+                    return zopfli.gzip(input, compressionOptions, callback);
                 },
             }),
         ] : []),
