@@ -51,7 +51,7 @@ const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
 });
 
 const resourceName = (prefix, hash = false) => {
-    const basename = path.basename(prefix);
+    const basename = path.basename('assets/', prefix);
     const suffix = hash ? '?[hash]' : '';
     return (resourcePath) => {
         const url = slash(path.relative(SRC_PATH, resourcePath));
@@ -112,7 +112,7 @@ module.exports = {
 
     plugins: [
         new MiniCssExtractPlugin({
-            filename: 'css/app.min.css',
+            filename: 'assets/css/app.min.css',
             allChunks: true,
         }),
         ...(PROD ? [
@@ -120,7 +120,7 @@ module.exports = {
                 ...(SANDBOX
                     ? ['dist/sandbox/**/*']
                     : BITRIX
-                        ? ['dist/sandbox/bitrix/**/*']
+                        ? ['dist/bitrix/**/*']
                         : ['build/**/*']),
             ], {
                 root: __dirname,
@@ -146,11 +146,11 @@ module.exports = {
         ...(APP.USE_FAVICONS ? [
             new FaviconsPlugin.AppIcon({
                 logo: './.favicons-source-1024x1024.png',
-                prefix: 'img/favicon/',
+                prefix: 'assets/img/favicon/',
             }),
             new FaviconsPlugin.FavIcon({
                 logo: './.favicons-source-64x64.png',
-                prefix: 'img/favicon/',
+                prefix: 'assets/img/favicon/',
             }),
         ] : []),
         ...(SITEMAP.map((template) => {
@@ -211,8 +211,10 @@ module.exports = {
             debug: 'info',
         }),
         new BundleAnalyzerPlugin({
-            analyzerMode: DEV_SERVER ? 'server' : 'static',
-            openAnalyzer: DEV_SERVER,
+            // analyzerMode: DEV_SERVER ? 'server' : 'static',
+            analyzerMode: 'static',
+            // openAnalyzer: DEV_SERVER,
+            openAnalyzer: false,
             reportFilename: path.join(__dirname, 'node_modules', '.cache', `bundle-analyzer-${NODE_ENV}.html`),
         }),
     ],

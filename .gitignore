@@ -1,8 +1,9 @@
-build/fonts
-build/img
-build/js
-build/css
-build/*.html
+# build/fonts
+# build/img
+# build/js
+# build/css
+# build/*.html
+build
 dist
 *.log
 node_modules
