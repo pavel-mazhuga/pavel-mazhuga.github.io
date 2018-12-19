@@ -11,6 +11,7 @@ declare var NODE_ENV: string;
 
 declare module 'form-serialize' {
     import serialize = require('form-serialize');
+    export { serialize };
     export default serialize;
 }
 

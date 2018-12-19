@@ -1,7 +1,7 @@
 import axios from 'axios';
-import serialize from 'form-serialize';
+// import serialize from 'form-serialize';
 import { ApiResponse } from './types';
-import { triggerCustomEvent } from 'src/js/utils';
+import { triggerCustomEvent } from 'src/assets/js/utils';
 
 export default class AjaxFormSender/*  implements IAjaxFormSender */ {
     public readonly form: HTMLFormElement;
@@ -16,7 +16,7 @@ export default class AjaxFormSender/*  implements IAjaxFormSender */ {
     public send(url: string = this.form.action): Promise<ApiResponse> {
         return new Promise((resolve, reject) => {
             if (!(url && typeof url === 'string')) {
-                const errorMessage = 'Form does not has "action" attibute nor url has been provided';
+                const errorMessage = 'Form does not have "action" attibute and url has not been provided';
                 console.error(errorMessage);
                 reject(errorMessage);
             }
@@ -30,7 +30,7 @@ export default class AjaxFormSender/*  implements IAjaxFormSender */ {
 
             const data = {
                 formName: this.form.name,
-                data: serialize(this, { hash: true }),
+                // data: serialize(this.form, { hash: true }),
             };
 
             switch (method) {

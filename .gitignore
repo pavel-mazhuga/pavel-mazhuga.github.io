@@ -4,6 +4,7 @@ build/js
 build/css
 build/*.html
 dist
+*.log
 node_modules
 package-lock.json
 .DS_Store
