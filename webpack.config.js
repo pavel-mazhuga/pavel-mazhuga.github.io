@@ -1,9 +1,21 @@
 /* eslint global-require: "off", max-lines: "off", import/no-dynamic-require: "off", max-len: "off" */
+const webpack = require('webpack');
+const slash = require('slash');
+const path = require('path');
+const glob = require('glob');
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const zopfli = require('@gfx/zopfli');
+
+const APP = require('./app.config.js');
+
 const PROD = process.env.NODE_ENV === 'production';
 const SANDBOX = process.env.ENV === 'sandbox';
 const BITRIX = process.env.ENV === 'bitrix';
 const NODE_ENV = PROD ? 'production' : 'development';
-
 const DEV_SERVER = path.basename(require.main.filename, '.js') === 'webpack-dev-server';
 const USE_SOURCE_MAP = DEV_SERVER;
 const USE_LINTERS = PROD;
@@ -25,25 +37,13 @@ const PUBLIC_PATH =
             : APP.PUBLIC_PATH;                              // default
 
 const { browserslist: BROWSERS } = require('./package.json');
-const APP = require('./app.config.js');
 const HTML_DATA = require('./src/app.data.js');
-
-const webpack = require('webpack');
-const slash = require('slash');
-const path = require('path');
-const glob = require('glob');
-const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const SvgoPlugin = require('./plugin.svgo.js');
 const BrotliPlugin = (PROD ? require('brotli-webpack-plugin') : () => {});
 const CompressionPlugin = (PROD ? require('compression-webpack-plugin') : () => {});
-const zopfli = require('@gfx/zopfli');
 const StyleLintPlugin = (USE_LINTERS ? require('stylelint-webpack-plugin') : () => {});
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const UglifyJsPlugin = (PROD ? require('uglifyjs-webpack-plugin') : () => {});
-const SvgoPlugin = require('./plugin.svgo.js');
 const FaviconsPlugin = (APP.USE_FAVICONS ? require('./plugin.favicons.js') : () => {});
 
 const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
