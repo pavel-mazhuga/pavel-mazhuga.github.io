@@ -21,7 +21,7 @@ declare module 'gsap/all' {
 }
 
 declare module 'barba.js' {
-    interface ICache {
+    export interface IBarbaCache {
         data: {};
         extend: Function;
         get: Function;
@@ -29,24 +29,26 @@ declare module 'barba.js' {
         set: (key: any, val: any) => any;
     }
 
-    interface IHistory {
+    export interface IBarbaHistory {
         add: (url: string, namespace: string) => void;
         history: any[];
         currentStatus: Function;
         prevStatus: Function;
     }
 
-    interface ITransition {
+    export interface IBarbaTransition {
         done: Function;
-        extend: (obj: Object) => any;
+        extend: (obj: any) => IBarbaTransition;
         init: (oldContainer: HTMLElement, newContainer: HTMLElement) => any;
         newContainer: HTMLElement | undefined;
         newContainerLoading: Promise<HTMLElement> | undefined;
+        newContainerReady: Promise<void> | undefined;
         oldContainer: HTMLElement | undefined;
         start: Function;
+        [key: string]: any;
     }
 
-    interface IView {
+    export interface IBarbaView {
         extend: (obj: Object) => any;
         init: Function;
         namespace: string | null;
@@ -58,18 +60,18 @@ declare module 'barba.js' {
 
     const Barba: {
         version: string;
-        BaseCache: ICache;
-        BaseTransition: ITransition;
-        BaseView: IView;
+        BaseCache: IBarbaCache;
+        BaseTransition: IBarbaTransition;
+        BaseView: IBarbaView;
         Dispatcher: {
             events: Object;
-            off: (event: string, f: any) => any;
-            on: (event: string, f: any) => any;
-            trigger: (event: string) => any;
+            off: (event: string, f: any) => void;
+            on: (event: string, f: any) => void;
+            trigger: (event: string) => void;
         };
-        HistoryManager: IHistory;
+        HistoryManager: IBarbaHistory;
         Pjax: {
-            Cache: ICache;
+            Cache: IBarbaCache;
             Dom: {
                 containerClass: string;
                 currentHTML: string;
@@ -82,13 +84,13 @@ declare module 'barba.js' {
                 putContainer: (element: HTMLElement) => void;
                 wrapperId: string;
             };
-            History: IHistory;
+            History: IBarbaHistory;
             bindEvents: () => void;
             cacheEnabled: boolean;
             forceGoTo: (url: string) => void;
             getCurrentUrl: () => string;
             getHref: (element: HTMLElement) => string | undefined;
-            getTransition: () => ITransition;
+            getTransition: () => IBarbaTransition;
             goTo: (url: string) => void;
             ignoreClassLink: string;
             init: Function;

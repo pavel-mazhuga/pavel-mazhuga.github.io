@@ -20,7 +20,7 @@
     {% include 'partials/open-graph.html' %}
 
 </head>
-<body class="{{ PAGE.namespace }}">
+<body class="{{ PAGE.namespace | replace('.', ' ') }}">
     {% block body %}{% endblock %}
     {% include 'partials/service-worker.html' %}
     {% include 'partials/counters-body.html' %}

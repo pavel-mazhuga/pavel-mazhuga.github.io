@@ -7,7 +7,11 @@
 {% include 'partials/header.html' %}
 
 <main class="main">
-    {% block content %}{% endblock %}
+    <div id="barba-wrapper" class="barba-wrapper">
+        <div class="barba-container" data-namespace="{{ PAGE.namespace }}">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
 </main>
 
 {% include 'partials/footer.html' %}
