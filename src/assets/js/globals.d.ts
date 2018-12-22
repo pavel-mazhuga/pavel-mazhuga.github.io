@@ -7,7 +7,7 @@ declare var require: {
     ) => void;
 };
 
-declare var NODE_ENV: string;
+declare const NODE_ENV: string;
 
 declare module 'form-serialize' {
     import serialize = require('form-serialize');

@@ -1,18 +1,19 @@
 import './polyfills';
 import Barba, { IBarbaView } from 'barba.js';
 // import '~/bootstrap';
-
 // Transitions
 import DefaultTransition from './transitions/default';
 // Views
 import IndexPageView from './views/index';
+// Types
+import { IAppWindow } from './types';
 
 import '../css/app.scss';
 
+declare const window: IAppWindow;
+
 window.addEventListener('DOMContentLoaded', () => {
-    if (document.documentElement) {
-        document.documentElement.classList.add('js-ready');
-    }
+    document.documentElement.classList.add('js-ready');
 
     const views: IBarbaView[] = [IndexPageView];
     
