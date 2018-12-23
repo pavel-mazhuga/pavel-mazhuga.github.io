@@ -1,4 +1,3 @@
-/* global $window $body $html */
 window.addEventListener('DOMContentLoaded', () => {
     const CONTAINER_WIDTH = 100;
 
