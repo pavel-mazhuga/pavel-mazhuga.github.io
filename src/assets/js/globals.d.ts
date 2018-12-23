@@ -16,8 +16,32 @@ declare module 'form-serialize' {
 }
 
 declare module 'gsap/all' {
-    import { TimelineMax, TweenMax, TimelineLite, TweenLite } from 'gsap';
-    export { TimelineMax, TweenMax, TimelineLite, TweenLite };
+    import {
+        TimelineMax,
+        TweenMax,
+        TimelineLite,
+        TweenLite,
+        Ease,
+        Power0,
+        Power1,
+        Power2,
+        Power3,
+        Power4,
+        Linear,
+    } from 'gsap';
+    export {
+        TimelineMax,
+        TweenMax,
+        TimelineLite,
+        TweenLite,
+        Ease,
+        Power0,
+        Power1,
+        Power2,
+        Power3,
+        Power4,
+        Linear,
+    };
 }
 
 declare module 'barba.js' {
