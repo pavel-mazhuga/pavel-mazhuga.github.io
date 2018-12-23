@@ -12,6 +12,8 @@ import '../css/app.scss';
 
 declare const window: IAppWindow;
 
+import './modules/layout-calc';
+
 window.addEventListener('DOMContentLoaded', () => {
     document.documentElement.classList.add('js-ready');
 
@@ -27,9 +29,9 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    Barba.Dispatcher.on('newPageReady', (currentStatus: any, oldStatus: any, container: HTMLElement, newPageRawHTML: any) => {
+    Barba.Dispatcher.on('newPageReady', (currentStatus: any, prevStatus: any, container: HTMLElement, newPageRawHTML: string) => {
         if (NODE_ENV === 'development') {
-            console.log('[barba.js] newPageReady: ', { currentStatus, oldStatus });
+            console.log('[barba.js] newPageReady: ', { currentStatus, prevStatus });
         }
 
         // Barba.Pjax.getTransition = () => DefaultTransition;
