@@ -1,4 +1,8 @@
-export function triggerEvent (el: HTMLElement|Document|Window, eventName: string): void {
+interface wrapOptions {
+    class?: string;
+}
+
+export function triggerEvent (el: HTMLElement | Document | Window, eventName: string): void {
     let event;
   
     if (window.event) {
@@ -16,7 +20,7 @@ export function triggerEvent (el: HTMLElement|Document|Window, eventName: string
     el.dispatchEvent(event);
 }
   
-export function triggerCustomEvent (el: HTMLElement|Document|Window, eventName: string, data: Object = {}) {
+export function triggerCustomEvent (el: HTMLElement | Document | Window, eventName: string, data: Object = {}) {
     let event;
 
     if ((window as any).CustomEvent) {
@@ -34,23 +38,19 @@ export function triggerCustomEvent (el: HTMLElement|Document|Window, eventName: 
     el.dispatchEvent(event);
 }
 
-interface wrapOptions {
-    class?: string
-}
-
 export function wrap (
     el: HTMLElement,
     wrapNodeType: string = 'div',
     options: wrapOptions = {},
 ): HTMLElement {
-    let parent = el.parentNode as HTMLElement;
-    let wrap = document.createElement(wrapNodeType);
+    const parent = el.parentNode as HTMLElement;
+    const wrap = document.createElement(wrapNodeType);
 
     if (options.class) {
         wrap.classList.add(options.class);
     }
   
-    if (parent instanceof HTMLElement) {
+    if (parent) {
         parent.insertBefore(wrap, el);
         wrap.appendChild(el);
         return wrap;
@@ -61,4 +61,8 @@ export function wrap (
 
 export function randomInt (min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export function randomFloat(min: number, max: number): number {
+    return min + (Math.random() * (max - min));
 }
