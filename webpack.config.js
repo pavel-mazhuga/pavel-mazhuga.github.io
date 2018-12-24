@@ -70,6 +70,24 @@ const resourceName = (prefix, hash = false) => {
     };
 };
 
+let devServer;
+
+function reloadHtml() {
+    const cache = {};
+    const plugin = { name: 'CustomHtmlReloadPlugin' };
+    this.hooks.compilation.tap(plugin, compilation => {
+        compilation.hooks.htmlWebpackPluginAfterEmit.tap(plugin, data => {
+            const orig = cache[data.outputName];
+            const html = data.html.source();
+            // plugin seems to emit on any unrelated change?
+            if (orig && orig !== html) {
+                devServer.sockWrite(devServer.sockets, 'content-changed');
+            }
+            cache[data.outputName] = html;
+        });
+    });
+}
+
 module.exports = {
 
     watchOptions: {
@@ -81,7 +99,9 @@ module.exports = {
         open: true,
         inline: true,
         overlay: { warnings: false, errors: true },
-        before(app) {
+        before(app, server) {
+            devServer = server;
+
             // Имитация отправки форм через webpack-dev-server
             const bodyParser = require('body-parser');    
             app.use(bodyParser.json());
@@ -239,6 +259,7 @@ module.exports = {
                 title: APP.TITLE,
             });
         })),
+        reloadHtml,
         new SvgoPlugin({ enabled: PROD }),
         new CopyWebpackPlugin([
             ...[
