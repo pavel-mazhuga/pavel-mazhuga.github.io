@@ -18,7 +18,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.documentElement.classList.add('js-ready');
 
     const views: IBarbaView[] = [IndexPageView];
-    
+
     Barba.Pjax.getTransition = () => DefaultTransition;
     views.forEach(view => view.init());
     Barba.Pjax.start();
@@ -29,7 +29,12 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    Barba.Dispatcher.on('newPageReady', (currentStatus: any, prevStatus: any, container: HTMLElement, newPageRawHTML: string) => {
+    Barba.Dispatcher.on('newPageReady', (
+        currentStatus: any,
+        prevStatus: any,
+        container: HTMLElement,
+        newPageRawHTML: string,
+    ) => {
         if (NODE_ENV === 'development') {
             console.log('[barba.js] newPageReady: ', { currentStatus, prevStatus });
         }

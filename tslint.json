@@ -3,6 +3,8 @@
     "rules": {
         "max-line-length": {
             "options": 120
-        }
+        },
+        "indent": [true, "spaces", 4],
+        "import-name": [false]
     }
 }
