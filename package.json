@@ -71,6 +71,7 @@
         "cssnano": "latest",
         "deasync": "latest",
         "eslint": "latest",
+        "eslint-plugin-import": "latest",
         "eslint-config-airbnb-base": "latest",
         "eslint-loader": "latest",
         "file-loader": "latest",
