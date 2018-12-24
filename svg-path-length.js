@@ -20,7 +20,7 @@ const svgLengthFunction = () => {
 puppeteer.launch().then(async (browser) => {
     const page = await browser.newPage();
     for (const file of svgFiles) {
-        console.log(`[svg-path-length] ${file} -- begin parse...`);
+        console.log(`[svg-path-length] ${file} - start parsing...`);
         const content = [
             '<div id="svgRoot">', fs.readFileSync(file), '</div>',
             '<script type="text/javascript">', Lengthy, '</script>',
