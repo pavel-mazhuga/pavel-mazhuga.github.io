@@ -8,6 +8,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ImageminPlugin = require('imagemin-webpack');
 const zopfli = require('@gfx/zopfli');
 
 const APP = require('./app.config.js');
@@ -59,6 +60,9 @@ const resourceName = (prefix, hash = false) => {
     const suffix = hash ? '?[hash]' : '';
     return (resourcePath) => {
         const url = slash(path.relative(SRC_PATH, resourcePath));
+        if (url.startsWith('../')) {
+            return url.replace(/\.\.\//g, '') + suffix;
+        }
         if (url.startsWith(`${basename}/`)) {
             return url + suffix;
         }
@@ -75,8 +79,8 @@ let devServer;
 function reloadHtml() {
     const cache = {};
     const plugin = { name: 'CustomHtmlReloadPlugin' };
-    this.hooks.compilation.tap(plugin, compilation => {
-        compilation.hooks.htmlWebpackPluginAfterEmit.tap(plugin, data => {
+    this.hooks.compilation.tap(plugin, (compilation) => {
+        compilation.hooks.htmlWebpackPluginAfterEmit.tap(plugin, (data) => {
             const orig = cache[data.outputName];
             const html = data.html.source();
             // plugin seems to emit on any unrelated change?
@@ -103,7 +107,7 @@ module.exports = {
             devServer = server;
 
             // Имитация отправки форм через webpack-dev-server
-            const bodyParser = require('body-parser');    
+            const bodyParser = require('body-parser');
             app.use(bodyParser.json());
 
             const data = {
@@ -118,7 +122,7 @@ module.exports = {
 
             app.post('/api', bodyParser.json(), (req, res) => {
                 res.send(data);
-            })
+            });
         },
         // TODO: test it
         // historyApiFallback: {
@@ -252,7 +256,7 @@ module.exports = {
                         decodeEntities: true,
                         minifyCSS: true,
                         minifyJS: true,
-                    })
+                    }),
                 },
                 hash: true,
                 cache: !(PROD),
@@ -278,6 +282,14 @@ module.exports = {
         ], {
             copyUnmodified: !PROD,
             debug: 'info',
+        }),
+        new ImageminPlugin({
+            test: /\.(jpeg|jpg|png|gif|svg)$/i,
+            exclude: /(fonts|font)/i,
+            name: resourceName('img', true),
+            imageminOptions: require('./imagemin.config.js'),
+            cache: false,
+            loader: true,
         }),
         new BundleAnalyzerPlugin({
             // analyzerMode: DEV_SERVER ? 'server' : 'static',
