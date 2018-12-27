@@ -4,16 +4,17 @@ const glob = require('glob');
 const puppeteer = require('puppeteer');
 
 const Lengthy = fs.readFileSync(require.resolve('lengthy-svg'));
-const svgFiles = glob.sync('source/**/*.svg');
+const svgFiles = glob.sync('src/partials/**/*.svg');
 
 const svgLengthFunction = () => {
     const svgRoot = document.getElementById('svgRoot');
-    const svgTags = 'path, use, rect, ellipse, line, circle, polyline, polygon';
-    svgRoot.querySelectorAll(svgTags).forEach((item) => {
+    // const selector = 'path, use, rect, ellipse, line, circle, polyline, polygon';
+    const selector = '.path-length';
+    svgRoot.querySelectorAll(selector).forEach((item) => {
         const result = Lengthy.getLength(item);
         item.style.setProperty('--path-length', result);
-        item.setAttribute('data-path-length', result);
-        item.classList.add('path-length');
+        // item.setAttribute('data-path-length', result);
+        // item.classList.add('path-length');
     });
 };
 
@@ -31,7 +32,7 @@ puppeteer.launch().then(async (browser) => {
         const result = await page.$eval('#svgRoot', element => element.innerHTML);
         fs.writeFileSync(file, result.trim());
 
-        console.log(`[svg-path-length] ${file} -- end parse;\n`);
+        console.log(`[svg-path-length] ${file} - parsing ended;\n`);
     }
     await browser.close();
 });
