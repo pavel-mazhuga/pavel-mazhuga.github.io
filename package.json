@@ -14,17 +14,14 @@
         "prod:bitrix": "cross-env NODE_ENV=production DEBUG=0 ENV=bitrix webpack --mode=production",
         "watch": "npm run watch-prod",
         "watch-dev": "cross-env NODE_ENV=development DEBUG=0 webpack --watch -d",
-        "watch-debug": "cross-env NODE_ENV=development DEBUG=1 webpack --watch -d",
         "watch-prod": "cross-env NODE_ENV=production DEBUG=0 webpack --watch -p",
         "js-lint": "cross-env NODE_ENV=development eslint --config .eslintrc --ignore-path .eslintignore --fix *.js src/**/*.js",
         "css-lint": "cross-env NODE_ENV=development stylelint src/**/*.scss --fix --syntax scss --formatter verbose --ignore-path .stylelintignore --config .stylelintrc",
         "html-lint": "cross-env NODE_ENV=development node ./script.html-lint.js",
         "lint": "npm run js-lint && npm run css-lint && npm run html-lint",
         "start": "cross-env NODE_ENV=development webpack-dev-server --hot --mode=development",
-        "server-debug": "cross-env NODE_ENV=development DEBUG=1 webpack-dev-server --hot --inline -d",
         "build": "npm-run-all js-lint css-lint prod html-lint",
-        "browserslist": "npx browserslist",
-        "explore": "source-map-explorer build/assets/js/app.min.js build/assets/js/app.min.js.map"
+        "browserslist": "npx browserslist"
     },
     "author": "Pavel Mazhuga",
     "license": "MIT",
