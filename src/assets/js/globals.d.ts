@@ -47,39 +47,39 @@ declare module 'gsap/all' {
 declare module 'barba.js' {
     export interface IBarbaCache {
         data: {};
-        extend: Function;
-        get: Function;
-        reset: Function;
-        set: (key: any, val: any) => any;
+        extend: (obj: Object) => Object;
+        get: (key: string) => any;
+        reset: () => void;
+        set: (key: string, val: any) => any;
     }
 
     export interface IBarbaHistory {
         add: (url: string, namespace: string) => void;
         history: any[];
-        currentStatus: Function;
-        prevStatus: Function;
+        currentStatus: () => Object;
+        prevStatus: () => Object;
     }
 
     export interface IBarbaTransition {
-        done: Function;
-        extend: (obj: any) => IBarbaTransition;
-        init: (oldContainer: HTMLElement, newContainer: HTMLElement) => any;
+        done: () => void;
+        extend: (obj: Object) => IBarbaTransition;
+        init: (oldContainer: HTMLElement, newContainer: Promise<HTMLElement>) => Promise<any>;
         newContainer: HTMLElement | undefined;
         newContainerLoading: Promise<HTMLElement> | undefined;
         newContainerReady: Promise<void> | undefined;
         oldContainer: HTMLElement | undefined;
-        start: Function;
+        start: () => void;
         [key: string]: any;
     }
 
     export interface IBarbaView {
-        extend: (obj: Object) => any;
-        init: Function;
+        extend: (obj: Object) => IBarbaView;
+        init: () => void;
         namespace: string | null;
-        onEnter: Function;
-        onEnterCompleted: Function;
-        onLeave: Function;
-        onLeaveComplated: Function;
+        onEnter: () => void;
+        onEnterCompleted: () => void;
+        onLeave: () => void;
+        onLeaveComplated: () => void;
     }
 
     const Barba: {
@@ -89,8 +89,8 @@ declare module 'barba.js' {
         BaseView: IBarbaView;
         Dispatcher: {
             events: Object;
-            off: (event: string, f: any) => void;
-            on: (event: string, f: any) => void;
+            off: (event: string, f: Function) => void;
+            on: (event: string, f: Function) => void;
             trigger: (event: string) => void;
         };
         HistoryManager: IBarbaHistory;
@@ -117,11 +117,11 @@ declare module 'barba.js' {
             getTransition: () => IBarbaTransition;
             goTo: (url: string) => void;
             ignoreClassLink: string;
-            init: Function;
+            init: () => void;
             load: (url: string) => any;
             onLinkClick: (event: string) => void;
             onNewContainerLoaded: (container: HTMLElement) => void;
-            onStateChange: Function;
+            onStateChange: () => void;
             onTransitionEnd: () => void;
             preventCheck: (event: string, element: HTMLElement) => boolean;
             start: () => void;
@@ -129,8 +129,8 @@ declare module 'barba.js' {
         };
         Prefetch: {
             ignoreClassLink: string;
-            init: Function;
-            onLinkEnter: Function;
+            init: () => void;
+            onLinkEnter: (event: Object) => void;
         };
         Utils: {
             cleanLink: (url: string) => string;
