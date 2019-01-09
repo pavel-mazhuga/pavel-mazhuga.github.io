@@ -64,11 +64,11 @@ declare module 'barba.js' {
         done: () => void;
         extend: (obj: { [key: string]: any }) => BarbaTransition;
         init: (oldContainer: HTMLElement, newContainer: Promise<HTMLElement>) => Promise<any>;
+        start: () => void;
         newContainer: HTMLElement | undefined;
         newContainerLoading: Promise<HTMLElement> | undefined;
         newContainerReady: Promise<void> | undefined;
         oldContainer: HTMLElement | undefined;
-        start: () => void;
     }
 
     export interface BarbaView {
