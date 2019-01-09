@@ -27,7 +27,7 @@
     "license": "MIT",
     "browserslist": [
         "Android >= 5",
-        "IE >= 10",
+        "IE >= 11",
         "iOS >= 9",
         "Safari >= 10",
         "last 2 Edge versions",
