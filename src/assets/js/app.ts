@@ -1,5 +1,5 @@
 import './polyfills';
-import Barba, { IBarbaView } from 'barba.js';
+import Barba, { BarbaView } from 'barba.js';
 // import '~/bootstrap';
 // Transitions
 import DefaultTransition from './transitions/default';
@@ -17,7 +17,7 @@ import './modules/layout-calc';
 window.addEventListener('DOMContentLoaded', () => {
     document.documentElement.classList.add('js-ready');
 
-    const views: IBarbaView[] = [IndexPageView];
+    const views: BarbaView[] = [IndexPageView];
 
     Barba.Pjax.getTransition = () => DefaultTransition;
     views.forEach(view => view.init());

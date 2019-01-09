@@ -45,35 +45,34 @@ declare module 'gsap/all' {
 }
 
 declare module 'barba.js' {
-    export interface IBarbaCache {
+    export interface BarbaCache {
         data: {};
-        extend: (obj: Object) => Object;
+        extend: (obj: { [key: string]: any }) => { [key: string]: any };
         get: (key: string) => any;
         reset: () => void;
         set: (key: string, val: any) => any;
     }
 
-    export interface IBarbaHistory {
+    export interface BarbaHistory {
         add: (url: string, namespace: string) => void;
         history: any[];
-        currentStatus: () => Object;
-        prevStatus: () => Object;
+        currentStatus: () => { [key: string]: any };
+        prevStatus: () => { [key: string]: any };
     }
 
-    export interface IBarbaTransition {
+    export interface BarbaTransition {
         done: () => void;
-        extend: (obj: Object) => IBarbaTransition;
+        extend: (obj: { [key: string]: any }) => BarbaTransition;
         init: (oldContainer: HTMLElement, newContainer: Promise<HTMLElement>) => Promise<any>;
         newContainer: HTMLElement | undefined;
         newContainerLoading: Promise<HTMLElement> | undefined;
         newContainerReady: Promise<void> | undefined;
         oldContainer: HTMLElement | undefined;
         start: () => void;
-        [key: string]: any;
     }
 
-    export interface IBarbaView {
-        extend: (obj: Object) => IBarbaView;
+    export interface BarbaView {
+        extend: (obj: { [key: string]: any }) => BarbaView;
         init: () => void;
         namespace: string | null;
         onEnter: () => void;
@@ -84,18 +83,18 @@ declare module 'barba.js' {
 
     const Barba: {
         version: string;
-        BaseCache: IBarbaCache;
-        BaseTransition: IBarbaTransition;
-        BaseView: IBarbaView;
+        BaseCache: BarbaCache;
+        BaseTransition: BarbaTransition;
+        BaseView: BarbaView;
         Dispatcher: {
-            events: Object;
+            events: { [key: string]: any };
             off: (event: string, f: Function) => void;
             on: (event: string, f: Function) => void;
             trigger: (event: string) => void;
         };
-        HistoryManager: IBarbaHistory;
+        HistoryManager: BarbaHistory;
         Pjax: {
-            Cache: IBarbaCache;
+            Cache: BarbaCache;
             Dom: {
                 containerClass: string;
                 currentHTML: string;
@@ -108,13 +107,13 @@ declare module 'barba.js' {
                 putContainer: (element: HTMLElement) => void;
                 wrapperId: string;
             };
-            History: IBarbaHistory;
+            History: BarbaHistory;
             bindEvents: () => void;
             cacheEnabled: boolean;
             forceGoTo: (url: string) => void;
             getCurrentUrl: () => string;
             getHref: (element: HTMLElement) => string | undefined;
-            getTransition: () => IBarbaTransition;
+            getTransition: () => BarbaTransition;
             goTo: (url: string) => void;
             ignoreClassLink: string;
             init: () => void;
@@ -130,12 +129,12 @@ declare module 'barba.js' {
         Prefetch: {
             ignoreClassLink: string;
             init: () => void;
-            onLinkEnter: (event: Object) => void;
+            onLinkEnter: (event: { [key: string]: any }) => void;
         };
         Utils: {
             cleanLink: (url: string) => string;
             deferred: () => Function;
-            extend: (obj: Object, props: Object) => Object;
+            extend: (obj: { [key: string]: any }, props: { [key: string]: any }) => { [key: string]: any };
             getCurrentUrl: () => string;
             getPort: (p?: number) => number;
             xhr: (url: string) => any;
