@@ -8,7 +8,6 @@
     },
     "scripts": {
         "dev": "cross-env NODE_ENV=development DEBUG=0 webpack -d",
-        "debug": "cross-env NODE_ENV=development DEBUG=1 webpack -d",
         "prod": "cross-env NODE_ENV=production DEBUG=0 webpack --mode=production",
         "prod:sandbox": "cross-env NODE_ENV=production DEBUG=0 ENV=sandbox webpack --mode=production",
         "prod:bitrix": "cross-env NODE_ENV=production DEBUG=0 ENV=bitrix webpack --mode=production",
