@@ -21,21 +21,17 @@ const DEV_SERVER = path.basename(require.main.filename, '.js') === 'webpack-dev-
 const USE_SOURCE_MAP = DEV_SERVER;
 const USE_LINTERS = PROD;
 
+const configurePublicPath = () => {
+    if (SANDBOX) return `/sand/${APP.PROJECT_NAME || 'xxx'}/dev/`;
+    if (BITRIX) return '/local/templates/main/';
+    return '/';
+};
+
 const SRC_PATH = path.resolve(__dirname, 'src');
+const BUILD_PATH = path.resolve(__dirname, 'build');
 
-const BUILD_PATH =
-    SANDBOX
-        ? path.resolve(__dirname, 'dist/sandbox')           // sandbox
-        : BITRIX
-            ? path.resolve(__dirname, 'dist/bitrix')        // bitrix
-            : path.resolve(__dirname, 'build');             // default
-
-const PUBLIC_PATH =
-    SANDBOX
-        ? `/sand/${APP.PROJECT_NAME || 'xxx'}/dev/`         // sandbox
-        : BITRIX
-            ? '/local/templates/main/'                      // bitrix
-            : APP.PUBLIC_PATH;                              // default
+const PUBLIC_PATH = configurePublicPath();
+const ROOT_PATH = SANDBOX ? `/sand/${APP.PROJECT_NAME || 'xxx'}/dev/` : '/';
 
 const { browserslist: BROWSERS } = require('./package.json');
 const HTML_DATA = require('./src/app.data.js');
@@ -56,7 +52,7 @@ const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
 });
 
 const resourceName = (prefix, hash = false) => {
-    const basename = path.basename('assets/', prefix);
+    const basename = path.basename(prefix);
     const suffix = hash ? '?[hash]' : '';
     return (resourcePath) => {
         const url = slash(path.relative(SRC_PATH, resourcePath));
@@ -74,23 +70,23 @@ const resourceName = (prefix, hash = false) => {
     };
 };
 
-let devServer;
+// let devServer;
 
-function reloadHtml() {
-    const cache = {};
-    const plugin = { name: 'CustomHtmlReloadPlugin' };
-    this.hooks.compilation.tap(plugin, (compilation) => {
-        compilation.hooks.htmlWebpackPluginAfterEmit.tap(plugin, (data) => {
-            const orig = cache[data.outputName];
-            const html = data.html.source();
-            // plugin seems to emit on any unrelated change?
-            if (orig && orig !== html) {
-                devServer.sockWrite(devServer.sockets, 'content-changed');
-            }
-            cache[data.outputName] = html;
-        });
-    });
-}
+// function reloadHtml() {
+//     const cache = {};
+//     const plugin = { name: 'CustomHtmlReloadPlugin' };
+//     this.hooks.compilation.tap(plugin, (compilation) => {
+//         compilation.hooks.htmlWebpackPluginAfterEmit.tap(plugin, (data) => {
+//             const orig = cache[data.outputName];
+//             const html = data.html.source();
+//             // plugin seems to emit on any unrelated change?
+//             if (orig && orig !== html) {
+//                 devServer.sockWrite(devServer.sockets, 'content-changed');
+//             }
+//             cache[data.outputName] = html;
+//         });
+//     });
+// }
 
 module.exports = {
 
@@ -103,8 +99,8 @@ module.exports = {
         open: true,
         inline: true,
         overlay: { warnings: false, errors: true },
-        before(app, server) {
-            devServer = server;
+        before(app/* , server */) {
+            // devServer = server;
 
             // Имитация отправки форм через webpack-dev-server
             const bodyParser = require('body-parser');
@@ -139,8 +135,8 @@ module.exports = {
     },
 
     output: {
-        filename: 'assets/js/app.min.js?[hash:8]',
-        chunkFilename: 'assets/js/[name].chunk.js?[hash:8]',
+        filename: 'assets/js/[name].min.js',
+        chunkFilename: 'assets/js/[name].chunk.js',
         path: BUILD_PATH,
         publicPath: PUBLIC_PATH,
     },
@@ -162,15 +158,7 @@ module.exports = {
             allChunks: true,
         }),
         ...(PROD ? [
-            new CleanWebpackPlugin([
-                ...(SANDBOX
-                    ? ['dist/sandbox/**/*']
-                    : BITRIX
-                        ? ['dist/bitrix/**/*']
-                        : ['build/**/*']),
-            ], {
-                root: __dirname,
-            }),
+            new CleanWebpackPlugin(['build/**/*'], { root: __dirname }),
             new CaseSensitivePathsPlugin(),
             new webpack.NoEmitOnErrorsPlugin(),
             new UglifyJsPlugin({
@@ -202,6 +190,7 @@ module.exports = {
             NODE_ENV: JSON.stringify(NODE_ENV),
             ENV: JSON.stringify(process.env.ENV),
             PUBLIC_PATH: JSON.stringify(PUBLIC_PATH),
+            ROOT_PATH: JSON.stringify(ROOT_PATH),
         }),
         ...(USE_LINTERS ? [
             new StyleLintPlugin({
@@ -263,7 +252,7 @@ module.exports = {
                 title: APP.TITLE,
             });
         })),
-        reloadHtml,
+        // reloadHtml,
         new SvgoPlugin({ enabled: PROD }),
         new CopyWebpackPlugin([
             ...[
@@ -377,10 +366,6 @@ module.exports = {
                                     useBuiltIns: 'usage',
                                     loose: true,
                                     targets: { browsers: BROWSERS },
-                                    // exclude: [
-                                    //     "transform-async-to-generator",
-                                    //     "transform-generator",
-                                    // ]
                                 }],
                                 ['airbnb', {
                                     modules: true,
