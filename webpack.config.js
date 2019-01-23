@@ -131,12 +131,12 @@ module.exports = {
     },
 
     entry: {
-        app: `${SRC_PATH}/assets/js/app.ts`,
+        app: `${SRC_PATH}/js/app.ts`,
     },
 
     output: {
-        filename: 'assets/js/[name].min.js',
-        chunkFilename: 'assets/js/[name].chunk.js',
+        filename: 'js/[name].min.js',
+        chunkFilename: 'js/[name].chunk.js',
         path: BUILD_PATH,
         publicPath: PUBLIC_PATH,
     },
@@ -154,7 +154,7 @@ module.exports = {
 
     plugins: [
         new MiniCssExtractPlugin({
-            filename: 'assets/css/app.min.css?[hash:8]',
+            filename: 'css/app.min.css?[hash:8]',
             allChunks: true,
         }),
         ...(PROD ? [
@@ -257,7 +257,7 @@ module.exports = {
         new CopyWebpackPlugin([
             ...[
                 '**/.htaccess',
-                'assets/img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp}',
+                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp}',
                 'google*.html',
                 'yandex_*.html',
                 '*.txt',
@@ -365,11 +365,11 @@ module.exports = {
                                     modules: false,
                                     useBuiltIns: 'usage',
                                     loose: true,
-                                    targets: { browsers: BROWSERS },
+                                    targets: { browsers: BROWSERS.legacy },
                                 }],
                                 ['airbnb', {
                                     modules: true,
-                                    targets: { browsers: BROWSERS },
+                                    targets: { browsers: BROWSERS.legacy },
                                 }],
                             ],
                             envName: NODE_ENV,

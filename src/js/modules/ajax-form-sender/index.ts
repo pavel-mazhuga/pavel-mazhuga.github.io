@@ -1,7 +1,7 @@
 import axios from 'axios';
 // import serialize from 'form-serialize';
 import { ApiResponse } from './types';
-import { triggerCustomEvent } from 'src/assets/js/utils';
+import { triggerCustomEvent } from 'src/js/utils';
 
 export default class AjaxFormSender/*  implements IAjaxFormSender */ {
     public readonly form: HTMLFormElement;
