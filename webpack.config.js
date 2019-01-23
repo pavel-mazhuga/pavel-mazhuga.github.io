@@ -207,11 +207,11 @@ module.exports = {
         ...(APP.USE_FAVICONS ? [
             new FaviconsPlugin.AppIcon({
                 logo: './.favicons-source-1024x1024.png',
-                prefix: 'assets/img/favicon/',
+                prefix: 'img/favicon/',
             }),
             new FaviconsPlugin.FavIcon({
                 logo: './.favicons-source-64x64.png',
-                prefix: 'assets/img/favicon/',
+                prefix: 'img/favicon/',
             }),
         ] : []),
         ...(SITEMAP.map((template) => {
