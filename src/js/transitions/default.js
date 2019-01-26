@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Barba from 'barba.js';
 
 export default Barba.BaseTransition.extend({

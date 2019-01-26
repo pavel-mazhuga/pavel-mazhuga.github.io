@@ -7,8 +7,10 @@
         "url": "repository here"
     },
     "scripts": {
-        "dev": "cross-env NODE_ENV=development DEBUG=0 webpack -d",
-        "prod": "cross-env NODE_ENV=production DEBUG=0 webpack --mode=production",
+        "dev": "cross-env NODE_ENV=development DEBUG=0 webpack --mode=development",
+        "prod": "npm run prod:modern && npm run prod:legacy",
+        "prod:legacy": "cross-env NODE_ENV=production BUILD_TYPE=legacy webpack --mode=production",
+        "prod:modern": "cross-env NODE_ENV=production BUILD_TYPE=modern webpack --mode=production",
         "prod:sandbox": "cross-env NODE_ENV=production DEBUG=0 ENV=sandbox webpack --mode=production",
         "prod:bitrix": "cross-env NODE_ENV=production DEBUG=0 ENV=bitrix webpack --mode=production",
         "watch": "npm run watch-prod",
@@ -27,7 +29,7 @@
     "browserslist": {
         "legacy": [
             "Android >= 5",
-            "IE >= 11",
+            "IE >= 10",
             "iOS >= 9",
             "Safari >= 9",
             "last 2 Edge versions",
@@ -58,8 +60,6 @@
         "@babel/preset-env": "^7.3.1",
         "@babel/runtime": "^7.3.1",
         "@gfx/zopfli": "latest",
-        "@types/form-serialize": "latest",
-        "@types/gsap": "latest",
         "autoprefixer": "^9.4.6",
         "axios": "latest",
         "babel-eslint": "latest",
@@ -89,7 +89,6 @@
         "form-serialize": "latest",
         "front-matter": "latest",
         "glob": "latest",
-        "gsap": "latest",
         "html-webpack-plugin": "latest",
         "image-size": "^0.7.1",
         "imagemin-gifsicle": "latest",
@@ -142,9 +141,8 @@
         "stylelint-webpack-plugin": "latest",
         "svgo": "latest",
         "tapable": "^1.1.1",
-        "tslint": "^5.12.1",
+        "terser-webpack-plugin": "^1.2.1",
         "ttf2eot": "latest",
-        "uglifyjs-webpack-plugin": "latest",
         "url-loader": "latest",
         "webapp-webpack-plugin": "^2.5.0",
         "webpack": "^4.29.0",
@@ -153,9 +151,5 @@
         "webpack-dev-server": "latest",
         "webpack-log": "latest"
     },
-    "devDependencies": {
-        "ts-loader": "^5.3.3",
-        "tslint-config-airbnb": "latest",
-        "typescript": "^3.2.4"
-    }
+    "devDependencies": {}
 }

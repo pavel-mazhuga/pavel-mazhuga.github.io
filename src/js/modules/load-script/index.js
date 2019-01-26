@@ -1,8 +1,4 @@
-import { IAppWindow } from '../../types';
-
-declare const window: IAppWindow;
-
-export default function loadScript(url: string): Promise<HTMLScriptElement | string | Event> {
+export default function loadScript(url) {
     return new Promise((resolve, reject) => {
         if (!window.loadedScripts) {
             window.loadedScripts = [];
@@ -13,21 +9,21 @@ export default function loadScript(url: string): Promise<HTMLScriptElement | str
         }
 
         const script = document.createElement('script');
-    
+
         script.onerror = (err) => {
             window.loadedScripts[url] = false;
             reject(err);
         };
-    
+
         script.onload = () => {
             window.loadedScripts[url] = true;
             resolve(script);
         };
-    
+
         script.async = true;
         script.src = url;
-    
+
         const head = document.head || document.getElementsByTagName('head')[0];
         head.appendChild(script);
     });
-};
+}

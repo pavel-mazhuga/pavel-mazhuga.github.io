@@ -1,4 +1,3 @@
-/* global $window */
 import Barba from 'barba.js';
 
 export default Barba.BaseView.extend({

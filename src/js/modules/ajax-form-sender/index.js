@@ -1,19 +1,15 @@
 import axios from 'axios';
-// import serialize from 'form-serialize';
-import { ApiResponse } from './types';
-import { triggerCustomEvent } from 'src/js/utils';
+import serialize from 'form-serialize';
+import { triggerCustomEvent } from '../../utils/index';
 
-export default class AjaxFormSender/*  implements IAjaxFormSender */ {
-    public readonly form: HTMLFormElement;
-    protected shouldClearInputs: boolean;
-    public inputSelector: string = '[name]:not([type="submit"]):not([type="reset"])';
-
-    constructor(form: HTMLFormElement, shouldClearInputs: boolean = false) {
+export default class AjaxFormSender {
+    constructor(form, shouldClearInputs = false) {
         this.form = form;
         this.shouldClearInputs = shouldClearInputs;
+        this.inputSelector = '[name]:not([type="submit"]):not([type="reset"]):not([type="hidden"])';
     }
 
-    public send(url: string = this.form.action): Promise<ApiResponse> {
+    send(url = this.form.action) {
         return new Promise((resolve, reject) => {
             if (!(url && typeof url === 'string')) {
                 const errorMessage = 'Form does not have "action" attibute and url has not been provided';
@@ -30,12 +26,12 @@ export default class AjaxFormSender/*  implements IAjaxFormSender */ {
 
             const data = {
                 formName: this.form.name,
-                // data: serialize(this.form, { hash: true }),
+                data: serialize(this.form, { hash: true }),
             };
 
             switch (method) {
             case 'get':
-                axios.get(url).then(response => {
+                axios.get(url).then((response) => {
                     this.form.classList.remove('js-ajax-form--is-loading');
                     resolve(response.data);
                 });

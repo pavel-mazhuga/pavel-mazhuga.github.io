@@ -20,7 +20,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     scrollbarWidthOuter.appendChild(scrollbarWidthInner);
 
-    let scrollbarWidthLast: number = 0;
+    let scrollbarWidthLast = 0;
 
     const calculateScrollbarWidth = () => {
         const scrollbarWidth = (CONTAINER_WIDTH - scrollbarWidthInner.offsetWidth);

@@ -13,6 +13,8 @@ const zopfli = require('@gfx/zopfli');
 
 const APP = require('./app.config.js');
 
+const { BUILD_TYPE } = process.env;
+const MODERN = BUILD_TYPE ? BUILD_TYPE === 'modern' : true;
 const PROD = process.env.NODE_ENV === 'production';
 const SANDBOX = process.env.ENV === 'sandbox';
 const BITRIX = process.env.ENV === 'bitrix';
@@ -36,11 +38,12 @@ const ROOT_PATH = SANDBOX ? `/sand/${APP.PROJECT_NAME || 'xxx'}/dev/` : '/';
 const { browserslist: BROWSERS } = require('./package.json');
 const HTML_DATA = require('./src/app.data.js');
 const SvgoPlugin = require('./plugin.svgo.js');
+const HtmlWebpackModernBuildPlugin = require('./plugin.modern-build.js');
 const BrotliPlugin = (PROD ? require('brotli-webpack-plugin') : () => {});
 const CompressionPlugin = (PROD ? require('compression-webpack-plugin') : () => {});
 const StyleLintPlugin = (USE_LINTERS ? require('stylelint-webpack-plugin') : () => {});
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const UglifyJsPlugin = (PROD ? require('uglifyjs-webpack-plugin') : () => {});
+const TerserPlugin = require('terser-webpack-plugin');
 const FaviconsPlugin = (APP.USE_FAVICONS ? require('./plugin.favicons.js') : () => {});
 
 const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
@@ -70,24 +73,6 @@ const resourceName = (prefix, hash = false) => {
     };
 };
 
-// let devServer;
-
-// function reloadHtml() {
-//     const cache = {};
-//     const plugin = { name: 'CustomHtmlReloadPlugin' };
-//     this.hooks.compilation.tap(plugin, (compilation) => {
-//         compilation.hooks.htmlWebpackPluginAfterEmit.tap(plugin, (data) => {
-//             const orig = cache[data.outputName];
-//             const html = data.html.source();
-//             // plugin seems to emit on any unrelated change?
-//             if (orig && orig !== html) {
-//                 devServer.sockWrite(devServer.sockets, 'content-changed');
-//             }
-//             cache[data.outputName] = html;
-//         });
-//     });
-// }
-
 module.exports = {
 
     watchOptions: {
@@ -99,9 +84,7 @@ module.exports = {
         open: true,
         inline: true,
         overlay: { warnings: false, errors: true },
-        before(app/* , server */) {
-            // devServer = server;
-
+        before(app) {
             // Имитация отправки форм через webpack-dev-server
             const bodyParser = require('body-parser');
             app.use(bodyParser.json());
@@ -121,22 +104,20 @@ module.exports = {
             });
         },
         // TODO: test it
-        // historyApiFallback: {
-        //     rewrites: [
-        //         // { from: /^\/$/, to: '/views/landing.html' },
-        //         // { from: /^\/subpage/, to: '/views/subpage.html' },
-        //         { from: /./, to: '/errors/404/' },
-        //     ],
-        // },
+        historyApiFallback: {
+            rewrites: [
+                { from: /./, to: '/errors/404/' },
+            ],
+        },
     },
 
     entry: {
-        app: `${SRC_PATH}/js/app.ts`,
+        app: `${SRC_PATH}/js/app.js`,
     },
 
     output: {
-        filename: 'js/[name].min.js',
-        chunkFilename: 'js/[name].chunk.js',
+        filename: `js/${BUILD_TYPE}/[name].min.js`,
+        chunkFilename: `js/${BUILD_TYPE}/[name].chunk.js`,
         path: BUILD_PATH,
         publicPath: PUBLIC_PATH,
     },
@@ -158,18 +139,13 @@ module.exports = {
             allChunks: true,
         }),
         ...(PROD ? [
-            new CleanWebpackPlugin(['build/**/*'], { root: __dirname }),
+            ...(MODERN ? [new CleanWebpackPlugin(['build/**/*'], { root: __dirname })] : []),
             new CaseSensitivePathsPlugin(),
             new webpack.NoEmitOnErrorsPlugin(),
-            new UglifyJsPlugin({
+            new TerserPlugin({
                 parallel: true,
                 sourceMap: true,
                 extractComments: true,
-                uglifyOptions: {
-                    output: {
-                        comments: false,
-                    },
-                },
             }),
             new BrotliPlugin({
                 asset: '[path].br[query]',
@@ -192,7 +168,7 @@ module.exports = {
             PUBLIC_PATH: JSON.stringify(PUBLIC_PATH),
             ROOT_PATH: JSON.stringify(ROOT_PATH),
         }),
-        ...(USE_LINTERS ? [
+        ...(USE_LINTERS && MODERN ? [
             new StyleLintPlugin({
                 syntax: 'scss',
                 files: '**/*.scss',
@@ -204,7 +180,7 @@ module.exports = {
                 fix: !DEV_SERVER,
             }),
         ] : []),
-        ...(APP.USE_FAVICONS ? [
+        ...(APP.USE_FAVICONS && MODERN ? [
             new FaviconsPlugin.AppIcon({
                 logo: './.favicons-source-1024x1024.png',
                 prefix: 'img/favicon/',
@@ -214,78 +190,78 @@ module.exports = {
                 prefix: 'img/favicon/',
             }),
         ] : []),
-        ...(SITEMAP.map((template) => {
-            const basename = path.basename(template);
-            const filename = (basename === 'index.html' ? path.join(
-                BUILD_PATH,
-                path.relative(SRC_PATH, template),
-            ) : path.join(
-                BUILD_PATH,
-                path.relative(SRC_PATH, path.dirname(template)),
-                path.basename(template, '.html'),
-                'index.html',
-            ));
-            return new HtmlWebpackPlugin({
-                filename,
-                template,
-                inject: true,
-                minify: {
-                    removeScriptTypeAttributes: true,
-                    html5: true,
-                    conservativeCollapse: false,
-                    ...(APP.HTML_PRETTY ? {
-                        collapseWhitespace: false,
-                        removeComments: false,
-                        decodeEntities: false,
-                        minifyCSS: false,
-                        minifyJS: false,
-                    } : {
-                        collapseWhitespace: true,
-                        removeComments: true,
-                        decodeEntities: true,
-                        minifyCSS: true,
-                        minifyJS: true,
-                    }),
-                },
-                hash: true,
-                cache: !(PROD),
-                title: APP.TITLE,
-            });
-        })),
-        // reloadHtml,
-        new SvgoPlugin({ enabled: PROD }),
-        new CopyWebpackPlugin([
-            ...[
-                '**/.htaccess',
-                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp}',
-                'google*.html',
-                'yandex_*.html',
-                '*.txt',
-                '*.php',
-            ].map(from => ({
-                from,
-                to: BUILD_PATH,
-                context: SRC_PATH,
-                ignore: SITEMAP,
+        ...(MODERN ? [
+            ...(SITEMAP.map((template) => {
+                const basename = path.basename(template);
+                const filename = (basename === 'index.html' ? path.join(
+                    BUILD_PATH,
+                    path.relative(SRC_PATH, template),
+                ) : path.join(
+                    BUILD_PATH,
+                    path.relative(SRC_PATH, path.dirname(template)),
+                    path.basename(template, '.html'),
+                    'index.html',
+                ));
+                return new HtmlWebpackPlugin({
+                    filename,
+                    template,
+                    inject: true,
+                    minify: {
+                        removeScriptTypeAttributes: true,
+                        html5: true,
+                        conservativeCollapse: false,
+                        ...(APP.HTML_PRETTY ? {
+                            collapseWhitespace: false,
+                            removeComments: false,
+                            decodeEntities: false,
+                            minifyCSS: false,
+                            minifyJS: false,
+                        } : {
+                            collapseWhitespace: true,
+                            removeComments: true,
+                            decodeEntities: true,
+                            minifyCSS: true,
+                            minifyJS: true,
+                        }),
+                    },
+                    hash: true,
+                    cache: !(PROD),
+                    title: APP.TITLE,
+                });
             })),
-        ], {
-            copyUnmodified: !PROD,
-            debug: 'info',
-        }),
-        new ImageminPlugin({
-            test: /\.(jpeg|jpg|png|gif|svg)$/i,
-            exclude: /(fonts|font)/i,
-            name: resourceName('img', true),
-            imageminOptions: require('./imagemin.config.js'),
-            cache: false,
-            loader: true,
-        }),
+            new HtmlWebpackModernBuildPlugin(),
+            new SvgoPlugin({ enabled: PROD }),
+            new CopyWebpackPlugin([
+                ...[
+                    '**/.htaccess',
+                    'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp}',
+                    'google*.html',
+                    'yandex_*.html',
+                    '*.txt',
+                    '*.php',
+                ].map(from => ({
+                    from,
+                    to: BUILD_PATH,
+                    context: SRC_PATH,
+                    ignore: SITEMAP,
+                })),
+            ], {
+                copyUnmodified: !PROD,
+                debug: 'info',
+            }),
+            new ImageminPlugin({
+                test: /\.(jpeg|jpg|png|gif|svg)$/i,
+                exclude: /(fonts|font)/i,
+                name: resourceName('img', true),
+                imageminOptions: require('./imagemin.config.js'),
+                cache: false,
+                loader: true,
+            }),
+        ] : []),
         new BundleAnalyzerPlugin({
-            // analyzerMode: DEV_SERVER ? 'server' : 'static',
             analyzerMode: 'static',
-            // openAnalyzer: DEV_SERVER,
             openAnalyzer: false,
-            reportFilename: path.join(__dirname, 'node_modules', '.cache', `bundle-analyzer-${NODE_ENV}.html`),
+            reportFilename: path.join(__dirname, 'node_modules', '.cache', `bundle-analyzer-${NODE_ENV}-${BUILD_TYPE}.html`),
         }),
     ],
 
@@ -295,7 +271,6 @@ module.exports = {
         alias: {
             '~': path.join(SRC_PATH, 'js'),
         },
-        extensions: ['.js', '.ts'],
     },
 
     module: {
@@ -312,6 +287,7 @@ module.exports = {
                         {
                             NODE_ENV,
                             PUBLIC_PATH,
+                            ROOT_PATH,
                         },
                     ),
                     searchPath: SRC_PATH,
@@ -335,22 +311,9 @@ module.exports = {
                 },
             }] : []),
             {
-                test: /\.tsx?$/i,
-                exclude: /node_modules/,
-                use: [
-                    {
-                        loader: 'ts-loader',
-                        options: {
-                            appendTsSuffixTo: [/\.vue$/],
-                        },
-                    },
-                ],
-            },
-            {
                 test: /\.js$/i,
                 exclude: {
                     test: path.join(__dirname, 'node_modules'),
-                    // exclude: path.join(__dirname, 'node_modules', 'gsap'),
                 },
                 loaders: [
                     {
@@ -364,12 +327,13 @@ module.exports = {
                                 ['@babel/preset-env', {
                                     modules: false,
                                     useBuiltIns: 'usage',
-                                    loose: true,
-                                    targets: { browsers: BROWSERS.legacy },
-                                }],
-                                ['airbnb', {
-                                    modules: true,
-                                    targets: { browsers: BROWSERS.legacy },
+                                    targets: {
+                                        ...(MODERN ? {
+                                            esmodules: true,
+                                        } : {
+                                            browsers: BROWSERS.legacy,
+                                        }),
+                                    },
                                 }],
                             ],
                             envName: NODE_ENV,
