@@ -38,7 +38,7 @@ const ROOT_PATH = SANDBOX ? `/sand/${APP.PROJECT_NAME || 'xxx'}/dev/` : '/';
 const { browserslist: BROWSERS } = require('./package.json');
 const HTML_DATA = require('./src/app.data.js');
 const SvgoPlugin = require('./plugin.svgo.js');
-const HtmlWebpackModernBuildPlugin = require('./plugin.modern-build.js');
+// const HtmlWebpackModernBuildPlugin = require('./plugin.modern-build.js');
 const BrotliPlugin = (PROD ? require('brotli-webpack-plugin') : () => {});
 const CompressionPlugin = (PROD ? require('compression-webpack-plugin') : () => {});
 const StyleLintPlugin = (USE_LINTERS ? require('stylelint-webpack-plugin') : () => {});
@@ -229,7 +229,7 @@ module.exports = {
                     title: APP.TITLE,
                 });
             })),
-            new HtmlWebpackModernBuildPlugin({ publicPath: PUBLIC_PATH }),
+            // new HtmlWebpackModernBuildPlugin({ publicPath: PUBLIC_PATH }),
             new SvgoPlugin({ enabled: PROD }),
             new CopyWebpackPlugin([
                 ...[
