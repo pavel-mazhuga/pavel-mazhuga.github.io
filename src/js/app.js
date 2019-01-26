@@ -15,21 +15,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const views = [IndexPageView];
 
-    const f1 = () => new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(1);
-        }, 1000);
-    });
-
-    const f2 = async () => {
-        const num = await f1();
-        return num;
-    };
-
-    f2().then((num) => {
-        console.log(num);
-    });
-
     Barba.Pjax.getTransition = () => DefaultTransition;
     views.forEach(view => view.init());
     Barba.Pjax.start();

@@ -6,8 +6,13 @@
 const safariFix = '(function(){var d = document;var c = d.createElement(\'script\');if (!(\'noModule\' in c) && \'onbeforeload\' in c) {var s = false;d.addEventListener(\'beforeload\', function(e){if (e.target === c){          s = true;} else if(!e.target.hasAttribute(\'nomodule\') || !s) {return;}e.preventDefault();}, true);c.type = \'module\';c.src = \'.\';d.head.appendChild(c);c.remove();}}());';
 
 class ModernBuildPlugin {
+  constructor(options) {
+    this.options = options;
+  }
+
   apply(compiler) {
     const pluginName = 'modern-build-plugin';
+    const publicPath = this.options.publicPath || '/';
 
     // Получаем информацию о Fallback Build
     // const fallbackManifest = require('path/to/dist/fallback/manifest.json');
@@ -36,7 +41,7 @@ class ModernBuildPlugin {
           closeTag: true,
           attributes: {
             // src: fallbackManifest['app.js'],
-            src: 'js/legacy/app.min.js',
+            src: `${publicPath}js/legacy/app.min.js`,
             nomodule: true,
             defer: true,
           },

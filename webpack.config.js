@@ -229,7 +229,7 @@ module.exports = {
                     title: APP.TITLE,
                 });
             })),
-            new HtmlWebpackModernBuildPlugin(),
+            new HtmlWebpackModernBuildPlugin({ publicPath: PUBLIC_PATH }),
             new SvgoPlugin({ enabled: PROD }),
             new CopyWebpackPlugin([
                 ...[
