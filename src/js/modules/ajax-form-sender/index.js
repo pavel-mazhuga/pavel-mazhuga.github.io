@@ -50,7 +50,7 @@ export default class AjaxFormSender {
                 triggerCustomEvent(this.form, 'failure');
                 this.form.classList.remove('js-ajax-form--failure');
                 reject(err);
-                console.log(err);
+                console.error(err);
                 throw new Error(`Failed to send the form ${this.formName}`);
             };
 
