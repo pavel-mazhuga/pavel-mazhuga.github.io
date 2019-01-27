@@ -1,7 +1,7 @@
 export default function loadScript(url) {
     return new Promise((resolve, reject) => {
         if (!window.loadedScripts) {
-            window.loadedScripts = [];
+            window.loadedScripts = {};
         }
 
         if (window.loadedScripts[url]) {
