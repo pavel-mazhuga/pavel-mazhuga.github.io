@@ -75,6 +75,7 @@
         "form-serialize": "latest",
         "front-matter": "latest",
         "glob": "latest",
+        "html-beautify-webpack-plugin": "latest",
         "html-webpack-plugin": "latest",
         "htmllint": "latest",
         "image-size": "latest",

@@ -8,6 +8,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const AssetsPlugin = require('assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ImageminPlugin = require('imagemin-webpack');
 const zopfli = require('@gfx/zopfli');
@@ -237,6 +238,7 @@ module.exports = {
                 title: APP.TITLE,
             });
         })),
+        ...(PROD ? [new HtmlBeautifyPlugin()] : []),
         new SvgoPlugin({ enabled: PROD }),
         new CopyWebpackPlugin([
             ...[
