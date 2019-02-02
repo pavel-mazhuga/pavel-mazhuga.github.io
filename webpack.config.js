@@ -5,6 +5,7 @@ const path = require('path');
 const glob = require('glob');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const AssetsPlugin = require('assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -13,8 +14,6 @@ const zopfli = require('@gfx/zopfli');
 
 const APP = require('./app.config.js');
 
-const { BUILD_TYPE } = process.env;
-const MODERN = BUILD_TYPE ? BUILD_TYPE === 'modern' : true;
 const PROD = process.env.NODE_ENV === 'production';
 const SANDBOX = process.env.ENV === 'sandbox';
 const BITRIX = process.env.ENV === 'bitrix';
@@ -38,7 +37,6 @@ const ROOT_PATH = SANDBOX ? `/sand/${APP.PROJECT_NAME || 'xxx'}/dev/` : '/';
 const { browserslist: BROWSERS } = require('./package.json');
 const HTML_DATA = require('./src/app.data.js');
 const SvgoPlugin = require('./plugin.svgo.js');
-// const HtmlWebpackModernBuildPlugin = require('./plugin.modern-build.js');
 const BrotliPlugin = (PROD ? require('brotli-webpack-plugin') : () => {});
 const CompressionPlugin = (PROD ? require('compression-webpack-plugin') : () => {});
 const StyleLintPlugin = (USE_LINTERS ? require('stylelint-webpack-plugin') : () => {});
@@ -116,8 +114,8 @@ module.exports = {
     },
 
     output: {
-        filename: `js/${BUILD_TYPE}/[name].min.js`,
-        chunkFilename: `js/${BUILD_TYPE}/[name].chunk.js`,
+        filename: 'js/[name].min.js',
+        chunkFilename: 'js/[name].chunk.js',
         path: BUILD_PATH,
         publicPath: PUBLIC_PATH,
     },
@@ -135,11 +133,11 @@ module.exports = {
 
     plugins: [
         new MiniCssExtractPlugin({
-            filename: 'css/app.min.css?[hash:8]',
+            filename: 'css/app.min.css',
             allChunks: true,
         }),
         ...(PROD ? [
-            ...(MODERN ? [new CleanWebpackPlugin(['build/**/*'], { root: __dirname })] : []),
+            new CleanWebpackPlugin(['build/**/*'], { root: __dirname }),
             new CaseSensitivePathsPlugin(),
             new webpack.NoEmitOnErrorsPlugin(),
             new TerserPlugin({
@@ -161,14 +159,25 @@ module.exports = {
                     return zopfli.gzip(input, compressionOptions, callback);
                 },
             }),
+            new AssetsPlugin({
+                filename: 'build/assets.json',
+                fileTypes: ['js', 'css'],
+            }),
         ] : []),
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.$': 'jquery',
+            'window.jQuery': 'jquery',
+            Popper: ['popper.js', 'default'],
+        }),
         new webpack.DefinePlugin({
             NODE_ENV: JSON.stringify(NODE_ENV),
             ENV: JSON.stringify(process.env.ENV),
             PUBLIC_PATH: JSON.stringify(PUBLIC_PATH),
             ROOT_PATH: JSON.stringify(ROOT_PATH),
         }),
-        ...(USE_LINTERS && MODERN ? [
+        ...(USE_LINTERS ? [
             new StyleLintPlugin({
                 syntax: 'scss',
                 files: '**/*.scss',
@@ -180,7 +189,7 @@ module.exports = {
                 fix: !DEV_SERVER,
             }),
         ] : []),
-        ...(APP.USE_FAVICONS && MODERN ? [
+        ...(APP.USE_FAVICONS ? [
             new FaviconsPlugin.AppIcon({
                 logo: './.favicons-source-1024x1024.png',
                 prefix: 'img/favicon/',
@@ -190,86 +199,84 @@ module.exports = {
                 prefix: 'img/favicon/',
             }),
         ] : []),
-        ...(MODERN ? [
-            ...(SITEMAP.map((template) => {
-                const basename = path.basename(template);
-                const filename = (basename === 'index.html' ? path.join(
-                    BUILD_PATH,
-                    path.relative(SRC_PATH, template),
-                ) : path.join(
-                    BUILD_PATH,
-                    path.relative(SRC_PATH, path.dirname(template)),
-                    path.basename(template, '.html'),
-                    'index.html',
-                ));
-                return new HtmlWebpackPlugin({
-                    filename,
-                    template,
-                    inject: true,
-                    minify: {
-                        removeScriptTypeAttributes: true,
-                        html5: true,
-                        conservativeCollapse: false,
-                        ...(APP.HTML_PRETTY ? {
-                            collapseWhitespace: false,
-                            removeComments: false,
-                            decodeEntities: false,
-                            minifyCSS: false,
-                            minifyJS: false,
-                        } : {
-                            collapseWhitespace: true,
-                            removeComments: true,
-                            decodeEntities: true,
-                            minifyCSS: true,
-                            minifyJS: true,
-                        }),
-                    },
-                    hash: true,
-                    cache: !(PROD),
-                    title: APP.TITLE,
-                });
+        ...(SITEMAP.map((template) => {
+            const basename = path.basename(template);
+            const filename = (basename === 'index.html' ? path.join(
+                BUILD_PATH,
+                path.relative(SRC_PATH, template),
+            ) : path.join(
+                BUILD_PATH,
+                path.relative(SRC_PATH, path.dirname(template)),
+                path.basename(template, '.html'),
+                'index.html',
+            ));
+            return new HtmlWebpackPlugin({
+                filename,
+                template,
+                inject: true,
+                minify: {
+                    removeScriptTypeAttributes: true,
+                    html5: true,
+                    conservativeCollapse: false,
+                    ...(APP.HTML_PRETTY ? {
+                        collapseWhitespace: false,
+                        removeComments: false,
+                        decodeEntities: false,
+                        minifyCSS: false,
+                        minifyJS: false,
+                    } : {
+                        collapseWhitespace: true,
+                        removeComments: true,
+                        decodeEntities: true,
+                        minifyCSS: true,
+                        minifyJS: true,
+                    }),
+                },
+                hash: true,
+                cache: !(PROD),
+                title: APP.TITLE,
+            });
+        })),
+        new SvgoPlugin({ enabled: PROD }),
+        new CopyWebpackPlugin([
+            ...[
+                '**/.htaccess',
+                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp}',
+                'google*.html',
+                'yandex_*.html',
+                '*.txt',
+                '*.php',
+            ].map(from => ({
+                from,
+                to: BUILD_PATH,
+                context: SRC_PATH,
+                ignore: SITEMAP,
             })),
-            // new HtmlWebpackModernBuildPlugin({ publicPath: PUBLIC_PATH }),
-            new SvgoPlugin({ enabled: PROD }),
-            new CopyWebpackPlugin([
-                ...[
-                    '**/.htaccess',
-                    'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp}',
-                    'google*.html',
-                    'yandex_*.html',
-                    '*.txt',
-                    '*.php',
-                ].map(from => ({
-                    from,
-                    to: BUILD_PATH,
-                    context: SRC_PATH,
-                    ignore: SITEMAP,
-                })),
-            ], {
-                copyUnmodified: !PROD,
-                debug: 'info',
-            }),
-            new ImageminPlugin({
-                test: /\.(jpeg|jpg|png|gif|svg)$/i,
-                exclude: /(fonts|font)/i,
-                name: resourceName('img', true),
-                imageminOptions: require('./imagemin.config.js'),
-                cache: false,
-                loader: true,
-            }),
-        ] : []),
+        ], {
+            copyUnmodified: !PROD,
+            debug: 'info',
+        }),
+        new ImageminPlugin({
+            test: /\.(jpeg|jpg|png|gif|svg)$/i,
+            exclude: /(fonts|font)/i,
+            name: resourceName('img', true),
+            imageminOptions: require('./imagemin.config.js'),
+            cache: false,
+            loader: true,
+        }),
         new BundleAnalyzerPlugin({
             analyzerMode: 'static',
             openAnalyzer: false,
-            reportFilename: path.join(__dirname, 'node_modules', '.cache', `bundle-analyzer-${NODE_ENV}-${BUILD_TYPE}.html`),
+            reportFilename: path.join(__dirname, 'node_modules', '.cache', `bundle-analyzer-${NODE_ENV}.html`),
         }),
     ],
 
-    devtool: USE_SOURCE_MAP ? 'eval-source-map' : 'nosources-source-map',
+    // devtool: USE_SOURCE_MAP ? 'eval-source-map' : 'nosources-source-map',
+    devtool: USE_SOURCE_MAP ? 'eval-source-map' : 'cheap-module-source-map',
 
     resolve: {
         alias: {
-            '~': path.join(SRC_PATH, 'js'),
+            '~': path.resolve(SRC_PATH, 'js'),
         },
     },
 
@@ -294,6 +301,16 @@ module.exports = {
                 },
             },
             // javascript loaders
+            {
+                test: require.resolve('jquery'),
+                use: [{
+                    loader: 'expose-loader',
+                    options: 'jQuery',
+                }, {
+                    loader: 'expose-loader',
+                    options: '$',
+                }],
+            },
             ...(USE_LINTERS ? [{
                 enforce: 'pre',
                 test: /\.js$/i,
@@ -328,11 +345,7 @@ module.exports = {
                                     modules: false,
                                     useBuiltIns: 'usage',
                                     targets: {
-                                        ...(MODERN ? {
-                                            esmodules: true,
-                                        } : {
-                                            browsers: BROWSERS.legacy,
-                                        }),
+                                        browsers: BROWSERS.legacy,
                                     },
                                 }],
                             ],
