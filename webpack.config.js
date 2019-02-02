@@ -133,12 +133,16 @@ module.exports = {
     } : false),
 
     plugins: [
+        // ...(ENV.WATCH ? [new BrowserSyncPlugin()] : []),
         new MiniCssExtractPlugin({
             filename: 'css/app.min.css',
             allChunks: true,
         }),
         ...(PROD ? [
-            new CleanWebpackPlugin(['build/**/*'], { root: __dirname }),
+            new CleanWebpackPlugin(['build/**/*'], {
+                root: __dirname,
+                exclude: ['.gitkeep'],
+            }),
             new CaseSensitivePathsPlugin(),
             new webpack.NoEmitOnErrorsPlugin(),
             new TerserPlugin({
@@ -192,11 +196,11 @@ module.exports = {
         ] : []),
         ...(APP.USE_FAVICONS ? [
             new FaviconsPlugin.AppIcon({
-                logo: './.favicons-source-1024x1024.png',
+                logo: path.join(__dirname, '.favicons-source-1024x1024.png'),
                 prefix: 'img/favicon/',
             }),
             new FaviconsPlugin.FavIcon({
-                logo: './.favicons-source-64x64.png',
+                logo: path.join(__dirname, '.favicons-source-64x64.png'),
                 prefix: 'img/favicon/',
             }),
         ] : []),
@@ -238,8 +242,42 @@ module.exports = {
                 title: APP.TITLE,
             });
         })),
-        ...(PROD ? [new HtmlBeautifyPlugin()] : []),
         new SvgoPlugin({ enabled: PROD }),
+        ...(PROD ? [new HtmlBeautifyPlugin()] : []),
+        // ...(APP.USE_SERVICE_WORKER ? [new WorkboxPlugin.GenerateSW({
+        //     cacheId: PACKAGE_NAME,
+        //     swDest: SERVICE_WORKER_PATH,
+        //     importWorkboxFrom: 'local',
+        //     clientsClaim: true,
+        //     skipWaiting: true,
+        //     precacheManifestFilename: slash(path.join(SERVICE_WORKER_BASE, 'service-worker-precache.js?[manifestHash]')),
+        //     globDirectory: slash(OUTPUT_PATH),
+        //     globPatterns: [
+        //         'js/*.min.js',
+        //         'css/*.min.css',
+        //         'fonts/*.woff2',
+        //     ],
+        //     globIgnores: [
+        //         '*.map', '*.LICENSE',
+        //     ],
+        //     include: [],
+        //     runtimeCaching: [{
+        //         urlPattern: new RegExp(`${PUBLIC_PATH}(css|js|fonts)/`),
+        //         handler: 'networkFirst',
+        //         options: {
+        //             cacheName: `${PACKAGE_NAME}-assets`,
+        //             networkTimeoutSeconds: 10,
+        //         },
+        //     }, {
+        //         urlPattern: /\//,
+        //         handler: 'networkFirst',
+        //         options: {
+        //             cacheName: `${PACKAGE_NAME}-html`,
+        //             networkTimeoutSeconds: 10,
+        //         },
+        //     }],
+        //     ignoreUrlParametersMatching: [/^utm_/, /^[a-fA-F0-9]{32}$/],
+        // })] : []),
         new CopyWebpackPlugin([
             ...[
                 '**/.htaccess',
@@ -247,7 +285,7 @@ module.exports = {
                 'google*.html',
                 'yandex_*.html',
                 '*.txt',
-                '*.php',
+                'php/*.php',
             ].map(from => ({
                 from,
                 to: BUILD_PATH,
