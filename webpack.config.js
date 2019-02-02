@@ -354,6 +354,7 @@ module.exports = {
                                     targets: {
                                         browsers: BROWSERS.legacy,
                                     },
+                                    // exclude: ['es6.promise'],
                                 }],
                             ],
                             envName: NODE_ENV,
