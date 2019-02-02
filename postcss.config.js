@@ -3,7 +3,6 @@ const path = require('path');
 const { URLSearchParams } = require('url');
 const sortCSSmq = require('sort-css-media-queries');
 
-const DEBUG = process.env.DEBUG || false;
 const PROD = (process.env.NODE_ENV === 'production');
 
 const { browserslist: BROWSERS } = require('./package.json');
@@ -15,7 +14,7 @@ module.exports = {
         require('postcss-devtools')({ precise: true }),
         require('postcss-input-style')(),
         require('postcss-responsive-type')(),
-        ...(PROD || DEBUG ? [
+        ...(PROD ? [
             require('pixrem')(),
             require('postcss-focus')(),
             require('pleeease-filters')(),
@@ -48,9 +47,9 @@ module.exports = {
                 preset: ['default', {
                     discardComments: { removeAll: true },
                 }],
-            }), // this always last
+            }), // this is always last
         ] : []),
         require('postcss-browser-reporter')(),
-        require('postcss-reporter')(), // this always last
+        require('postcss-reporter')(), // this is always last
     ],
 };
