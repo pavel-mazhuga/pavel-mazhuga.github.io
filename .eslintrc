@@ -6,19 +6,20 @@
         "browser": true,
         "jquery": true
     },
-    "plugins": [
-        "import"
-    ],
+    "plugins": ["import"],
     "rules": {
         "no-console": "off",
         "no-param-reassign": [2, { "props": false }],
         "unicode-bom": ["warn", "never"],
         "max-len": ["warn", 120, 4],
         "indent": ["warn", 4],
-        "max-lines": ["warn", {
-            "max": 300, 
-            "skipBlankLines": true
-        }],
+        "max-lines": [
+            "warn",
+            {
+                "max": 300,
+                "skipBlankLines": true
+            }
+        ],
         "import/order": "off",
         "sort-requires/sort-requires": "off",
         "linebreak-style": "off"
