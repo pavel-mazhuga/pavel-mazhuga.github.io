@@ -7,6 +7,7 @@
 
 В сборку включены
 * jQuery последней версии (https://jquery.com/)
+* Bootstrap 4 (https://getbootstrap.com/)
 * Barba.js — библиотека для PJAX переходов между страницами (http://barbajs.org/)
     - src/js/views => здесь лежат вьюхи страниц сайта
     - src/js/transitions => здесь лежат транзишены между вьюхами
