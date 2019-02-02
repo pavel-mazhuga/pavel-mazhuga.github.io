@@ -12,11 +12,9 @@
 
     {% include 'partials/webp-test.html' %}
 
-    <!-- block-head -->
     {% block head %}{% endblock %}
-    <!-- /block-head -->
 
-    {% include 'partials/counters-head.html' %}
+    {# {% include 'partials/counters-head.html' %} #}
     {% include 'partials/open-graph.html' %}
 
 </head>
@@ -24,6 +22,6 @@
 <body>
     {% block body %}{% endblock %}
     {% include 'partials/service-worker.html' %}
-    {% include 'partials/counters-body.html' %}
+    {# {% include 'partials/counters-body.html' %} #}
 </body>
 </html>

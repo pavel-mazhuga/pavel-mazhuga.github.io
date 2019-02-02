@@ -7,9 +7,9 @@
         }
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' }).then(function (registration) {
-                registration.onupdatefound = function () {
+                registration.onupdatefound = function() {
                     var installingWorker = registration.installing;
-                    installingWorker.onstatechange = function () {
+                    installingWorker.onstatechange = function() {
                         switch (installingWorker.state) {
                             case 'installed':
                                 if (navigator.serviceWorker.controller) {
@@ -28,12 +28,12 @@
                     console.log('[sw-precache] Service Worker was updated because hash changed.');
                     try {
                         registration.update();
-                    } catch(error) {
+                    } catch (error) {
                         console.error(error);
                     }
                 }
                 localStorage.setItem('SERVICE_WORKER_HASH', SERVICE_WORKER_HASH);
-            }).catch(function (error) {
+            }).catch(function(error) {
                 console.error('[sw-precache] Error during service worker registration:', error);
             });
         }
