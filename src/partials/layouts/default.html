@@ -2,7 +2,7 @@
 <html class="no-js" lang="{{ APP.LANGUAGE }}">
 <head>
     <meta charset="utf-8">
-    <title>{{ PAGE.title }} :: {{ APP.TITLE }}</title>
+    <title>{{ PAGE.title }} — {{ APP.TITLE }}</title>
     <meta name="description" content="{{ PAGE.description or APP.DESCRIPTION }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -14,14 +14,11 @@
 
     {% block head %}{% endblock %}
 
-    {# {% include 'partials/counters-head.html' %} #}
     {% include 'partials/open-graph.html' %}
-
 </head>
 {# <body class="{{ PAGE.namespace | replace('.', ' ') }}"> #}
 <body>
     {% block body %}{% endblock %}
     {% include 'partials/service-worker.html' %}
-    {# {% include 'partials/counters-body.html' %} #}
 </body>
 </html>
