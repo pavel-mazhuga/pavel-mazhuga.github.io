@@ -8,10 +8,10 @@ import DefaultTransition from './transitions/default';
 // Views
 import IndexPageView from './views/index';
 // Modules
-import './modules/layout-calc';
+// import './modules/layout-calc';
 
 window.addEventListener('DOMContentLoaded', () => {
-    document.documentElement.classList.add('js-ready');
+    $(document.documentElement).addClass('js-ready');
 
     const views = [IndexPageView];
 

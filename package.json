@@ -69,6 +69,7 @@
         "eslint-config-airbnb-base": "latest",
         "eslint-loader": "latest",
         "eslint-plugin-import": "latest",
+        "expose-loader": "latest",
         "file-loader": "latest",
         "flat-cache": "latest",
         "form-serialize": "latest",
