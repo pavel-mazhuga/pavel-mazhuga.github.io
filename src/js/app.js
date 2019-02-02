@@ -10,7 +10,7 @@ import IndexPageView from './views/index';
 // Modules
 // import './modules/layout-calc';
 
-window.addEventListener('DOMContentLoaded', () => {
+jQuery(($) => {
     $(document.documentElement).addClass('js-ready');
 
     const views = [IndexPageView];

@@ -334,6 +334,13 @@ module.exports = {
                 },
                 loaders: [
                     {
+                        loader: 'imports-loader',
+                        options: {
+                            $: 'jquery',
+                            jQuery: 'jquery',
+                        },
+                    },
+                    {
                         loader: 'babel-loader',
                         options: {
                             plugins: [

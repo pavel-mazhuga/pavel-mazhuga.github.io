@@ -85,6 +85,7 @@
         "imagemin-pngquant": "latest",
         "imagemin-svgo": "latest",
         "imagemin-webpack": "latest",
+        "imports-loader": "latest",
         "jquery": "latest",
         "loader-utils": "latest",
         "lodash.merge": "latest",
