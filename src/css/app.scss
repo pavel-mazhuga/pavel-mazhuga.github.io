@@ -1,4 +1,3 @@
-
 // Base
 @import 'base/variables';
 @import 'base/bootstrap';
@@ -8,16 +7,17 @@
 @import 'utils/mixins';
 @import 'utils/resize';
 
+// Vendor
+// @import 'external/foobar';
+
 // Layout
 @import 'layout/common';
 
 // Components
 @import 'components/header';
 @import 'components/footer';
+// @import 'components/modal';
 
 // Pages
 // @import 'pages/wysiwyg';
 @import 'pages/index';
-
-// Vendor
-// @import 'external/foobar';
