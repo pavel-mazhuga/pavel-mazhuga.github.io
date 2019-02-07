@@ -22,6 +22,7 @@
         ],
         "import/order": "off",
         "sort-requires/sort-requires": "off",
-        "linebreak-style": "off"
+        "linebreak-style": "off",
+        "arrow-parens": ["error", "always"]
     }
 }
