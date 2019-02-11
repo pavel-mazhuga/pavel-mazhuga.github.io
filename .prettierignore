@@ -1,1 +1,4 @@
-!src/*
+webpack*
+plugins/*
+node_modules/*
+build/*

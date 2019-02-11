@@ -243,7 +243,7 @@ module.exports = {
             });
         })),
         new SvgoPlugin({ enabled: PROD }),
-        ...(PROD ? [new HtmlBeautifyPlugin()] : []),
+        ...(PROD && APP.HTML_PRETTY ? [new HtmlBeautifyPlugin()] : []),
         // ...(APP.USE_SERVICE_WORKER ? [new WorkboxPlugin.GenerateSW({
         //     cacheId: PACKAGE_NAME,
         //     swDest: SERVICE_WORKER_PATH,
@@ -286,7 +286,7 @@ module.exports = {
                 'yandex_*.html',
                 '*.txt',
                 'php/*.php',
-            ].map(from => ({
+            ].map((from) => ({
                 from,
                 to: BUILD_PATH,
                 context: SRC_PATH,
@@ -311,8 +311,7 @@ module.exports = {
         }),
     ],
 
-    // devtool: USE_SOURCE_MAP ? 'eval-source-map' : 'nosources-source-map',
-    devtool: USE_SOURCE_MAP ? 'eval-source-map' : 'cheap-module-source-map',
+    devtool: USE_SOURCE_MAP ? 'eval-source-map' : 'nosources-source-map',
 
     resolve: {
         alias: {
@@ -453,7 +452,7 @@ module.exports = {
                         options: {
                             data: [
                                 ['$NODE_ENV', NODE_ENV],
-                            ].map(i => ((k, v) => `${k}: ${JSON.stringify(v)};`)(...i)).join('\n'),
+                            ].map((i) => ((k, v) => `${k}: ${JSON.stringify(v)};`)(...i)).join('\n'),
                             indentWidth: 4,
                             sourceMap: USE_SOURCE_MAP ? 'inline' : false,
                             sourceMapEmbed: USE_SOURCE_MAP,

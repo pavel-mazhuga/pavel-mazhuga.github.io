@@ -7,8 +7,8 @@ import Barba from 'barba.js';
 import DefaultTransition from './transitions/default';
 // Views
 import IndexPageView from './views/index';
+// Components
 import Modal from './components/modal';
-// Modules
 // import './modules/layout-calc';
 
 window.$window = jQuery(window);
