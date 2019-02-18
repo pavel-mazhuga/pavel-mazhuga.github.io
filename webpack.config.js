@@ -296,19 +296,21 @@ module.exports = {
             copyUnmodified: !PROD,
             debug: 'info',
         }),
-        new ImageminPlugin({
-            test: /\.(jpeg|jpg|png|gif|svg)$/i,
-            exclude: /(fonts|font)/i,
-            name: resourceName('img', true),
-            imageminOptions: require('./imagemin.config.js'),
-            cache: false,
-            loader: true,
-        }),
-        new BundleAnalyzerPlugin({
-            analyzerMode: 'static',
-            openAnalyzer: false,
-            reportFilename: path.join(__dirname, 'node_modules', '.cache', `bundle-analyzer-${NODE_ENV}.html`),
-        }),
+        ...(PROD ? [
+            new ImageminPlugin({
+                test: /\.(jpeg|jpg|png|gif|svg)$/i,
+                exclude: /(fonts|font)/i,
+                name: resourceName('img', true),
+                imageminOptions: require('./imagemin.config.js'),
+                cache: false,
+                loader: true,
+            }),
+            new BundleAnalyzerPlugin({
+                analyzerMode: 'static',
+                openAnalyzer: false,
+                reportFilename: path.join(__dirname, 'node_modules', '.cache', `bundle-analyzer-${NODE_ENV}.html`),
+            }),
+        ] : []),
     ],
 
     devtool: USE_SOURCE_MAP ? 'eval-source-map' : 'nosources-source-map',
