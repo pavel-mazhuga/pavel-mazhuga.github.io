@@ -3,77 +3,56 @@ import '../css/app.scss';
 import './polyfills';
 import Barba from 'barba.js';
 // import '~/bootstrap';
+// import './modules/layout-calc';
+
 // Transitions
 import DefaultTransition from './transitions/default';
 // Views
+import BaseView from './views/_base';
 import IndexPageView from './views/index';
-// Components
-import Modal from './components/modal';
-// import './modules/layout-calc';
+import AboutPageView from './views/about';
 
+// Globals
 // window.$window = jQuery(window);
 // window.$document = jQuery(document);
 // window.$body = jQuery('body');
 
-function hideOutline() {
-    this.style.outline = '0';
-}
-
-function restoreOutline() {
-    this.style.outline = '';
-}
-
-function blur() {
-    this.blur();
-}
-
 jQuery(($) => {
     $(document.documentElement).addClass('js-ready');
 
-    const views = [IndexPageView];
+    function initBarba() {
+        const views = [IndexPageView, AboutPageView];
 
-    Barba.Pjax.getTransition = () => DefaultTransition;
-    views.forEach((view) => view.init());
-    Barba.Pjax.start();
+        Barba.Pjax.getTransition = () => DefaultTransition;
+        views.forEach((view) => view.init());
 
-    const menu = new Modal('menu');
-    menu.init();
+        Barba.Dispatcher.on('initStateChange', (currentStatus) => {
+            if (NODE_ENV === 'development') {
+                console.log('[barba.js] initStateChange: ', { currentStatus });
+            }
 
-    function onPageInit() {
-        $('.js-blur')
-            .on('mouseenter.blur', hideOutline)
-            .on('mouseleave.blur', restoreOutline)
-            .on('click.blur touch.blur', blur);
+            BaseView.onLeave();
+        });
+
+        Barba.Dispatcher.on('newPageReady', (currentStatus, prevStatus /* , container, newPageRawHTML */) => {
+            if (NODE_ENV === 'development') {
+                console.log('[barba.js] newPageReady: ', { currentStatus, prevStatus });
+            }
+
+            BaseView.onEnter();
+        });
+
+        Barba.Dispatcher.on('transitionCompleted', (currentStatus, prevStatus) => {
+            if (NODE_ENV === 'development') {
+                console.log('[barba.js] transitionCompleted: ', { currentStatus, prevStatus });
+            }
+
+            BaseView.onLeaveCompleted();
+            BaseView.onEnterCompleted();
+        });
+
+        Barba.Pjax.start();
     }
 
-    function onPageDestroy() {
-        $('.js-blur')
-            .off('mouseenter.blur')
-            .off('mouseleave.blur')
-            .off('click.blur touch.blur');
-    }
-
-    onPageInit();
-
-    Barba.Dispatcher.on('initStateChange', (currentStatus) => {
-        if (NODE_ENV === 'development') {
-            console.log('[barba.js] initStateChange: ', { currentStatus });
-        }
-    });
-
-    Barba.Dispatcher.on('newPageReady', (currentStatus, prevStatus /* , container, newPageRawHTML */) => {
-        if (NODE_ENV === 'development') {
-            console.log('[barba.js] newPageReady: ', { currentStatus, prevStatus });
-        }
-
-        onPageDestroy();
-    });
-
-    Barba.Dispatcher.on('transitionCompleted', (currentStatus, prevStatus) => {
-        if (NODE_ENV === 'development') {
-            console.log('[barba.js] transitionCompleted: ', { currentStatus, prevStatus });
-        }
-
-        onPageInit();
-    });
+    initBarba();
 });
