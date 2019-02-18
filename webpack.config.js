@@ -35,7 +35,7 @@ const BUILD_PATH = path.resolve(__dirname, 'build');
 const PUBLIC_PATH = configurePublicPath();
 const ROOT_PATH = SANDBOX ? `/sand/${APP.PROJECT_NAME || 'xxx'}/dev/` : '/';
 
-const { browserslist: BROWSERS } = require('./package.json');
+const { browserslist } = require('./package.json');
 const HTML_DATA = require('./src/app.data.js');
 const SvgoPlugin = require('./plugin.svgo.js');
 const BrotliPlugin = (PROD ? require('brotli-webpack-plugin') : () => {});
@@ -393,7 +393,7 @@ module.exports = {
                                     modules: false,
                                     useBuiltIns: 'usage',
                                     targets: {
-                                        browsers: BROWSERS.legacy,
+                                        browsers: browserslist.legacy,
                                     },
                                     // exclude: ['es6.promise'],
                                 }],

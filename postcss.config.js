@@ -5,7 +5,7 @@ const sortCSSmq = require('sort-css-media-queries');
 
 const PROD = (process.env.NODE_ENV === 'production');
 
-const { browserslist: BROWSERS } = require('./package.json');
+const { browserslist } = require('./package.json');
 
 const INLINE_FILES = ['png', 'jpeg', 'jpg', 'gif', 'svg'];
 
@@ -43,7 +43,7 @@ module.exports = {
             require('postcss-flexbugs-fixes')(),
             require('postcss-will-change')(),
             require('css-mqpacker')({ sort: sortCSSmq.desktopFirst }),
-            require('autoprefixer')({ browsers: BROWSERS.legacy }),
+            require('autoprefixer')({ browsers: browserslist.legacy }),
             require('cssnano')({
                 preset: ['default', {
                     discardComments: { removeAll: true },
