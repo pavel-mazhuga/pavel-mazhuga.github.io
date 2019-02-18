@@ -1,5 +1,6 @@
 /* eslint global-require: "off" */
 /* global NODE_ENV */
+
 // if (NODE_ENV === 'production') {
 //     require('picturefill');
 // }

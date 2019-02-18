@@ -11,9 +11,9 @@ import IndexPageView from './views/index';
 import Modal from './components/modal';
 // import './modules/layout-calc';
 
-window.$window = jQuery(window);
-window.$document = jQuery(document);
-window.$body = jQuery('body');
+// window.$window = jQuery(window);
+// window.$document = jQuery(document);
+// window.$body = jQuery('body');
 
 function hideOutline() {
     this.style.outline = '0';

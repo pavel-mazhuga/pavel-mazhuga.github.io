@@ -1,9 +1,5 @@
 /* global $document $body */
-import KEYCODE from '../keycodes';
-
-function hasPageScrollbar() {
-    return document.documentElement.clientWidth < window.innerWidth;
-}
+import keyCodes from '../utils';
 
 export default class Modal {
     constructor(name) {
@@ -59,7 +55,7 @@ export default class Modal {
         $document.on(`touchmove.modal-${this.name}`, (event) => event.preventDefault());
         $document.on(`keydown.modal-${this.name}`, (event) => {
             if (event.target && $(event.target).is(':input')) return;
-            if (event.keyCode === KEYCODE.ESC) {
+            if (event.keyCode === keyCodes.ESC) {
                 event.preventDefault();
                 if (this.isOpen) this.close();
             }
