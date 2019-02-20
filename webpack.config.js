@@ -116,7 +116,7 @@ module.exports = {
 
     output: {
         filename: 'js/[name].min.js',
-        chunkFilename: 'js/[name].chunk.[hash:8].js',
+        chunkFilename: 'js/[name].chunk.js?[hash:8]',
         path: BUILD_PATH,
         publicPath: PUBLIC_PATH,
     },
