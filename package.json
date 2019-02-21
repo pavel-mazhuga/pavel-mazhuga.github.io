@@ -142,7 +142,8 @@
         "webpack-bundle-analyzer": "latest",
         "webpack-cli": "latest",
         "webpack-dev-server": "latest",
-        "webpack-log": "latest"
+        "webpack-log": "latest",
+        "wicg-inert": "latest"
     },
     "devDependencies": {
         "assets-webpack-plugin": "latest"
