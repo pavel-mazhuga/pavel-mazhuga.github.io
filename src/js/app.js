@@ -10,7 +10,6 @@ import DefaultTransition from './transitions/default';
 // Views
 import BaseView from './views/_base';
 import IndexPageView from './views/index';
-import AboutPageView from './views/about';
 
 // Globals
 // window.$window = jQuery(window);
@@ -21,7 +20,7 @@ jQuery(($) => {
     $(document.documentElement).addClass('js-ready');
 
     function initBarba() {
-        const views = [IndexPageView, AboutPageView];
+        const views = [IndexPageView];
 
         Barba.Pjax.getTransition = () => DefaultTransition;
         views.forEach((view) => view.init());
