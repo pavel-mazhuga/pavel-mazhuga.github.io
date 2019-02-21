@@ -1,4 +1,3 @@
-/* global NODE_ENV */
 import '../css/app.scss';
 import './polyfills';
 import Barba from 'barba.js';
@@ -20,32 +19,19 @@ jQuery(($) => {
     $(document.documentElement).addClass('js-ready');
 
     function initBarba() {
-        const views = [IndexPageView];
-
         Barba.Pjax.getTransition = () => DefaultTransition;
-        views.forEach((view) => view.init());
 
-        Barba.Dispatcher.on('initStateChange', (currentStatus) => {
-            if (NODE_ENV === 'development') {
-                console.log('[barba.js] initStateChange: ', { currentStatus });
-            }
+        [IndexPageView].forEach((view) => view.init());
 
+        Barba.Dispatcher.on('initStateChange', () => {
             BaseView.onLeave();
         });
 
-        Barba.Dispatcher.on('newPageReady', (currentStatus, prevStatus /* , container, newPageRawHTML */) => {
-            if (NODE_ENV === 'development') {
-                console.log('[barba.js] newPageReady: ', { currentStatus, prevStatus });
-            }
-
+        Barba.Dispatcher.on('newPageReady', () => {
             BaseView.onEnter();
         });
 
-        Barba.Dispatcher.on('transitionCompleted', (currentStatus, prevStatus) => {
-            if (NODE_ENV === 'development') {
-                console.log('[barba.js] transitionCompleted: ', { currentStatus, prevStatus });
-            }
-
+        Barba.Dispatcher.on('transitionCompleted', () => {
             BaseView.onLeaveCompleted();
             BaseView.onEnterCompleted();
         });
