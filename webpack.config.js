@@ -55,7 +55,7 @@ const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
 
 const resourceName = (prefix, hash = false) => {
     const basename = path.basename(prefix);
-    const suffix = hash ? '?[hash]' : '';
+    const suffix = hash ? '?[hash:8]' : '';
     return (resourcePath) => {
         const url = slash(path.relative(SRC_PATH, resourcePath));
         if (url.startsWith('../')) {
@@ -191,7 +191,8 @@ module.exports = {
                 emitErrors: false,
                 failOnError: false,
                 lintDirtyModulesOnly: DEV_SERVER,
-                fix: !DEV_SERVER,
+                // fix: !DEV_SERVER,
+                fix: false,
             }),
         ] : []),
         ...(APP.USE_FAVICONS ? [
