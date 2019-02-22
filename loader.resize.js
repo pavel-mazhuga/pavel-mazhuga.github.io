@@ -31,7 +31,6 @@ module.exports = function ResizeLoader(content) {
 
     const resourceHash = md5File.sync(loaderContext.resourcePath);
     const cacheKey = `${relativePath}?${JSON.stringify(query)}&${resourceHash}`;
-
     let [, resizeWidth,, resizeHeight, resizeFlag] = query.resize.trim().match(/^(\d*)(x(\d*))?([!><^])?$/);
     resizeWidth = parseInt(resizeWidth, 10);
     resizeHeight = parseInt(resizeHeight, 10);
@@ -43,7 +42,8 @@ module.exports = function ResizeLoader(content) {
         return loaderCallback(`Unknown resize flag: '${query.resize}'`);
     }
 
-    const format = (query.format || resourceInfo.ext.substr(1)).toLowerCase();
+    const sourceFormat = resourceInfo.ext.substr(1).toLowerCase();
+    const format = query.format.toLowerCase() || sourceFormat;
     const name = (query.name || (
         `${resourceInfo.name}@resize-${resizeWidth || ''}x${resizeHeight || ''}${resizeFlagNames[resizeFlag]}`
     )) + (query.suffix ? `-${query.suffix}` : '');
@@ -54,13 +54,13 @@ module.exports = function ResizeLoader(content) {
         loaderContext.resourcePath = path.join(resourceInfo.dir, `${name}.${format}`);
         loaderCallback(null, nextLoader.call(loaderContext, Buffer.from(cacheData.data)));
     } else {
-        const quality = query.quality ? parseInt(query.quality, 10) : 90;
+        const quality = query.quality ? parseInt(query.quality, 10) : 85;
         sharp(content)
-            .toFormat(format)
             .resize({
                 width: resizeWidth,
-                quality,
+                ...[resizeHeight && { height: resizeHeight }],
             })
+            .toFormat(format, { quality })
             .toBuffer()
             .then((data) => {
                 logger.info(`save cache '${relativePath}${loaderContext.resourceQuery}'`);
@@ -69,7 +69,7 @@ module.exports = function ResizeLoader(content) {
                 loaderCallback(null, nextLoader.call(loaderContext, data));
                 resizeCache.save(true);
             })
-            .catch(err => loaderCallback(err));
+            .catch((err) => loaderCallback(err));
     }
 };
 
