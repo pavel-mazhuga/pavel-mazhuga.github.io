@@ -110,7 +110,7 @@
         "postcss-image-set-polyfill": "latest",
         "postcss-input-style": "latest",
         "postcss-loader": "latest",
-        "postcss-momentum-scrolling": "^1.5.10",
+        "postcss-momentum-scrolling": "latest",
         "postcss-object-fit-images": "latest",
         "postcss-reporter": "latest",
         "postcss-responsive-type": "latest",
@@ -143,9 +143,8 @@
         "webpack-cli": "latest",
         "webpack-dev-server": "latest",
         "webpack-log": "latest",
-        "wicg-inert": "latest"
+        "wicg-inert": "latest",
+        "workbox-webpack-plugin": "latest"
     },
-    "devDependencies": {
-        "assets-webpack-plugin": "latest"
-    }
+    "devDependencies": {}
 }

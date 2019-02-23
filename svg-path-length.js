@@ -29,7 +29,7 @@ puppeteer.launch().then(async (browser) => {
         ].join('\n');
 
         await page.setContent(content);
-        const result = await page.$eval('#svgRoot', element => element.innerHTML);
+        const result = await page.$eval('#svgRoot', (element) => element.innerHTML);
         fs.writeFileSync(file, result.trim());
 
         console.log(`[svg-path-length] ${file} - parsing ended;\n`);

@@ -1,17 +1,19 @@
 /* eslint global-require: "off", max-lines: "off", import/no-dynamic-require: "off", max-len: "off" */
 const webpack = require('webpack');
 const slash = require('slash');
+const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
+const md5File = require('md5-file');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const AssetsPlugin = require('assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ImageminPlugin = require('imagemin-webpack');
 const zopfli = require('@gfx/zopfli');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 const APP = require('./app.config.js');
 
@@ -35,7 +37,7 @@ const BUILD_PATH = path.resolve(__dirname, 'build');
 const PUBLIC_PATH = configurePublicPath();
 const ROOT_PATH = SANDBOX ? `/sand/${APP.PROJECT_NAME || 'xxx'}/dev/` : '/';
 
-const { browserslist } = require('./package.json');
+const { browserslist, name: PACKAGE_NAME } = require('./package.json');
 const HTML_DATA = require('./src/app.data.js');
 const SvgoPlugin = require('./plugin.svgo.js');
 const BrotliPlugin = (PROD ? require('brotli-webpack-plugin') : () => {});
@@ -72,6 +74,10 @@ const resourceName = (prefix, hash = false) => {
     };
 };
 
+const SERVICE_WORKER_BASE = slash(path.relative(PUBLIC_PATH, '/'));
+const SERVICE_WORKER_PATH = path.join(BUILD_PATH, SERVICE_WORKER_BASE, '/service-worker.js');
+const SERVICE_WORKER_HASH = () => (fs.existsSync(SERVICE_WORKER_PATH) ? md5File.sync(SERVICE_WORKER_PATH) : '');
+
 module.exports = {
 
     watchOptions: {
@@ -84,6 +90,7 @@ module.exports = {
         inline: true,
         overlay: { warnings: false, errors: true },
         before(app) {
+            app.get('/service-worker.js', (request, response) => response.sendFile(SERVICE_WORKER_PATH));
             // Имитация отправки форм через webpack-dev-server
             const bodyParser = require('body-parser');
             app.use(bodyParser.json());
@@ -116,7 +123,7 @@ module.exports = {
 
     output: {
         filename: 'js/[name].min.js',
-        chunkFilename: 'js/[name].chunk.js?[hash:8]',
+        chunkFilename: 'js/[name].chunk.min.js?[hash:8]',
         path: BUILD_PATH,
         publicPath: PUBLIC_PATH,
     },
@@ -135,7 +142,7 @@ module.exports = {
     plugins: [
         // ...(ENV.WATCH ? [new BrowserSyncPlugin()] : []),
         new MiniCssExtractPlugin({
-            filename: 'css/app.min.css',
+            filename: 'css/app.min.css?[hash:8]',
             allChunks: true,
         }),
         ...(PROD ? [
@@ -150,24 +157,22 @@ module.exports = {
                 sourceMap: true,
                 extractComments: true,
             }),
-            new BrotliPlugin({
-                asset: '[path].br[query]',
-                test: /\.(js|css)$/,
-            }),
-            new CompressionPlugin({
-                test: /\.(css|js)(\?.*)?$/i,
-                filename: '[path].gz[query]',
-                compressionOptions: {
-                    numiterations: 15,
-                },
-                algorithm(input, compressionOptions, callback) {
-                    return zopfli.gzip(input, compressionOptions, callback);
-                },
-            }),
-            new AssetsPlugin({
-                filename: 'build/assets.json',
-                fileTypes: ['js', 'css'],
-            }),
+            ...(APP.USE_COMPRESSION ? [
+                new BrotliPlugin({
+                    asset: '[path].br[query]',
+                    test: /\.(js|css)$/,
+                }),
+                new CompressionPlugin({
+                    test: /\.(css|js)(\?.*)?$/i,
+                    filename: '[path].gz[query]',
+                    compressionOptions: {
+                        numiterations: 15,
+                    },
+                    algorithm(input, compressionOptions, callback) {
+                        return zopfli.gzip(input, compressionOptions, callback);
+                    },
+                }),
+            ] : []),
         ] : []),
         new webpack.ProvidePlugin({
             $: 'jquery',
@@ -221,7 +226,7 @@ module.exports = {
                 template,
                 inject: true,
                 minify: {
-                    removeScriptTypeAttributes: true,
+                    removeScriptTypeAttributes: false,
                     html5: true,
                     conservativeCollapse: false,
                     ...(APP.HTML_PRETTY ? {
@@ -239,46 +244,12 @@ module.exports = {
                     }),
                 },
                 hash: true,
-                cache: !(PROD),
+                cache: !PROD,
                 title: APP.TITLE,
             });
         })),
         new SvgoPlugin({ enabled: PROD }),
         ...(PROD && APP.HTML_PRETTY ? [new HtmlBeautifyPlugin()] : []),
-        // ...(APP.USE_SERVICE_WORKER ? [new WorkboxPlugin.GenerateSW({
-        //     cacheId: PACKAGE_NAME,
-        //     swDest: SERVICE_WORKER_PATH,
-        //     importWorkboxFrom: 'local',
-        //     clientsClaim: true,
-        //     skipWaiting: true,
-        //     precacheManifestFilename: slash(path.join(SERVICE_WORKER_BASE, 'service-worker-precache.js?[manifestHash]')),
-        //     globDirectory: slash(OUTPUT_PATH),
-        //     globPatterns: [
-        //         'js/*.min.js',
-        //         'css/*.min.css',
-        //         'fonts/*.woff2',
-        //     ],
-        //     globIgnores: [
-        //         '*.map', '*.LICENSE',
-        //     ],
-        //     include: [],
-        //     runtimeCaching: [{
-        //         urlPattern: new RegExp(`${PUBLIC_PATH}(css|js|fonts)/`),
-        //         handler: 'networkFirst',
-        //         options: {
-        //             cacheName: `${PACKAGE_NAME}-assets`,
-        //             networkTimeoutSeconds: 10,
-        //         },
-        //     }, {
-        //         urlPattern: /\//,
-        //         handler: 'networkFirst',
-        //         options: {
-        //             cacheName: `${PACKAGE_NAME}-html`,
-        //             networkTimeoutSeconds: 10,
-        //         },
-        //     }],
-        //     ignoreUrlParametersMatching: [/^utm_/, /^[a-fA-F0-9]{32}$/],
-        // })] : []),
         new CopyWebpackPlugin([
             ...[
                 '**/.htaccess',
@@ -312,6 +283,41 @@ module.exports = {
                 reportFilename: path.join(__dirname, 'node_modules', '.cache', `bundle-analyzer-${NODE_ENV}.html`),
             }),
         ] : []),
+        // this is always last
+        ...(APP.USE_SERVICE_WORKER ? [new WorkboxPlugin.GenerateSW({
+            cacheId: PACKAGE_NAME,
+            swDest: SERVICE_WORKER_PATH,
+            importWorkboxFrom: 'local',
+            clientsClaim: true,
+            skipWaiting: true,
+            precacheManifestFilename: slash(path.join(SERVICE_WORKER_BASE, 'service-worker-precache.js?[manifestHash]')),
+            globDirectory: slash(BUILD_PATH),
+            globPatterns: [
+                'js/*.min.js',
+                'css/*.min.css',
+                'fonts/*.woff2',
+            ],
+            globIgnores: [
+                '*.map', '*.LICENSE',
+            ],
+            include: [],
+            runtimeCaching: [{
+                urlPattern: new RegExp(`${PUBLIC_PATH}(css|js|fonts)/`),
+                handler: 'networkFirst',
+                options: {
+                    cacheName: `${PACKAGE_NAME}-assets`,
+                    networkTimeoutSeconds: 10,
+                },
+            }, {
+                urlPattern: /\//,
+                handler: 'networkFirst',
+                options: {
+                    cacheName: `${PACKAGE_NAME}-html`,
+                    networkTimeoutSeconds: 10,
+                },
+            }],
+            ignoreUrlParametersMatching: [/^utm_/, /^[a-fA-F0-9]{32}$/],
+        })] : []),
     ],
 
     devtool: USE_SOURCE_MAP ? 'eval-source-map' : 'nosources-source-map',
@@ -337,6 +343,7 @@ module.exports = {
                             NODE_ENV,
                             PUBLIC_PATH,
                             ROOT_PATH,
+                            SERVICE_WORKER_HASH,
                         },
                     ),
                     searchPath: SRC_PATH,
@@ -362,7 +369,8 @@ module.exports = {
                 ],
                 loader: 'eslint-loader',
                 options: {
-                    fix: true,
+                    // fix: true,
+                    fix: false,
                     cache: !PROD,
                     quiet: PROD,
                     emitError: false,

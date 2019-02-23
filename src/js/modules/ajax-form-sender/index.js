@@ -121,7 +121,7 @@ export default class AjaxFormSender {
 
         if (input.classList.contains('js-validate--select')) {
             const options = Array.from(this.inputs.querySelectorAll('option'));
-            const selectedOption = options.filter(option => option.selected
+            const selectedOption = options.filter((option) => option.selected
                 && !option.hasAttribute('placeholder')
                 && option.innerText !== input.getAttribute('placeholder'));
             return !!selectedOption.length;

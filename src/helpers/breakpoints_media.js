@@ -5,7 +5,7 @@ const DEFAULT_SIZES = {
 const DEFAULT_BREAKPOINTS = ['xs', 'sm', 'md', 'lg', 'xl'];
 
 module.exports = (breakpoints, sizes) => {
-    const sortedBreakpoints = DEFAULT_BREAKPOINTS.filter(i => breakpoints.includes(i));
+    const sortedBreakpoints = DEFAULT_BREAKPOINTS.filter((i) => breakpoints.includes(i));
     const mergedSizes = Object.assign({}, sizes, DEFAULT_SIZES);
     return sortedBreakpoints.map((breakpoint, index) => [breakpoint, [
         // not first

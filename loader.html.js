@@ -54,7 +54,7 @@ function processHtml(html, options, loaderCallback) {
     const parser = posthtml();
     if (options.requireTags && Object.keys(options.requireTags).length) {
         parser.use((tree) => {
-            const expression = Object.keys(options.requireTags).map(tag => ({
+            const expression = Object.keys(options.requireTags).map((tag) => ({
                 tag,
                 attrs: options.requireTags[tag].reduce((attrs, attr) => ({
                     ...attrs,
@@ -109,7 +109,7 @@ module.exports = function HtmlLoader() {
         options.requireReplace[ident] = url;
         return ident;
     };
-    options.requireExport = exportString => exportString.replace(REQUIRE_PATTERN, (match) => {
+    options.requireExport = (exportString) => exportString.replace(REQUIRE_PATTERN, (match) => {
         if (!options.requireReplace[match]) return match;
         const url = options.requireReplace[match];
         logger.info(`require('${url}')`);

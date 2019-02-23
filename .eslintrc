@@ -23,6 +23,8 @@
         "import/order": "off",
         "sort-requires/sort-requires": "off",
         "linebreak-style": "off",
-        "arrow-parens": ["error", "always"]
+        "arrow-parens": ["error", "always"],
+        "no-underscore-dangle": "off",
+        "no-plusplus": "off"
     }
 }
