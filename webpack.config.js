@@ -12,6 +12,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ImageminPlugin = require('imagemin-webpack');
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const zopfli = require('@gfx/zopfli');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 
@@ -21,6 +22,7 @@ const PROD = process.env.NODE_ENV === 'production';
 const SANDBOX = process.env.ENV === 'sandbox';
 const BITRIX = process.env.ENV === 'bitrix';
 const NODE_ENV = PROD ? 'production' : 'development';
+const WATCH = process.argv.indexOf('--watch') !== -1 || process.argv.indexOf('-w') !== -1;
 const DEV_SERVER = path.basename(require.main.filename, '.js') === 'webpack-dev-server';
 const USE_SOURCE_MAP = DEV_SERVER;
 const USE_LINTERS = PROD;
@@ -91,30 +93,13 @@ module.exports = {
         overlay: { warnings: false, errors: true },
         before(app) {
             app.get('/service-worker.js', (request, response) => response.sendFile(SERVICE_WORKER_PATH));
-            // Имитация отправки форм через webpack-dev-server
-            const bodyParser = require('body-parser');
-            app.use(bodyParser.json());
-
-            const data = {
-                success: true,
-                message: 'Это тестовое сообщение с сервера',
-                html: '<div>Это тестовый HTML с сервера</div>',
-            };
-
-            app.get('/api', (req, res) => {
-                res.send(data);
-            });
-
-            app.post('/api', bodyParser.json(), (req, res) => {
-                res.send(data);
-            });
         },
         // TODO: test it
-        historyApiFallback: {
-            rewrites: [
-                { from: /./, to: '/errors/404/' },
-            ],
-        },
+        // historyApiFallback: {
+        //     rewrites: [
+        //         { from: /./, to: '/errors/404/' },
+        //     ],
+        // },
     },
 
     entry: {
@@ -140,16 +125,16 @@ module.exports = {
     } : false),
 
     plugins: [
-        // ...(ENV.WATCH ? [new BrowserSyncPlugin()] : []),
+        ...(WATCH ? [new BrowserSyncPlugin()] : []),
+        new CleanWebpackPlugin(['build/**/*'], {
+            root: __dirname,
+            exclude: ['.gitkeep'],
+        }),
         new MiniCssExtractPlugin({
             filename: 'css/app.min.css?[hash:8]',
             allChunks: true,
         }),
         ...(PROD ? [
-            new CleanWebpackPlugin(['build/**/*'], {
-                root: __dirname,
-                exclude: ['.gitkeep'],
-            }),
             new CaseSensitivePathsPlugin(),
             new webpack.NoEmitOnErrorsPlugin(),
             new TerserPlugin({

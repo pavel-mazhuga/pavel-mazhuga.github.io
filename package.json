@@ -54,6 +54,7 @@
         "body-parser": "latest",
         "bootstrap": "latest",
         "brotli-webpack-plugin": "latest",
+        "browser-sync-webpack-plugin": "latest",
         "browserslist": "latest",
         "case-sensitive-paths-webpack-plugin": "latest",
         "clean-webpack-plugin": "latest",
