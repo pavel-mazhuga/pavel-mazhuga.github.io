@@ -385,6 +385,7 @@ module.exports = {
                             presets: [
                                 ['@babel/preset-env', {
                                     modules: false,
+                                    loose: true,
                                     useBuiltIns: 'usage',
                                     targets: {
                                         browsers: browserslist.legacy,
