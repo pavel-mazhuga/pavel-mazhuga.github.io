@@ -126,12 +126,9 @@ module.exports = {
 
     plugins: [
         ...(WATCH ? [new BrowserSyncPlugin()] : []),
-        new CleanWebpackPlugin(['build/**/*'], {
-            root: __dirname,
-            exclude: ['.gitkeep'],
-        }),
+        new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
-            filename: 'css/app.min.css?[hash:8]',
+            filename: 'css/app.min.css?[contenthash:8]',
             allChunks: true,
         }),
         ...(PROD ? [

@@ -1,4 +1,4 @@
-export const keyCodes = {
+export const KEYCODES = {
     ESC: 27,
     ENTER: 13,
     SPACE: 32,
