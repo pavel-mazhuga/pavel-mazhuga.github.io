@@ -1,148 +1,108 @@
-import axios from 'axios';
-import serialize from 'form-serialize';
-import isEmail from 'validator/lib/isEmail';
-import equals from 'validator/lib/equals';
-import { triggerEvent, triggerCustomEvent } from '../../utils/index';
+const defaultInputSelector = '[name]:not([type="submit"]):not([type="reset"])';
+
+export function clearInputs(form, inputSelector = defaultInputSelector) {
+    $(form).find(inputSelector).each((index, input) => {
+        if (input.type === 'checkbox') {
+            input.checked = false;
+        } else {
+            input.value = '';
+        }
+
+        $(input).trigger('blur');
+    });
+}
 
 export default class AjaxFormSender {
-    constructor(form, shouldClearInputs = false) {
-        this.form = form;
-        this.isValid = true;
-        this.shouldClearInputs = shouldClearInputs;
-        this.inputSelector = '[name]:not([type="submit"]):not([type="reset"]):not([type="hidden"])';
-        this.inputs = this.form.querySelectorAll(this.inputSelector);
+    constructor(form, options = {}) {
+        this.$form = $(form);
+        this.shouldClearInputs = options.shouldClearInputs || true;
+        this.inputSelector = options.inputSelector || defaultInputSelector;
+        this.inputs = this.$form.find(this.inputSelector);
+
+        if (options.accepts) {
+            this.accepts = options.accepts;
+        }
+
+        if (options.converters) {
+            this.converters = options.converters;
+        }
+
+        if (options.dataType) {
+            this.dataType = options.dataType;
+        }
+
+        if (options.cache) {
+            this.cache = options.cache;
+        }
+
+        if (options.contents) {
+            this.contents = options.contents;
+        }
+
+        if (options.contentType) {
+            this.contentType = options.contentType;
+        }
+
+        if (options.data) {
+            this.data = options.data;
+        }
+
+        this.headers = options.headers || {};
+        this.beforeSendCallback = options.beforeSend || (() => {});
+        this.successCallback = options.success || (() => {});
+        this.errorCallback = options.error || (() => {});
+        this.completeCallback = options.complete || (() => {});
     }
 
-    send(url = this.form.action) {
+    send(url = this.$form[0].action) {
         return new Promise((resolve, reject) => {
             if (!(url && typeof url === 'string')) {
                 const errorMessage = 'Form does not have "action" attibute and url has not been provided';
                 console.error(errorMessage);
                 reject(errorMessage);
-            }
-
-            this.validate();
-
-            if (!this.isValid) {
-                reject(new Error('Validation failed'));
                 return;
             }
 
-            triggerCustomEvent(this.form, 'send');
-            this.form.classList.add('js-ajax-form--is-loading');
+            $.ajax({
+                url,
+                ...(this.accepts ? { accepts: this.accepts } : {}),
+                ...(this.converters ? { converters: this.converters } : {}),
+                ...(this.dataType ? { dataType: this.dataType } : {}),
+                ...(this.cache ? { cache: this.cache } : {}),
+                ...(this.contents ? { contents: this.contents } : {}),
+                ...(this.headers ? { headers: this.headers } : {}),
+                method: this.$form.attr('method').toUpperCase() || 'GET',
+                ...(this.data ? { data: this.data } : {}),
+                beforeSend: () => {
+                    this.beforeSendCallback();
+                    this.$form.trigger('send');
+                    this.$form.addClass('js-ajax-form--loading');
+                },
+                success: (response) => {
+                    this.successCallback();
+                    this.$form.trigger('success');
+                    this.$form.addClass('js-ajax-form--success');
+                    this.$form.find('.app-message').each((index, messageElement) => {
+                        $(messageElement).text('');
+                    });
 
-            const method = ['get', 'post'].includes(this.form.method.toLowerCase())
-                ? this.form.method.toLowerCase()
-                : 'post';
+                    resolve(response.data);
+                },
+                error: (err) => {
+                    this.errorCallback();
+                    this.$form.trigger('error');
+                    this.$form.removeClass('js-ajax-form--error');
+                    reject(new Error(err));
+                },
+                complete: () => {
+                    this.completeCallback();
+                    this.$form.removeClass('js-ajax-form--loading');
 
-            const data = {
-                formName: this.form.name,
-                data: serialize(this.form, { hash: true }),
-            };
-
-            const onSuccess = (response) => {
-                triggerCustomEvent(this.form, 'success');
-                this.form.classList.add('js-ajax-form--success');
-                resolve(response.data);
-            };
-
-            const onFail = (err) => {
-                triggerCustomEvent(this.form, 'failure');
-                this.form.classList.remove('js-ajax-form--failure');
-                reject(err);
-                console.error(err);
-                throw new Error(`Failed to send the form ${this.formName}`);
-            };
-
-            const afterSend = () => {
-                this.form.classList.remove('js-ajax-form--is-loading');
-                if (this.shouldClearInputs) {
-                    this.clearInputs();
-                }
-            };
-
-            switch (method) {
-            case 'get':
-                axios.get(url)
-                    .then(onSuccess)
-                    .catch(onFail)
-                    .finally(afterSend);
-                break;
-            case 'post':
-                axios.post(url, data)
-                    .then(onSuccess)
-                    .catch(onFail)
-                    .finally(afterSend);
-                break;
-            default:
-                break;
-            }
+                    if (this.shouldClearInputs) {
+                        clearInputs(this.$form[0]);
+                    }
+                },
+            });
         });
-    }
-
-    clearInputs() {
-        Array.from(this.inputs).forEach((input) => {
-            if (input.type === 'checkbox') {
-                input.checked = false;
-            } else {
-                input.value = '';
-            }
-
-            triggerEvent('blur', input);
-        });
-    }
-
-    validate() {
-        Array.from(this.inputs).forEach((input) => {
-            const isValid = AjaxFormSender.validateInput(input);
-
-            if (isValid) {
-                input.classList.remove('is-error');
-            } else {
-                this.isValid = false;
-                input.classList.add('is-error');
-                // show error message?
-            }
-        });
-    }
-
-    static validateInput(input) {
-        if (input.classList.contains('js-validate--email')) {
-            return isEmail(input.value);
-        }
-
-        if (input.classList.contains('js-validate--phone')) {
-            return /^((8|\+7)[- ]?)?(\(?\d{3}\)?[- ]?)?[\d\- ]{5,10}$/i.test(input.value);
-        }
-
-        if (input.classList.contains('js-validate--checkbox')) {
-            return input.checked;
-        }
-
-        if (input.classList.contains('js-validate--select')) {
-            const options = Array.from(this.inputs.querySelectorAll('option'));
-            const selectedOption = options.filter((option) => option.selected
-                && !option.hasAttribute('placeholder')
-                && option.innerText !== input.getAttribute('placeholder'));
-            return !!selectedOption.length;
-        }
-
-        if (input.classList.contains('js-validate--equivalent')) {
-            if (!input.hasAttribute('data-equivalent-name')) {
-                return false;
-            }
-
-            const fieldName = input.getAttribute('data-equivalent-name');
-            const field = document.querySelector(`[name="${fieldName}"]`);
-
-            return equals(input.value, field.value);
-        }
-
-        if (input.classList.contains('js-validate--custom')) {
-            const regExp = input.getAttribute('data-custom-validation') || '.*';
-            return (new RegExp(regExp, 'i')).test(input.value);
-        }
-
-        return true;
     }
 }
