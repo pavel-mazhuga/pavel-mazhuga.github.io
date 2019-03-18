@@ -1,3 +1,4 @@
+import './sentry';
 import '../css/app.scss';
 import './polyfills';
 import Barba from 'barba.js';

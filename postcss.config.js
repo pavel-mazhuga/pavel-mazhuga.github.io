@@ -15,8 +15,9 @@ module.exports = {
         require('postcss-input-style')(),
         require('postcss-responsive-type')(),
         ...(PROD ? [
-            require('pixrem')(),
             require('postcss-focus')(),
+            require('postcss-focus-within')(),
+            require('postcss-focus-visible')(),
             require('pleeease-filters')(),
             require('postcss-image-set-polyfill')(),
             require('postcss-url')({
@@ -39,7 +40,6 @@ module.exports = {
             require('postcss-custom-properties')(),
             require('postcss-font-display')({ display: 'swap' }),
             require('postcss-object-fit-images')(),
-            require('postcss-color-rgba-fallback')(),
             require('postcss-flexbugs-fixes')(),
             require('postcss-will-change')(),
             require('css-mqpacker')({ sort: sortCSSmq.desktopFirst }),

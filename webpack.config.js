@@ -59,7 +59,7 @@ const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
 
 const resourceName = (prefix, hash = false) => {
     const basename = path.basename(prefix);
-    const suffix = hash ? '?[hash:8]' : '';
+    const suffix = hash ? '?[contenthash:8]' : '';
     return (resourcePath) => {
         const url = slash(path.relative(SRC_PATH, resourcePath));
         if (url.startsWith('../')) {
@@ -94,12 +94,6 @@ module.exports = {
         before(app) {
             app.get('/service-worker.js', (request, response) => response.sendFile(SERVICE_WORKER_PATH));
         },
-        // TODO: test it
-        // historyApiFallback: {
-        //     rewrites: [
-        //         { from: /./, to: '/errors/404/' },
-        //     ],
-        // },
     },
 
     entry: {
@@ -108,9 +102,29 @@ module.exports = {
 
     output: {
         filename: 'js/[name].min.js',
-        chunkFilename: 'js/[name].chunk.min.js?[hash:8]',
+        chunkFilename: 'js/[name].min.js?[hash:8]',
         path: BUILD_PATH,
         publicPath: PUBLIC_PATH,
+    },
+
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                vendor: {
+                    test: /node_modules/,
+                    chunks: 'initial',
+                    name: 'vendor',
+                    enforce: true,
+                },
+            },
+        },
+        minimizer: (PROD ? [
+            new TerserPlugin({
+                parallel: true,
+                sourceMap: true,
+                extractComments: true,
+            }),
+        ] : []),
     },
 
     performance: (PROD ? {
@@ -126,7 +140,10 @@ module.exports = {
 
     plugins: [
         ...(WATCH ? [new BrowserSyncPlugin()] : []),
-        new CleanWebpackPlugin(),
+        new CleanWebpackPlugin({
+            cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep', '!.htaccess'],
+            cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
+        }),
         new MiniCssExtractPlugin({
             filename: 'css/app.min.css?[contenthash:8]',
             allChunks: true,
@@ -134,11 +151,6 @@ module.exports = {
         ...(PROD ? [
             new CaseSensitivePathsPlugin(),
             new webpack.NoEmitOnErrorsPlugin(),
-            new TerserPlugin({
-                parallel: true,
-                sourceMap: true,
-                extractComments: true,
-            }),
             ...(APP.USE_COMPRESSION ? [
                 new BrotliPlugin({
                     asset: '[path].br[query]',
@@ -161,13 +173,13 @@ module.exports = {
             jQuery: 'jquery',
             'window.$': 'jquery',
             'window.jQuery': 'jquery',
-            Popper: ['popper.js', 'default'],
         }),
         new webpack.DefinePlugin({
             NODE_ENV: JSON.stringify(NODE_ENV),
             ENV: JSON.stringify(process.env.ENV),
             PUBLIC_PATH: JSON.stringify(PUBLIC_PATH),
             ROOT_PATH: JSON.stringify(ROOT_PATH),
+            SENTRY_DSN: JSON.stringify(APP.SENTRY_DSN),
         }),
         ...(USE_LINTERS ? [
             new StyleLintPlugin({
@@ -178,7 +190,6 @@ module.exports = {
                 emitErrors: false,
                 failOnError: false,
                 lintDirtyModulesOnly: DEV_SERVER,
-                // fix: !DEV_SERVER,
                 fix: false,
             }),
         ] : []),
@@ -351,7 +362,6 @@ module.exports = {
                 ],
                 loader: 'eslint-loader',
                 options: {
-                    // fix: true,
                     fix: false,
                     cache: !PROD,
                     quiet: PROD,
