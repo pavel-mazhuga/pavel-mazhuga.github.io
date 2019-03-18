@@ -102,22 +102,22 @@ module.exports = {
 
     output: {
         filename: 'js/[name].min.js',
-        chunkFilename: 'js/[name].min.js?[hash:8]',
+        chunkFilename: 'js/[name].min.js?[contenthash:8]',
         path: BUILD_PATH,
         publicPath: PUBLIC_PATH,
     },
 
     optimization: {
-        splitChunks: {
-            cacheGroups: {
-                vendor: {
-                    test: /node_modules/,
-                    chunks: 'initial',
-                    name: 'vendor',
-                    enforce: true,
-                },
-            },
-        },
+        // splitChunks: {
+        //     cacheGroups: {
+        //         vendor: {
+        //             test: /node_modules/,
+        //             chunks: 'initial',
+        //             name: 'vendor',
+        //             enforce: true,
+        //         },
+        //     },
+        // },
         minimizer: (PROD ? [
             new TerserPlugin({
                 parallel: true,
@@ -134,16 +134,17 @@ module.exports = {
             return !(ignore.test(filename));
         },
         hints: 'warning',
-        maxAssetSize: 3 * 1024 * 1024, // 3MB
-        maxEntrypointSize: 512 * 1024, // 512KB
+        maxAssetSize: 3 * 1024 * 1024, // 3 MB
+        maxEntrypointSize: 512 * 1024, // 512 KB
     } : false),
 
     plugins: [
         ...(WATCH ? [new BrowserSyncPlugin()] : []),
-        new CleanWebpackPlugin({
-            cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep', '!.htaccess'],
-            cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
-        }),
+        new CleanWebpackPlugin(),
+        // new CleanWebpackPlugin({
+        //     cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep', '!.htaccess'],
+        //     cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
+        // }),
         new MiniCssExtractPlugin({
             filename: 'css/app.min.css?[contenthash:8]',
             allChunks: true,
