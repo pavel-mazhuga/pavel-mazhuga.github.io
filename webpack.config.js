@@ -28,16 +28,14 @@ const USE_SOURCE_MAP = DEV_SERVER;
 const USE_LINTERS = PROD;
 
 const configurePublicPath = () => {
-    if (SANDBOX) return `/sand/${APP.PROJECT_NAME || 'xxx'}/dev/`;
-    if (BITRIX) return '/local/templates/main/';
-    return '/';
+    if (SANDBOX) return APP.PUBLIC_PATH_SANDBOX;
+    if (BITRIX) return APP.PUBLIC_PATH_SANDBOX;
+    return APP.PUBLIC_PATH;
 };
 
-const SRC_PATH = path.resolve(__dirname, 'src');
-const BUILD_PATH = path.resolve(__dirname, 'build');
-
+const { SRC_PATH, BUILD_PATH } = APP;
 const PUBLIC_PATH = configurePublicPath();
-const ROOT_PATH = SANDBOX ? `/sand/${APP.PROJECT_NAME || 'xxx'}/dev/` : '/';
+const ROOT_PATH = SANDBOX ? APP.PUBLIC_PATH_SANDBOX : '/';
 
 const { browserslist, name: PACKAGE_NAME } = require('./package.json');
 const HTML_DATA = require('./src/app.data.js');
@@ -220,7 +218,7 @@ module.exports = {
                 template,
                 inject: true,
                 minify: {
-                    removeScriptTypeAttributes: false,
+                    removeScriptTypeAttributes: true,
                     html5: true,
                     conservativeCollapse: false,
                     ...(APP.HTML_PRETTY ? {

@@ -1,7 +1,8 @@
 /* eslint max-len: "off" */
+const path = require('path');
+
 module.exports = {
     LANGUAGE: 'ru',
-    PROJECT_NAME: '[PROJECT_NAME]',
     TITLE: '[YOUR_SITE_NAME]',
     DESCRIPTION: '[DESCRIPTION]',
     THEME_COLOR: '#fff',
@@ -11,4 +12,9 @@ module.exports = {
     USE_COMPRESSION: false,
     USE_SERVICE_WORKER: false,
     SENTRY_DSN: '',
+    PUBLIC_PATH: '/',
+    PUBLIC_PATH_BITRIX: '/local/templates/main/',
+    PUBLIC_PATH_SANDBOX: '/sand/[PROJECT_NAME]/dev/',
+    SRC_PATH: path.resolve(__dirname, 'src'),
+    BUILD_PATH: path.resolve(__dirname, 'build'),
 };
