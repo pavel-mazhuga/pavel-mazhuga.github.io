@@ -7,6 +7,7 @@ module.exports = {
     DESCRIPTION: '[DESCRIPTION]',
     THEME_COLOR: '#fff',
     BACKGROUND_COLOR: '#fff',
+    USE_HTML: false,
     HTML_PRETTY: true,
     USE_FAVICONS: true,
     USE_COMPRESSION: false,

@@ -202,7 +202,7 @@ module.exports = {
                 prefix: 'img/favicon/',
             }),
         ] : []),
-        ...(SITEMAP.map((template) => {
+        ...(APP.USE_HTML ? SITEMAP.map((template) => {
             const basename = path.basename(template);
             const filename = (basename === 'index.html' ? path.join(
                 BUILD_PATH,
@@ -239,9 +239,9 @@ module.exports = {
                 cache: !PROD,
                 title: APP.TITLE,
             });
-        })),
-        new SvgoPlugin({ enabled: PROD }),
-        ...(PROD && APP.HTML_PRETTY ? [new HtmlBeautifyPlugin()] : []),
+        }) : []),
+        ...(APP.USE_HTML ? new SvgoPlugin({ enabled: PROD }) : []),
+        ...(PROD && APP.USE_HTML && APP.HTML_PRETTY ? [new HtmlBeautifyPlugin()] : []),
         new CopyWebpackPlugin([
             ...[
                 '**/.htaccess',
