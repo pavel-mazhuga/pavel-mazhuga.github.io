@@ -1,12 +1,12 @@
 # Webpack Boilerplate
 
 ## Требование:
-* Node.js версии 8 или выше (https://nodejs.org/en/). С нодой автоматически ставится пакетный менеджер - NPM (Node Package Manager) (https://www.npmjs.com/). Проверить версию ноды можно командой "node -v".
-* Глобально установленный webpack 4: npm i -g webpack-cli
-* Для сабсеттинга:
+* Node.js версии 8 или выше (https://nodejs.org/en/). С нодой автоматически ставится пакетный менеджер - NPM (Node Package Manager) (https://www.npmjs.com/). Проверить версию ноды можно командой **node -v**.
+* Глобально установленный webpack 4: **npm i -g webpack-cli**
+* Для сабсеттинга шрифтов:
     - Python
-    - Fonttools (https://github.com/fonttools/fonttools): pip install fonttools
-    - Brotli: pip install brotli
+    - Fonttools (https://github.com/fonttools/fonttools): **pip install fonttools**
+    - Brotli: **pip install brotli**
 
 ## В сборку включены:
 * jQuery последней версии (https://jquery.com/)
@@ -37,4 +37,7 @@
 
 ## Полезные npm-пакеты:
 * validator (https://www.npmjs.com/package/validator) - полезный модульный пакет для валидации строк.
-* choices.js (https://www.npmjs.com/package/choices.js) - vanilla JS кастомный селект, легкий, встроенная доступность.
+* choices.js (https://www.npmjs.com/package/choices.js) - vanilla JS кастомный селект.
+* GSAP (https://greensock.com/gsap) - одна из лучших библиотек анимаций.
+* Pixi.js (http://www.pixijs.com/) - одна из лучших библиотек для работы с 2D WebGL.
+* Three.js (https://threejs.org/) - одна из лучших библиотек для работы с 3D WebGL.
