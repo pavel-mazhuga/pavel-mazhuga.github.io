@@ -17,6 +17,24 @@
 
 Список всех npm-пакетов можно посмотреть в файле package.json.
 
+## Базовая конфигурация через app.config.js
+* LANGUAGE - язык сайта, запишется в <html> lang-атрибут.
+* TITLE - тайтл, запишется в тег <title> в <head>.
+* DESCRIPTION - дескришпн, запишется в тег <meta content="description">, а также в соответствующие og-метатеги.
+* THEME_COLOR - цвет темы сайта (нужно для Progressive Web App).
+* BACKGROUND_COLOR - цвет фона сайта (нужно для Progressive Web App).
+* USE_HTML - нужно ли генерировать HTML. Если верстаем сразу в php-файле, ставим этот флаг в "false".
+* HTML_PRETTY - человекопонятнон форматирование сгенерированного вебпаком HTML-файлов.
+* USE_FAVICONS - нужно ли генерировать множество иконок для разных платформ (нужно для Progressive Web App).
+* USE_COMPRESSION - нужно ли сжимать ассеты с помощью алгоритмов gzip, brotli, zopfli в процессе сборки.
+* USE_SERVICE_WORKER - нужно ли генерировать service worker.
+* SENTRY_DSN - заполняем DSN-идентификатором, если подключаем sentry.
+* PUBLIC_PATH - публичный абсолютный путь от корня сайта до папки с фронтендом. По умолчанию "/".
+* PUBLIC_PATH_BITRIX - публичный абсолютный путь от корня сайта до папки с фронтендом. Для bitrix-сборки.
+* PUBLIC_PATH_SANDBOX - публичный абсолютный путь от корня сайта до папки с фронтендом. Для sandbox-сборки.
+* SRC_PATH - путь до исходников.
+* BUILD_PATH - путь до билда.
+
 ## Обзор комманд:
 * **npm run browserslist** — список поддерживаемых браузеров
 * **npm run dev** — сборка в development-режиме
