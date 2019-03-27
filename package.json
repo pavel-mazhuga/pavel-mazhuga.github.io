@@ -144,6 +144,7 @@
         "webpack-cli": "latest",
         "webpack-dev-server": "latest",
         "webpack-log": "latest",
+        "webpack-manifest-plugin": "latest",
         "wicg-inert": "latest",
         "workbox-webpack-plugin": "latest"
     },

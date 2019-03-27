@@ -11,6 +11,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
 const ImageminPlugin = require('imagemin-webpack');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const zopfli = require('@gfx/zopfli');
@@ -99,8 +100,8 @@ module.exports = {
     },
 
     output: {
-        filename: 'js/[name].min.js',
-        chunkFilename: 'js/[name].min.js?[contenthash:8]',
+        filename: 'js/[name].min.[contenthash:8].js',
+        chunkFilename: 'js/[name].min.[contenthash:8].js',
         path: BUILD_PATH,
         publicPath: PUBLIC_PATH,
     },
@@ -131,6 +132,7 @@ module.exports = {
     } : false),
 
     plugins: [
+        new ManifestPlugin(),
         ...(WATCH ? [new BrowserSyncPlugin()] : []),
         new CleanWebpackPlugin(),
         // new CleanWebpackPlugin({
@@ -138,7 +140,7 @@ module.exports = {
         //     cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
         // }),
         new MiniCssExtractPlugin({
-            filename: 'css/app.min.css?[contenthash:8]',
+            filename: 'css/app.min.[contenthash:8].css',
             allChunks: true,
         }),
         ...(PROD ? [
