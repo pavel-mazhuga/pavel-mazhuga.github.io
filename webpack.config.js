@@ -106,16 +106,10 @@ module.exports = {
     },
 
     optimization: {
-        // splitChunks: {
-        //     cacheGroups: {
-        //         vendor: {
-        //             test: /node_modules/,
-        //             chunks: 'initial',
-        //             name: 'vendor',
-        //             enforce: true,
-        //         },
-        //     },
-        // },
+        splitChunks: {
+            chunks: 'initial',
+            name: 'vendor',
+        },
         minimizer: (PROD ? [
             new TerserPlugin({
                 parallel: true,
@@ -240,7 +234,7 @@ module.exports = {
                 title: APP.TITLE,
             });
         }) : []),
-        ...(APP.USE_HTML ? new SvgoPlugin({ enabled: PROD }) : []),
+        ...(APP.USE_HTML ? [new SvgoPlugin({ enabled: PROD })] : []),
         ...(PROD && APP.USE_HTML && APP.HTML_PRETTY ? [new HtmlBeautifyPlugin()] : []),
         new CopyWebpackPlugin([
             ...[
