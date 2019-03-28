@@ -100,8 +100,8 @@ module.exports = {
     },
 
     output: {
-        filename: 'js/[name].min.[contenthash:8].js',
-        chunkFilename: 'js/[name].min.[contenthash:8].js',
+        filename: `js/[name].min${PROD ? '.[contenthash:8]' : ''}.js`,
+        chunkFilename: `js/[name].min${PROD ? '.[contenthash:8]' : ''}.js`,
         path: BUILD_PATH,
         publicPath: PUBLIC_PATH,
     },
@@ -134,13 +134,13 @@ module.exports = {
     plugins: [
         new ManifestPlugin(),
         ...(WATCH ? [new BrowserSyncPlugin()] : []),
-        new CleanWebpackPlugin(),
-        // new CleanWebpackPlugin({
-        //     cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep', '!.htaccess'],
-        //     cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
-        // }),
+        // new CleanWebpackPlugin(),
+        new CleanWebpackPlugin({
+            cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep', '!.htaccess'],
+            cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
+        }),
         new MiniCssExtractPlugin({
-            filename: 'css/app.min.[contenthash:8].css',
+            filename: `css/app.min${PROD ? '.[contenthash:8]' : ''}.css`,
             allChunks: true,
         }),
         ...(PROD ? [
@@ -260,7 +260,7 @@ module.exports = {
             new ImageminPlugin({
                 test: /\.(jpeg|jpg|png|gif|svg)$/i,
                 exclude: /(fonts|font)/i,
-                name: resourceName('img', true),
+                name: resourceName('img', false),
                 imageminOptions: require('./imagemin.config.js'),
                 cache: false,
                 loader: true,
@@ -408,16 +408,16 @@ module.exports = {
                     {
                         resourceQuery: /[&?]resize=.+/,
                         loader: './loader.resize.js',
-                        options: { name: resourceName('img', true), limit: 32 * 1024 },
+                        options: { name: resourceName('img', false), limit: 32 * 1024 },
                     },
                     {
                         resourceQuery: /[&?]inline=inline/,
                         loader: 'url-loader',
-                        options: { name: resourceName('img', true), limit: 32 * 1024 },
+                        options: { name: resourceName('img', false), limit: 32 * 1024 },
                     },
                     {
                         loader: 'file-loader',
-                        options: { name: resourceName('img', true) },
+                        options: { name: resourceName('img', false) },
                     },
                 ],
             },
@@ -427,7 +427,7 @@ module.exports = {
                 exclude: /(img|images)/i,
                 loader: 'file-loader',
                 options: {
-                    name: resourceName('fonts', true),
+                    name: resourceName('fonts', false),
                 },
             },
             // css loaders
