@@ -381,6 +381,7 @@ module.exports = {
                         loader: 'babel-loader',
                         options: {
                             plugins: [
+                                'babel-plugin-transform-async-to-promises',
                                 '@babel/transform-runtime',
                                 '@babel/plugin-syntax-dynamic-import',
                             ],

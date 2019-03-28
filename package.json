@@ -49,6 +49,7 @@
         "autoprefixer": "latest",
         "babel-eslint": "latest",
         "babel-loader": "latest",
+        "babel-plugin-transform-async-to-promises": "latest",
         "babel-preset-airbnb": "latest",
         "barba.js": "latest",
         "bootstrap": "latest",
