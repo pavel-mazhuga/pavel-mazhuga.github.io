@@ -21,7 +21,9 @@
         "start": "cross-env NODE_ENV=development webpack-dev-server --hot --mode=development",
         "build": "npm-run-all js-lint css-lint prod html-lint",
         "browserslist": "npx browserslist",
-        "subsetting": "call ./fonts.subsetting.bat"
+        "subsetting": "call ./fonts.subsetting.bat",
+        "bundle-analyzer": "cd ./node_modules/.cache && start bundle-analyzer-production.html",
+        "ba": "npm run bundle-analyzer"
     },
     "author": "Pavel Mazhuga",
     "license": "MIT",
