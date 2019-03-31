@@ -4,9 +4,10 @@
     "extends": "airbnb-base",
     "env": {
         "browser": true,
-        "jquery": true
+        "jquery": true,
+        "jest/globals": true
     },
-    "plugins": ["import"],
+    "plugins": ["import", "jest"],
     "rules": {
         "no-console": "off",
         "no-param-reassign": [2, { "props": false }],

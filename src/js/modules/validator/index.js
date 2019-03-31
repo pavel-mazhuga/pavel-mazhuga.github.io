@@ -3,6 +3,10 @@ import equals from 'validator/lib/equals';
 
 const defaultInputSelector = '[name]:not([type="submit"]):not([type="reset"]):not([type="hidden"])';
 
+export function isPhone(string) {
+    return (/^((8|\+7)[- ]?)?(\(?\d{3}\)?[- ]?)?[\d\- ]{5,10}$/i).test(string);
+}
+
 function validateInput(input) {
     // Валидация электронной почты
     if (input.classList.contains('js-validate--email')) {
@@ -11,7 +15,7 @@ function validateInput(input) {
 
     // Валидация телефона
     if (input.classList.contains('js-validate--phone')) {
-        return (/^((8|\+7)[- ]?)?(\(?\d{3}\)?[- ]?)?[\d\- ]{5,10}$/i).test(input.value);
+        return isPhone(input.value);
     }
 
     // Валидация чекбокса
@@ -22,10 +26,10 @@ function validateInput(input) {
     // Валидация селекта
     if (input.classList.contains('js-validate--select')) {
         const options = Array.from(this.inputs.querySelectorAll('option'));
-        const selectedOption = options.filter((option) => option.selected
+        const selectedOptions = options.filter((option) => option.selected
             && !option.hasAttribute('placeholder')
             && option.innerText !== input.getAttribute('placeholder'));
-        return !!selectedOption.length;
+        return !!selectedOptions.length;
     }
 
     // Валидация равенства двух строк

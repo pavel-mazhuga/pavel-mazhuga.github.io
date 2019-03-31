@@ -7,6 +7,7 @@
         "url": "repository here"
     },
     "scripts": {
+        "test": "jest",
         "dev": "cross-env NODE_ENV=development DEBUG=0 webpack --mode=development",
         "prod": "cross-env NODE_ENV=production webpack --mode=production",
         "prod:sandbox": "cross-env NODE_ENV=production ENV=sandbox webpack --mode=production",
@@ -151,5 +152,8 @@
         "wicg-inert": "latest",
         "workbox-webpack-plugin": "latest"
     },
-    "devDependencies": {}
+    "devDependencies": {
+        "eslint-plugin-jest": "latest",
+        "jest": "latest"
+    }
 }
