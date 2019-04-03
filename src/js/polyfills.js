@@ -3,10 +3,6 @@
 import 'focus-visible';
 // import 'wicg-inert';
 
-// if (NODE_ENV === 'production') {
-//     require('picturefill');
-// }
-
-if ((NODE_ENV === 'production') && !Object.assign) {
-    Object.assign = require('object-assign');
+if (NODE_ENV === 'production') {
+    // require('picturefill');
 }
