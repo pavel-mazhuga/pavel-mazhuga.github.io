@@ -134,7 +134,6 @@ module.exports = {
     plugins: [
         new ManifestPlugin(),
         ...(WATCH ? [new BrowserSyncPlugin()] : []),
-        // new CleanWebpackPlugin(),
         new CleanWebpackPlugin({
             cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep', '!.htaccess'],
             cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
