@@ -365,7 +365,7 @@ module.exports = {
                 },
             }] : []),
             {
-                test: /\.js$/i,
+                test: /\.jsx?$/i,
                 exclude: {
                     test: path.join(__dirname, 'node_modules'),
                 },
@@ -384,6 +384,7 @@ module.exports = {
                                 'babel-plugin-transform-async-to-promises',
                                 '@babel/transform-runtime',
                                 '@babel/plugin-syntax-dynamic-import',
+                                ['@babel/plugin-transform-react-jsx', { pragma: 'h' }],
                             ],
                             presets: [
                                 ['@babel/preset-env', {

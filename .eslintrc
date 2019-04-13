@@ -1,13 +1,13 @@
 {
     "root": true,
     "parser": "babel-eslint",
-    "extends": "airbnb-base",
+    "extends": ["airbnb-base", "plugin:react/recommended"],
     "env": {
         "browser": true,
         "jquery": true,
         "jest/globals": true
     },
-    "plugins": ["import", "jest"],
+    "plugins": ["import", "jest", "react"],
     "rules": {
         "no-console": "off",
         "no-param-reassign": [2, { "props": false }],
@@ -27,5 +27,15 @@
         "arrow-parens": ["error", "always"],
         "no-underscore-dangle": "off",
         "no-plusplus": "off"
+    },
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "settings": {
+        "react": {
+            "pragma": "h"
+        }
     }
 }
