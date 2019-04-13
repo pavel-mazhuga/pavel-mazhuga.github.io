@@ -54,6 +54,7 @@
 * **npm run build** — релизный билд, запускается в production-режиме, включая все линтеры
 
 ## Полезные npm-пакеты:
+* Preact (https://preactjs.com/) - 3kb альтернатива React с аналогичным API.
 * validator (https://www.npmjs.com/package/validator) - полезный модульный пакет для валидации строк.
 * choices.js (https://www.npmjs.com/package/choices.js) - vanilla JS кастомный селект.
 * GSAP (https://greensock.com/gsap) - одна из лучших библиотек анимаций.
