@@ -145,22 +145,6 @@ module.exports = {
         ...(PROD ? [
             new CaseSensitivePathsPlugin(),
             new webpack.NoEmitOnErrorsPlugin(),
-            ...(APP.USE_COMPRESSION ? [
-                new BrotliPlugin({
-                    asset: '[path].br[query]',
-                    test: /\.(js|css)$/,
-                }),
-                new CompressionPlugin({
-                    test: /\.(css|js)(\?.*)?$/i,
-                    filename: '[path].gz[query]',
-                    compressionOptions: {
-                        numiterations: 15,
-                    },
-                    algorithm(input, compressionOptions, callback) {
-                        return zopfli.gzip(input, compressionOptions, callback);
-                    },
-                }),
-            ] : []),
         ] : []),
         new webpack.ProvidePlugin({
             $: 'jquery',
@@ -268,6 +252,22 @@ module.exports = {
                 analyzerMode: 'static',
                 openAnalyzer: false,
                 reportFilename: path.join(__dirname, 'node_modules', '.cache', `bundle-analyzer-${NODE_ENV}.html`),
+            }),
+        ] : []),
+        ...(PROD && APP.USE_COMPRESSION ? [
+            new BrotliPlugin({
+                asset: '[path].br[query]',
+                test: /\.(js|css|html)$/,
+            }),
+            new CompressionPlugin({
+                test: /\.(css|js|html)(\?.*)?$/i,
+                filename: '[path].gz[query]',
+                compressionOptions: {
+                    numiterations: 15,
+                },
+                algorithm(input, compressionOptions, callback) {
+                    return zopfli.gzip(input, compressionOptions, callback);
+                },
             }),
         ] : []),
         // this is always last
@@ -383,6 +383,7 @@ module.exports = {
                                 'babel-plugin-transform-async-to-promises',
                                 '@babel/transform-runtime',
                                 '@babel/plugin-syntax-dynamic-import',
+                                // preact
                                 ['@babel/plugin-transform-react-jsx', { pragma: 'h' }],
                             ],
                             presets: [
