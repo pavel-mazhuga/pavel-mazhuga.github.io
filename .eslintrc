@@ -24,7 +24,7 @@
         "import/order": "off",
         "sort-requires/sort-requires": "off",
         "linebreak-style": "off",
-        "arrow-parens": ["error", "always"],
+        "arrow-parens": "off",
         "no-underscore-dangle": "off",
         "no-plusplus": "off"
     },
