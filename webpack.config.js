@@ -262,16 +262,16 @@ module.exports = {
             new BundleAnalyzerPlugin({
                 analyzerMode: 'static',
                 openAnalyzer: false,
-                reportFilename: path.join(__dirname, 'node_modules', '.cache', `bundle-analyzer-${NODE_ENV}.html`),
+                reportFilename: path.join(__dirname, 'node_modules', '.cache', `bundle-analyzer-${isModern ? 'modern' : 'legacy'}-${NODE_ENV}.html`),
             }),
         ] : []),
         ...(PROD && APP.USE_COMPRESSION ? [
             new BrotliPlugin({
                 asset: '[path].br[query]',
-                test: /\.(js|css|html)$/,
+                test: isModern ? /\.(js|css|html)$/ : /\.(js)$/,
             }),
             new CompressionPlugin({
-                test: /\.(css|js|html)(\?.*)?$/i,
+                test: isModern ? /\.(css|js|html)(\?.*)?$/i : /\.(js)(\?.*)?$/i,
                 filename: '[path].gz[query]',
                 compressionOptions: {
                     numiterations: 15,
@@ -291,7 +291,7 @@ module.exports = {
             precacheManifestFilename: slash(path.join(SERVICE_WORKER_BASE, 'service-worker-precache.js?[manifestHash]')),
             globDirectory: slash(BUILD_PATH),
             globPatterns: [
-                'js/*.min.js',
+                'js/**/*.min.js',
                 'css/*.min.css',
                 'fonts/*.woff2',
             ],

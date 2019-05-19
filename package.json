@@ -25,7 +25,9 @@
         "build": "npm-run-all test js-lint css-lint prod html-lint",
         "browserslist": "npx browserslist",
         "subsetting": "call ./fonts.subsetting.bat",
-        "bundle-analyzer": "cd ./node_modules/.cache && start bundle-analyzer-production.html",
+        "bundle-analyzer:legacy": "cd ./node_modules/.cache && start bundle-analyzer-legacy-production.html",
+        "bundle-analyzer:modern": "cd ./node_modules/.cache && start bundle-analyzer-modern-production.html",
+        "bundle-analyzer": "npm run bundle-analyzer:legacy && npm run bundle-analyzer:modern",
         "ba": "npm run bundle-analyzer"
     },
     "author": "Pavel Mazhuga",
