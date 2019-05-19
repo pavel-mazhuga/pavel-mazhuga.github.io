@@ -403,6 +403,11 @@ module.exports = {
                     },
                 ],
             },
+            // GLSL
+            {
+                test: /\.glsl$/i,
+                loader: 'webpack-glsl-loader',
+            },
             // image loaders
             {
                 test: /\.(jpeg|jpg|png|gif|svg)$/i,
