@@ -32,7 +32,7 @@ const USE_LINTERS = PROD;
 
 const configurePublicPath = () => {
     if (SANDBOX) return APP.PUBLIC_PATH_SANDBOX;
-    if (BITRIX) return APP.PUBLIC_PATH_SANDBOX;
+    if (BITRIX) return APP.PUBLIC_PATH_BITRIX;
     return APP.PUBLIC_PATH;
 };
 
@@ -187,7 +187,7 @@ module.exports = {
                 prefix: 'img/favicon/',
             }),
         ] : []),
-        ...(APP.USE_HTML && isModern ? SITEMAP.map((template) => {
+        ...(APP.USE_HTML && (isModern || !PROD) ? SITEMAP.map((template) => {
             const basename = path.basename(template);
             const filename = (basename === 'index.html' ? path.join(
                 BUILD_PATH,
