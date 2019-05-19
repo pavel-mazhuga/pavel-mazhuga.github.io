@@ -9,7 +9,9 @@
     "scripts": {
         "test": "jest",
         "dev": "cross-env NODE_ENV=development DEBUG=0 webpack --mode=development",
-        "prod": "cross-env NODE_ENV=production webpack --mode=production",
+        "prod:legacy": "cross-env NODE_ENV=production webpack --mode=production",
+        "prod:modern": "cross-env NODE_ENV=production BUILD_TYPE=modern webpack --mode=production",
+        "prod": "npm run prod:legacy && npm run prod:modern",
         "prod:sandbox": "cross-env NODE_ENV=production ENV=sandbox webpack --mode=production",
         "prod:bitrix": "cross-env NODE_ENV=production ENV=bitrix webpack --mode=production",
         "watch": "npm run watch:dev",

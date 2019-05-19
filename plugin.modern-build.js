@@ -13,7 +13,7 @@ class ModernBuildPlugin {
         const pluginName = 'modern-build-plugin';
 
         // Получаем информацию о Fallback Build
-        const fallbackManifest = require(`${BUILD_PATH}/manifest.json`);
+        const legacyManifest = require(`${BUILD_PATH}/manifest-legacy.json`);
 
         compiler.hooks.compilation.tap(pluginName, (compilation) => {
             // Подписываемся на хук html-webpack-plugin,
@@ -34,7 +34,7 @@ class ModernBuildPlugin {
                 });
 
                 // Вставляем fallback-файлы с атрибутом nomodule
-                Object.keys(fallbackManifest)
+                Object.keys(legacyManifest)
                     .filter((key) => /\.js$/.test(key))
                     .reduce((arr, fileName) => {
                         const newArr = arr.slice();
@@ -51,7 +51,7 @@ class ModernBuildPlugin {
                             tagName: 'script',
                             closeTag: true,
                             attributes: {
-                                src: fallbackManifest[fileName],
+                                src: legacyManifest[fileName],
                                 nomodule: true,
                                 defer: true,
                             },

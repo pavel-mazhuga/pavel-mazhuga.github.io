@@ -134,7 +134,9 @@ module.exports = {
     } : false),
 
     plugins: [
-        new ManifestPlugin(),
+        new ManifestPlugin({
+            fileName: `manifest-${isModern ? 'modern' : 'legacy'}.json`,
+        }),
         ...(WATCH ? [new BrowserSyncPlugin()] : []),
         ...(isModern ? [] : [
             new CleanWebpackPlugin({
