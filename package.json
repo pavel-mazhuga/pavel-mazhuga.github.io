@@ -96,6 +96,7 @@
         "imports-loader": "latest",
         "jquery": "latest",
         "loader-utils": "latest",
+        "lodash.debounce": "latest",
         "lodash.merge": "latest",
         "md5-file": "latest",
         "mini-css-extract-plugin": "latest",

@@ -2,8 +2,8 @@ import './sentry';
 import '../css/app.scss';
 import './polyfills';
 import Barba from 'barba.js';
-// import '~/bootstrap';
-// import './modules/layout-calc';
+// import calculateScrollbarWidth from './modules/calculate-scrollbar-width';
+// import vhMobileFix from './modules/vh-mobile-fix';
 
 // Transitions
 import DefaultTransition from './transitions/default';
@@ -18,6 +18,8 @@ import IndexPageView from './views/index';
 
 jQuery(($) => {
     $(document.documentElement).addClass('js-ready');
+    // calculateScrollbarWidth();
+    // vhMobileFix();
 
     function initBarba() {
         Barba.Pjax.getTransition = () => DefaultTransition;

@@ -1,4 +1,4 @@
-window.addEventListener('DOMContentLoaded', () => {
+export default () => {
     const CONTAINER_WIDTH = 100;
 
     const scrollbarWidthOuter = document.createElement('div');
@@ -32,4 +32,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('resize', calculateScrollbarWidth);
     calculateScrollbarWidth();
-});
+
+    return () => {
+        window.removeEventListener('resize', calculateScrollbarWidth);
+        document.body.removeChild(scrollbarWidthOuter);
+    };
+};
