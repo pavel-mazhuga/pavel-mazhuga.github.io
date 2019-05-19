@@ -30,7 +30,7 @@ const USE_LINTERS = PROD;
 
 const configurePublicPath = () => {
     if (SANDBOX) return APP.PUBLIC_PATH_SANDBOX;
-    if (BITRIX) return APP.PUBLIC_PATH_SANDBOX;
+    if (BITRIX) return APP.PUBLIC_PATH_BITRIX;
     return APP.PUBLIC_PATH;
 };
 
