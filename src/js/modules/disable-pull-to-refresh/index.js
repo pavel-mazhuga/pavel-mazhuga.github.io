@@ -2,7 +2,7 @@ export default () => {
     const isHtmlOverscrollBehaviorDisabled = window.getComputedStyle(document.documentElement)
         .getPropertyValue('overscroll-behavior') !== 'auto';
 
-    if (CSS && CSS.supports('overscroll-behaviour', 'none')) {
+    if (CSS && CSS.supports('overscroll-behavior', 'none')) {
         if (!isHtmlOverscrollBehaviorDisabled) {
             document.documentElement.style.overscrollBehavior = 'none';
         }

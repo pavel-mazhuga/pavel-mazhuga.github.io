@@ -10,7 +10,7 @@ module.exports = {
     USE_HTML: true,
     HTML_PRETTY: true,
     USE_FAVICONS: true,
-    USE_COMPRESSION: false,
+    USE_COMPRESSION: true,
     USE_SERVICE_WORKER: false,
     SENTRY_DSN: '',
     PUBLIC_PATH: '/',

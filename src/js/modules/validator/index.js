@@ -40,7 +40,6 @@ function validateInput(input) {
 
         const fieldName = input.getAttribute('data-equivalent-name');
         const field = document.querySelector(`[name="${fieldName}"]`);
-
         return equals(input.value, field.value);
     }
 
