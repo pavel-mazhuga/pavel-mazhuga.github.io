@@ -13,6 +13,7 @@ const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const ImageminPlugin = require('imagemin-webpack');
+const HtmlWebpackModernBuildPlugin = require('./plugin.modern-build');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const zopfli = require('@gfx/zopfli');
 const WorkboxPlugin = require('workbox-webpack-plugin');
@@ -23,6 +24,7 @@ const PROD = process.env.NODE_ENV === 'production';
 const SANDBOX = process.env.ENV === 'sandbox';
 const BITRIX = process.env.ENV === 'bitrix';
 const NODE_ENV = PROD ? 'production' : 'development';
+const isModern = process.env.BUILD_TYPE === 'modern';
 const WATCH = process.argv.indexOf('--watch') !== -1 || process.argv.indexOf('-w') !== -1;
 const DEV_SERVER = path.basename(require.main.filename, '.js') === 'webpack-dev-server';
 const USE_SOURCE_MAP = DEV_SERVER;
@@ -100,8 +102,8 @@ module.exports = {
     },
 
     output: {
-        filename: `js/[name].min${PROD ? '.[contenthash:8]' : ''}.js`,
-        chunkFilename: `js/[name].min${PROD ? '.[contenthash:8]' : ''}.js`,
+        filename: `js/${isModern ? 'modern' : 'legacy'}/[name].min${PROD ? '.[contenthash:8]' : ''}.js`,
+        chunkFilename: `js/${isModern ? 'modern' : 'legacy'}/[name].min${PROD ? '.[contenthash:8]' : ''}.js`,
         path: BUILD_PATH,
         publicPath: PUBLIC_PATH,
     },
@@ -132,12 +134,16 @@ module.exports = {
     } : false),
 
     plugins: [
-        new ManifestPlugin(),
-        ...(WATCH ? [new BrowserSyncPlugin()] : []),
-        new CleanWebpackPlugin({
-            cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep', '!.htaccess'],
-            cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
+        new ManifestPlugin({
+            fileName: `manifest-${isModern ? 'modern' : 'legacy'}.json`,
         }),
+        ...(WATCH ? [new BrowserSyncPlugin()] : []),
+        ...(isModern ? [] : [
+            new CleanWebpackPlugin({
+                cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep', '!.htaccess'],
+                cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
+            }),
+        ]),
         new MiniCssExtractPlugin({
             filename: `css/app.min${PROD ? '.[contenthash:8]' : ''}.css`,
             allChunks: true,
@@ -159,7 +165,7 @@ module.exports = {
             ROOT_PATH: JSON.stringify(ROOT_PATH),
             SENTRY_DSN: JSON.stringify(APP.SENTRY_DSN),
         }),
-        ...(USE_LINTERS ? [
+        ...(USE_LINTERS && !isModern ? [
             new StyleLintPlugin({
                 syntax: 'scss',
                 files: '**/*.scss',
@@ -171,7 +177,7 @@ module.exports = {
                 fix: false,
             }),
         ] : []),
-        ...(APP.USE_FAVICONS ? [
+        ...(APP.USE_FAVICONS && !isModern ? [
             new FaviconsPlugin.AppIcon({
                 logo: path.join(__dirname, '.favicons-source-1024x1024.png'),
                 prefix: 'img/favicon/',
@@ -181,7 +187,7 @@ module.exports = {
                 prefix: 'img/favicon/',
             }),
         ] : []),
-        ...(APP.USE_HTML ? SITEMAP.map((template) => {
+        ...(APP.USE_HTML && (isModern || !PROD) ? SITEMAP.map((template) => {
             const basename = path.basename(template);
             const filename = (basename === 'index.html' ? path.join(
                 BUILD_PATH,
@@ -219,48 +225,53 @@ module.exports = {
                 title: APP.TITLE,
             });
         }) : []),
-        ...(APP.USE_HTML ? [new SvgoPlugin({ enabled: PROD })] : []),
-        ...(PROD && APP.USE_HTML && APP.HTML_PRETTY ? [new HtmlBeautifyPlugin()] : []),
-        new CopyWebpackPlugin([
-            ...[
-                '**/.htaccess',
-                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp}',
-                'google*.html',
-                'yandex_*.html',
-                '*.txt',
-                'php/*.php',
-            ].map((from) => ({
-                from,
-                to: BUILD_PATH,
-                context: SRC_PATH,
-                ignore: SITEMAP,
-            })),
-        ], {
-            copyUnmodified: !PROD,
-            debug: 'info',
-        }),
-        ...(PROD ? [
-            new ImageminPlugin({
-                test: /\.(jpeg|jpg|png|gif|svg)$/i,
-                exclude: /(fonts|font)/i,
-                name: resourceName('img', false),
-                imageminOptions: require('./imagemin.config.js'),
-                cache: false,
-                loader: true,
+        ...(APP.USE_HTML && isModern ? [new HtmlWebpackModernBuildPlugin()] : []),
+        ...(APP.USE_HTML && isModern ? [new SvgoPlugin({ enabled: PROD })] : []),
+        ...(PROD && APP.USE_HTML && APP.HTML_PRETTY && isModern ? [new HtmlBeautifyPlugin()] : []),
+        ...(isModern ? [] : [
+            new CopyWebpackPlugin([
+                ...[
+                    '**/.htaccess',
+                    'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp}',
+                    'google*.html',
+                    'yandex_*.html',
+                    '*.txt',
+                    'php/*.php',
+                ].map((from) => ({
+                    from,
+                    to: BUILD_PATH,
+                    context: SRC_PATH,
+                    ignore: SITEMAP,
+                })),
+            ], {
+                copyUnmodified: !PROD,
+                debug: 'info',
             }),
+        ]),
+        ...(PROD ? [
+            ...(!isModern ? [
+                new ImageminPlugin({
+                    test: /\.(jpeg|jpg|png|gif|svg)$/i,
+                    exclude: /(fonts|font)/i,
+                    name: resourceName('img', false),
+                    imageminOptions: require('./imagemin.config.js'),
+                    cache: false,
+                    loader: true,
+                }),
+            ] : []),
             new BundleAnalyzerPlugin({
                 analyzerMode: 'static',
                 openAnalyzer: false,
-                reportFilename: path.join(__dirname, 'node_modules', '.cache', `bundle-analyzer-${NODE_ENV}.html`),
+                reportFilename: path.join(__dirname, 'node_modules', '.cache', `bundle-analyzer-${isModern ? 'modern' : 'legacy'}-${NODE_ENV}.html`),
             }),
         ] : []),
         ...(PROD && APP.USE_COMPRESSION ? [
             new BrotliPlugin({
                 asset: '[path].br[query]',
-                test: /\.(js|css|html)$/,
+                test: isModern ? /\.(js|css|html)$/ : /\.(js)$/,
             }),
             new CompressionPlugin({
-                test: /\.(css|js|html)(\?.*)?$/i,
+                test: isModern ? /\.(css|js|html)(\?.*)?$/i : /\.(js)(\?.*)?$/i,
                 filename: '[path].gz[query]',
                 compressionOptions: {
                     numiterations: 15,
@@ -280,7 +291,7 @@ module.exports = {
             precacheManifestFilename: slash(path.join(SERVICE_WORKER_BASE, 'service-worker-precache.js?[manifestHash]')),
             globDirectory: slash(BUILD_PATH),
             globPatterns: [
-                'js/*.min.js',
+                'js/**/*.min.js',
                 'css/*.min.css',
                 'fonts/*.woff2',
             ],
@@ -392,7 +403,9 @@ module.exports = {
                                     loose: true,
                                     corejs: 3,
                                     useBuiltIns: 'usage',
-                                    targets: {
+                                    targets: isModern ? {
+                                        esmodules: true,
+                                    } : {
                                         browsers: browserslist.legacy,
                                     },
                                     // exclude: ['es6.promise'],
