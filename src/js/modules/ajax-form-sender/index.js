@@ -57,7 +57,7 @@ export default class AjaxFormSender {
     send(url = this.$form[0].action) {
         return new Promise((resolve, reject) => {
             if (!(url && typeof url === 'string')) {
-                const errorMessage = 'Form does not have "action" attibute and url has not been provided';
+                const errorMessage = 'Form does not have "action" attribute and url has not been provided';
                 console.error(errorMessage);
                 reject(errorMessage);
                 return;
