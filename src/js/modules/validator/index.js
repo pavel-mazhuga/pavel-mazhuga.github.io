@@ -57,31 +57,39 @@ function validateInput(input) {
 export default (form, inputSelector = defaultInputSelector) => {
     let isFormValid = true;
 
-    $(form).find(inputSelector).each((index, input) => {
+    const inputs = Array.from(form.querySelectorAll(inputSelector));
+
+    inputs.forEach((input) => {
         const isValid = validateInput(input);
-        const $input = $(input);
 
         if (isValid) {
-            $input.removeClass('is-error');
+            input.classList.remove('is-error');
         } else {
             isFormValid = false;
-            const $messageElement = $input.next('.app-message');
+            const messageElement = input.nextElementSibling && input.nextElementSibling.classList.contains('app-message')
+                ? input.nextElementSibling
+                : null;
 
-            $input.addClass('is-error');
-            $messageElement.val('');
+            input.classList.add('is-error');
 
-            switch (true) {
-            case input.value.length === 0 && input.hasAttribute('required'):
-            case !$input.hasClass('js-validate--custom') && input.hasAttribute('data-validation-error-message'):
-                $messageElement.text($input.data('validation-error-message'));
-                break;
+            if (messageElement) {
+                messageElement.textContent = '';
 
-            case $input.hasClass('js-validate--custom') && input.hasAttribute('data-custom-validation-error-message'):
-                $messageElement.text($input.data('custom-validation-error-message'));
-                break;
+                switch (true) {
+                case input.value.length === 0 && input.hasAttribute('required'):
+                case !input.classList.contains('js-validate--custom')
+                && input.hasAttribute('data-validation-error-message'):
+                    messageElement.textContent = input.getAttribute('data-validation-error-message');
+                    break;
 
-            default:
-                break;
+                case input.classList.contains('js-validate--custom')
+                && input.hasAttribute('data-custom-validation-error-message'):
+                    messageElement.textContent = input.getAttribute('data-custom-validation-error-message');
+                    break;
+
+                default:
+                    break;
+                }
             }
         }
     });
