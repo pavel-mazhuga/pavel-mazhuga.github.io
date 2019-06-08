@@ -153,7 +153,7 @@
         "webpack-bundle-analyzer": "latest",
         "webpack-cli": "latest",
         "webpack-dev-server": "latest",
-        "webpack-glsl-loader": "^1.0.1",
+        "webpack-glsl-loader": "latest",
         "webpack-log": "latest",
         "webpack-manifest-plugin": "latest",
         "wicg-inert": "latest",
