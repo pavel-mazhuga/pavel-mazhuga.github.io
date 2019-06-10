@@ -82,7 +82,7 @@ export default (form, options = DEFAULT_OPTIONS) => {
 
                 switch (true) {
                 case input.value.trim().length === 0 && input.hasAttribute('required'):
-                    messageElement.textContent = options.messages.RU.EMPTY_FIELD;
+                    messageElement.textContent = options.messages.ru.EMPTY_FIELD;
                     break;
                 case input.classList.contains('js-validate--custom')
                 && input.hasAttribute('data-custom-validation-error-message'):
