@@ -1,21 +1,28 @@
 import isEmail from 'validator/lib/isEmail';
 import equals from 'validator/lib/equals';
+import MESSAGES from './messages';
+export { isEmail, equals };
 
 const defaultInputSelector = '[name]:not([type="submit"]):not([type="reset"]):not([type="hidden"])';
+
+const DEFAULT_OPTIONS = {
+    inputSelector: defaultInputSelector,
+    messages: MESSAGES,
+};
 
 export function isPhone(string) {
     return (/^((8|\+7)[- ]?)?(\(?\d{3}\)?[- ]?)?[\d\- ]{5,10}$/i).test(string);
 }
 
-function validateInput(input) {
+export function validateInput(input, contextElement = document) {
     // Валидация электронной почты
     if (input.classList.contains('js-validate--email')) {
-        return isEmail(input.value);
+        return input.hasAttribute('required') || input.value.trim().length > 0 ? isEmail(input.value) : true;
     }
 
     // Валидация телефона
     if (input.classList.contains('js-validate--phone')) {
-        return isPhone(input.value);
+        return input.hasAttribute('required') || input.value.trim().length > 0 ? isPhone(input.value) : true;
     }
 
     // Валидация чекбокса
@@ -35,11 +42,11 @@ function validateInput(input) {
     // Валидация равенства двух строк
     if (input.classList.contains('js-validate--equivalent')) {
         if (!input.hasAttribute('data-equivalent-name')) {
-            return false;
+            throw new Error('[Validator] Please provide "data-equivalent-name" attribute for the input with a class "js-validate--equivalent".');
         }
 
         const fieldName = input.getAttribute('data-equivalent-name');
-        const field = document.querySelector(`[name="${fieldName}"]`);
+        const field = contextElement.querySelector(`[name="${fieldName}"]`);
         return equals(input.value, field.value);
     }
 
@@ -53,13 +60,12 @@ function validateInput(input) {
     return true;
 }
 
-export default (form, inputSelector = defaultInputSelector) => {
+export default (form, options = DEFAULT_OPTIONS) => {
     let isFormValid = true;
-
     const inputs = Array.from(form.querySelectorAll(inputSelector));
 
     inputs.forEach((input) => {
-        const isValid = validateInput(input);
+        const isValid = validateInput(input, form);
 
         if (isValid) {
             input.classList.remove('is-error');
@@ -75,17 +81,13 @@ export default (form, inputSelector = defaultInputSelector) => {
                 messageElement.textContent = '';
 
                 switch (true) {
-                case input.value.length === 0 && input.hasAttribute('required'):
-                case !input.classList.contains('js-validate--custom')
-                && input.hasAttribute('data-validation-error-message'):
-                    messageElement.textContent = input.getAttribute('data-validation-error-message');
+                case input.value.trim().length === 0 && input.hasAttribute('required'):
+                    messageElement.textContent = options.messages.RU.EMPTY_FIELD;
                     break;
-
                 case input.classList.contains('js-validate--custom')
                 && input.hasAttribute('data-custom-validation-error-message'):
                     messageElement.textContent = input.getAttribute('data-custom-validation-error-message');
                     break;
-
                 default:
                     break;
                 }
