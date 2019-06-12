@@ -1,10 +1,8 @@
 import axios from 'axios';
 import { triggerEvent, triggerCustomEvent } from '../../utils';
 
-const defaultInputSelector = '[name]:not([type="submit"]):not([type="reset"])';
-
-export function clearInputs(form, inputSelector = defaultInputSelector) {
-    Array.from(form.querySelectorAll(inputSelector)).forEach((input) => {
+export function clearInputs(inputs = []) {
+    Array.from(inputs).forEach((input) => {
         if (input.type === 'checkbox') {
             input.checked = false;
         } else {
@@ -14,22 +12,31 @@ export function clearInputs(form, inputSelector = defaultInputSelector) {
     });
 }
 
-export default class AjaxFormSender {
-    constructor(form, options = {}) {
-        this.beforeSendCallback = options.beforeSend || (() => { });
-        this.successCallback = options.success || (() => { });
-        this.errorCallback = options.error || (() => { });
-        this.completeCallback = options.complete || (() => { });
-        this.form = form;
-        this.data = new FormData(form);
-        this.shouldClearInputs = options.shouldClearInputs || true;
-        this.inputSelector = options.inputSelector || defaultInputSelector;
-        this.inputs = Array.from(form.querySelectorAll(this.inputSelector));
+const defaultOptions = {
+    onBeforeSend: () => {},
+    onSuccess: () => {},
+    onError: () => {},
+    onComplete: () => {},
+    data: {},
+    shouldClearInputs: true,
+    inputSelector: '[name]:not([type="submit"]):not([type="reset"])',
+    method: 'get',
+};
 
-        if (options.data) {
-            Object.entries(options.data).forEach((entry) => {
-                this.data.append(...entry);
-            });
+export default class AjaxFormSender {
+    constructor(form, options = defaultOptions) {
+        this.form = form;
+        this.options = options;
+        this.method = (options.method || this.form.method).toLowerCase();
+        this.inputs = Array.from(form.querySelectorAll(options.inputSelector));
+        
+        if (['post', 'put', 'delete'].includes(this.method)) {
+            this.data = new FormData(form);
+            if (options.data) {
+                Object.entries(options.data).forEach((entry) => {
+                    this.data.append(...entry);
+                });
+            }
         }
     }
 
@@ -42,22 +49,30 @@ export default class AjaxFormSender {
                 return;
             }
 
-            let response = null;
+            let response;
+
+            this.form.classList.add('js-ajax-form--loading');
+            this.options.onBeforeSend();
+            triggerCustomEvent(this.form, 'send');
 
             try {
-                this.beforeSendCallback();
-                triggerCustomEvent(this.form, 'send');
-                this.form.classList.add('js-ajax-form--loading');
-
-                if (this.form.method.toLowerCase() === 'get') {
+                if (this.method === 'get') {
                     response = await axios.get(url);
                 }
 
-                if (this.form.method.toLowerCase() === 'post') {
+                if (this.method === 'post') {
                     response = await axios.post(url, this.data);
                 }
 
-                this.successCallback();
+                if (this.method === 'put') {
+                    response = await axios.put(url, this.data);
+                }
+
+                if (this.method === 'delete') {
+                    response = await axios.delete(url, this.data);
+                }
+
+                this.options.onSuccess();
                 triggerCustomEvent(this.form, 'success');
                 this.form.classList.add('js-ajax-form--success');
                 Array.from(this.form.querySelectorAll('.app-message')).forEach((messageElement) => {
@@ -65,16 +80,16 @@ export default class AjaxFormSender {
                 });
                 resolve(response.data);
             } catch (err) {
-                this.errorCallback();
+                this.options.onError();
                 triggerCustomEvent(this.form, 'error');
                 this.form.classList.remove('js-ajax-form--error');
                 reject(new Error(err.message || err));
             } finally {
-                this.completeCallback();
+                this.options.onComplete();
                 this.form.classList.remove('js-ajax-form--loading');
 
-                if (this.shouldClearInputs) {
-                    clearInputs(this.form);
+                if (this.options.shouldClearInputs) {
+                    clearInputs(this.inputs);
                 }
             }
         });
