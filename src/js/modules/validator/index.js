@@ -4,10 +4,21 @@ import messages from './messages';
 
 export { isEmail, equals };
 
-const DEFAULT_OPTIONS = {
-    inputSelector: '[name]:not([type="submit"]):not([type="reset"]):not([type="hidden"])',
-    messages,
-};
+function getLang() {
+    switch (true) {
+    case /en/.test(document.documentElement.lang):
+        return 'en';
+    default:
+        return 'ru';
+    }
+}
+
+export function clearMessages(form) {
+    const messages = Array.from(form.querySelectorAll('.app-message'));
+    messages.forEach((messageElement) => {
+            messageElement.textContent = '';
+    });
+}
 
 export function isPhone(string) {
     return (/^((8|\+7)[- ]?)?(\(?\d{3}\)?[- ]?)?[\d\- ]{5,10}$/i).test(string);
@@ -48,7 +59,6 @@ export function validateInput(input) {
         if (!input.hasAttribute('data-equivalent-name')) {
             return false;
         }
-
         const fieldName = input.getAttribute('data-equivalent-name');
         const field = document.querySelector(`[name="${fieldName}"]`);
         return equals(input.value, field.value);
@@ -64,34 +74,21 @@ export function validateInput(input) {
     return true;
 }
 
+const DEFAULT_OPTIONS = {
+    inputSelector: '[name]:not([type="submit"]):not([type="reset"]):not([type="hidden"])',
+    messages,
+    onValidationSuccess: () => {},
+    onValidationError: () => {},
+    onValidationComplete: () => {},
+};
+
 export default (form, options = DEFAULT_OPTIONS) => {
     const inputs = Array.from(form.querySelectorAll(options.inputSelector));
-
-    function getLang() {
-        switch (true) {
-        case /en/.test(document.documentElement.lang):
-            return 'en';
-        default:
-            return 'ru';
-        }
-    }
-
-    function clearMessages() {
-        inputs.forEach((input) => {
-            const messageElement = input.parentElement && input.parentElement.querySelector('.app-message')
-                ? input.parentElement.querySelector('.app-message')
-                : null;
-
-            if (messageElement) {
-                messageElement.textContent = '';
-            }
-        });
-    }
 
     function validate() {
         let isFormValid = true;
         const lang = getLang();
-        clearMessages();
+        clearMessages(form);
 
         inputs.forEach((input) => {
             const isValid = validateInput(input);
@@ -131,12 +128,25 @@ export default (form, options = DEFAULT_OPTIONS) => {
             }
         });
 
+        if (isFormValid) {
+            options.onValidationSuccess();
+        } else {
+            options.onValidationError();
+        }
+        options.onValidationComplete();
+
         return isFormValid;
     }
 
+    function clearFormMessages() {
+        clearMessages(form);
+    }
+
     return Object.freeze({
-        inputs,
         validate,
-        clearMessages,
+        clearFormMessages,
+        form,
+        inputSelector: options.inputSelector,
+        inputs,
     });
 };
