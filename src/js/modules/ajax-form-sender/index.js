@@ -1,108 +1,82 @@
+import axios from 'axios';
+import { triggerEvent, triggerCustomEvent } from '../../utils';
+
 const defaultInputSelector = '[name]:not([type="submit"]):not([type="reset"])';
 
 export function clearInputs(form, inputSelector = defaultInputSelector) {
-    $(form).find(inputSelector).each((index, input) => {
+    Array.from(form.querySelectorAll(inputSelector)).forEach((input) => {
         if (input.type === 'checkbox') {
             input.checked = false;
         } else {
             input.value = '';
         }
-
-        $(input).trigger('blur');
+        triggerEvent(input, 'blur');
     });
 }
 
 export default class AjaxFormSender {
     constructor(form, options = {}) {
-        this.$form = $(form);
+        this.beforeSendCallback = options.beforeSend || (() => { });
+        this.successCallback = options.success || (() => { });
+        this.errorCallback = options.error || (() => { });
+        this.completeCallback = options.complete || (() => { });
+        this.form = form;
+        this.data = new FormData(form);
         this.shouldClearInputs = options.shouldClearInputs || true;
         this.inputSelector = options.inputSelector || defaultInputSelector;
-        this.inputs = this.$form.find(this.inputSelector);
-
-        if (options.accepts) {
-            this.accepts = options.accepts;
-        }
-
-        if (options.converters) {
-            this.converters = options.converters;
-        }
-
-        if (options.dataType) {
-            this.dataType = options.dataType;
-        }
-
-        if (options.cache) {
-            this.cache = options.cache;
-        }
-
-        if (options.contents) {
-            this.contents = options.contents;
-        }
-
-        if (options.contentType) {
-            this.contentType = options.contentType;
-        }
+        this.inputs = Array.from(form.querySelectorAll(this.inputSelector));
 
         if (options.data) {
-            this.data = options.data;
+            Object.entries(options.data).forEach((entry) => {
+                this.data.append(...entry);
+            });
         }
-
-        this.headers = options.headers || {};
-        this.beforeSendCallback = options.beforeSend || (() => {});
-        this.successCallback = options.success || (() => {});
-        this.errorCallback = options.error || (() => {});
-        this.completeCallback = options.complete || (() => {});
     }
 
-    send(url = this.$form[0].action) {
-        return new Promise((resolve, reject) => {
+    send(url = this.form.action) {
+        return new Promise(async (resolve, reject) => {
             if (!(url && typeof url === 'string')) {
-                const errorMessage = 'Form does not have "action" attribute and url has not been provided';
+                const errorMessage = 'Form does not have "action" attibute and url has not been provided';
                 console.error(errorMessage);
                 reject(errorMessage);
                 return;
             }
 
-            $.ajax({
-                url,
-                ...(this.accepts ? { accepts: this.accepts } : {}),
-                ...(this.converters ? { converters: this.converters } : {}),
-                ...(this.dataType ? { dataType: this.dataType } : {}),
-                ...(this.cache ? { cache: this.cache } : {}),
-                ...(this.contents ? { contents: this.contents } : {}),
-                ...(this.headers ? { headers: this.headers } : {}),
-                method: this.$form.attr('method').toUpperCase() || 'GET',
-                ...(this.data ? { data: this.data } : {}),
-                beforeSend: () => {
-                    this.beforeSendCallback();
-                    this.$form.trigger('send');
-                    this.$form.addClass('js-ajax-form--loading');
-                },
-                success: (response) => {
-                    this.successCallback();
-                    this.$form.trigger('success');
-                    this.$form.addClass('js-ajax-form--success');
-                    this.$form.find('.app-message').each((index, messageElement) => {
-                        $(messageElement).text('');
-                    });
+            let response = null;
 
-                    resolve(response.data);
-                },
-                error: (err) => {
-                    this.errorCallback();
-                    this.$form.trigger('error');
-                    this.$form.removeClass('js-ajax-form--error');
-                    reject(new Error(err));
-                },
-                complete: () => {
-                    this.completeCallback();
-                    this.$form.removeClass('js-ajax-form--loading');
+            try {
+                this.beforeSendCallback();
+                triggerCustomEvent(this.form, 'send');
+                this.form.classList.add('js-ajax-form--loading');
 
-                    if (this.shouldClearInputs) {
-                        clearInputs(this.$form[0]);
-                    }
-                },
-            });
+                if (this.form.method.toLowerCase() === 'get') {
+                    response = await axios.get(url);
+                }
+
+                if (this.form.method.toLowerCase() === 'post') {
+                    response = await axios.post(url, this.data);
+                }
+
+                this.successCallback();
+                triggerCustomEvent(this.form, 'success');
+                this.form.classList.add('js-ajax-form--success');
+                Array.from(this.form.querySelectorAll('.app-message')).forEach((messageElement) => {
+                    messageElement.textContent = '';
+                });
+                resolve(response.data);
+            } catch (err) {
+                this.errorCallback();
+                triggerCustomEvent(this.form, 'error');
+                this.form.classList.remove('js-ajax-form--error');
+                reject(new Error(err.message || err));
+            } finally {
+                this.completeCallback();
+                this.form.classList.remove('js-ajax-form--loading');
+
+                if (this.shouldClearInputs) {
+                    clearInputs(this.form);
+                }
+            }
         });
     }
 }

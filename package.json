@@ -54,6 +54,7 @@
         "@gfx/zopfli": "latest",
         "@sentry/browser": "latest",
         "autoprefixer": "latest",
+        "axios": "latest",
         "babel-eslint": "latest",
         "babel-loader": "latest",
         "babel-plugin-transform-async-to-promises": "latest",

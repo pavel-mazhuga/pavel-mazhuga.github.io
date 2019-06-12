@@ -1,20 +1,24 @@
 import isEmail from 'validator/lib/isEmail';
 import equals from 'validator/lib/equals';
-import MESSAGES from './messages';
+import messages from './messages';
+
 export { isEmail, equals };
 
-const defaultInputSelector = '[name]:not([type="submit"]):not([type="reset"]):not([type="hidden"])';
-
 const DEFAULT_OPTIONS = {
-    inputSelector: defaultInputSelector,
-    messages: MESSAGES,
+    inputSelector: '[name]:not([type="submit"]):not([type="reset"]):not([type="hidden"])',
+    messages,
 };
 
 export function isPhone(string) {
     return (/^((8|\+7)[- ]?)?(\(?\d{3}\)?[- ]?)?[\d\- ]{5,10}$/i).test(string);
 }
 
-export function validateInput(input, contextElement = document) {
+export function validateInput(input) {
+    // Валидация заполненности поля
+    if (input.hasAttribute('required') && input.value.trim().length === 0) {
+        return false;
+    }
+
     // Валидация электронной почты
     if (input.classList.contains('js-validate--email')) {
         return input.hasAttribute('required') || input.value.trim().length > 0 ? isEmail(input.value) : true;
@@ -42,11 +46,11 @@ export function validateInput(input, contextElement = document) {
     // Валидация равенства двух строк
     if (input.classList.contains('js-validate--equivalent')) {
         if (!input.hasAttribute('data-equivalent-name')) {
-            throw new Error('[Validator] Please provide "data-equivalent-name" attribute for the input with a class "js-validate--equivalent".');
+            return false;
         }
 
         const fieldName = input.getAttribute('data-equivalent-name');
-        const field = contextElement.querySelector(`[name="${fieldName}"]`);
+        const field = document.querySelector(`[name="${fieldName}"]`);
         return equals(input.value, field.value);
     }
 
@@ -61,39 +65,78 @@ export function validateInput(input, contextElement = document) {
 }
 
 export default (form, options = DEFAULT_OPTIONS) => {
-    let isFormValid = true;
-    const inputs = Array.from(form.querySelectorAll(inputSelector));
+    const inputs = Array.from(form.querySelectorAll(options.inputSelector));
 
-    inputs.forEach((input) => {
-        const isValid = validateInput(input, form);
+    function getLang() {
+        switch (true) {
+        case /en/.test(document.documentElement.lang):
+            return 'en';
+        default:
+            return 'ru';
+        }
+    }
 
-        if (isValid) {
-            input.classList.remove('is-error');
-        } else {
-            isFormValid = false;
-            const messageElement = input.nextElementSibling && input.nextElementSibling.classList.contains('app-message')
-                ? input.nextElementSibling
+    function clearMessages() {
+        inputs.forEach((input) => {
+            const messageElement = input.parentElement && input.parentElement.querySelector('.app-message')
+                ? input.parentElement.querySelector('.app-message')
                 : null;
-
-            input.classList.add('is-error');
 
             if (messageElement) {
                 messageElement.textContent = '';
+            }
+        });
+    }
 
-                switch (true) {
-                case input.value.trim().length === 0 && input.hasAttribute('required'):
-                    messageElement.textContent = options.messages.ru.EMPTY_FIELD;
-                    break;
-                case input.classList.contains('js-validate--custom')
-                && input.hasAttribute('data-custom-validation-error-message'):
-                    messageElement.textContent = input.getAttribute('data-custom-validation-error-message');
-                    break;
-                default:
-                    break;
+    function validate() {
+        let isFormValid = true;
+        const lang = getLang();
+        clearMessages();
+
+        inputs.forEach((input) => {
+            const isValid = validateInput(input);
+            const messageElement = input.parentElement && input.parentElement.querySelector('.app-message')
+                ? input.parentElement.querySelector('.app-message')
+                : null;
+
+            if (isValid) {
+                input.classList.remove('is-error');
+            } else {
+                isFormValid = false;
+                input.classList.add('is-error');
+
+                if (messageElement) {
+                    messageElement.textContent = '';
+
+                    switch (true) {
+                    case input.value.trim().length === 0 && input.hasAttribute('required'):
+                        messageElement.textContent = options.messages[lang].EMPTY_FIELD;
+                        break;
+                    case input.classList.contains('js-validate--email'):
+                        messageElement.textContent = options.messages[lang].INVALIDATED_EMAIL;
+                        break;
+                    case input.classList.contains('js-validate--phone'):
+                        messageElement.textContent = options.messages[lang].INVALIDATED_PHONE;
+                        break;
+                    case input.classList.contains('js-validate--equivalent'):
+                        messageElement.textContent = options.messages[lang].INVALIDATED_EQUALS;
+                        break;
+                    case input.classList.contains('js-validate--custom') && input.hasAttribute('data-custom-validation-error-message'):
+                        messageElement.textContent = input.getAttribute('data-custom-validation-error-message');
+                        break;
+                    default:
+                        break;
+                    }
                 }
             }
-        }
-    });
+        });
 
-    return isFormValid;
+        return isFormValid;
+    }
+
+    return Object.freeze({
+        inputs,
+        validate,
+        clearMessages,
+    });
 };
