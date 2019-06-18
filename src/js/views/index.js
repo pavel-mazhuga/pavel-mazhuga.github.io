@@ -1,21 +1,27 @@
-import Barba from 'barba.js';
-
-export default Barba.BaseView.extend({
+export default {
     namespace: 'index-page',
 
-    onEnter() {
+    beforeAppear() {
         //
     },
 
-    onEnterCompleted() {
+    afterAppear() {
         //
     },
 
-    onLeave() {
+    beforeEnter() {
         //
     },
 
-    onLeaveCompleted() {
+    afterEnter() {
         //
     },
-});
+
+    beforeLeave() {
+        //
+    },
+
+    afterLeave() {
+        //
+    },
+};

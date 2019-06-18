@@ -1,14 +1,13 @@
 import './sentry';
 import '../css/app.scss';
 import './polyfills';
-import Barba from 'barba.js';
+import barba from '@barba/core';
 // import calculateScrollbarWidth from './modules/calculate-scrollbar-width';
 // import vhMobileFix from './modules/vh-mobile-fix';
 
 // Transitions
-import DefaultTransition from './transitions/default';
+// import FadeTransition from './transitions/fade';
 // Views
-import BaseView from './views/_base';
 import IndexPageView from './views/index';
 
 // Globals
@@ -21,26 +20,10 @@ jQuery(($) => {
     // calculateScrollbarWidth();
     // vhMobileFix();
 
-    function initBarba() {
-        Barba.Pjax.getTransition = () => DefaultTransition;
+    // barba.hooks.leave(() => {});
 
-        [IndexPageView].forEach((view) => view.init());
-
-        Barba.Dispatcher.on('initStateChange', () => {
-            BaseView.onLeave();
-        });
-
-        Barba.Dispatcher.on('newPageReady', () => {
-            BaseView.onEnter();
-        });
-
-        Barba.Dispatcher.on('transitionCompleted', () => {
-            BaseView.onLeaveCompleted();
-            BaseView.onEnterCompleted();
-        });
-
-        Barba.Pjax.start();
-    }
-
-    initBarba();
+    barba.init({
+        // transitions: [FadeTransition],
+        views: [IndexPageView],
+    });
 });

@@ -225,8 +225,10 @@ module.exports = {
                 title: APP.TITLE,
             });
         }) : []),
-        ...(APP.USE_HTML && isModern ? [new HtmlWebpackModernBuildPlugin()] : []),
-        ...(APP.USE_HTML && isModern ? [new SvgoPlugin({ enabled: PROD })] : []),
+        ...(APP.USE_HTML && isModern ? [
+            new HtmlWebpackModernBuildPlugin(),
+            new SvgoPlugin({ enabled: PROD }),
+        ] : []),
         ...(PROD && APP.USE_HTML && APP.HTML_PRETTY && isModern ? [new HtmlBeautifyPlugin()] : []),
         ...(isModern ? [] : [
             new CopyWebpackPlugin([
@@ -323,6 +325,9 @@ module.exports = {
     resolve: {
         alias: {
             '~': path.resolve(SRC_PATH, 'js'),
+            ...(isModern ? {
+                '@barba/core': path.resolve(__dirname, 'node_modules/@barba/core/dist/barba.mjs'),
+            } : {}),
         },
     },
 
