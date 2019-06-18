@@ -9,6 +9,7 @@ const deepMerge = require('lodash.merge');
 const posthtml = require('posthtml');
 // const posthtmlCommentAfter = require('posthtml-comment-after');
 
+const appDataModule = require.resolve('./src/app.data.js');
 const helpers = require('./src/helpers/index.js');
 
 const logger = weblog({ name: 'loader-html' });
@@ -93,10 +94,16 @@ module.exports = function HtmlLoader() {
     const loaderContext = this;
     const loaderCallback = loaderContext.async();
 
-    loaderContext.addDependency(path.join(__dirname, 'app.config.js'));
-    loaderContext.addDependency(path.join(__dirname, 'src', 'app.data.js'));
+    loaderContext.addDependency(appDataModule);
+    delete require.cache[appDataModule];
 
-    const options = deepMerge({}, DEFAULT_OPTIONS, loaderUtils.getOptions(loaderContext));
+    const options = deepMerge(
+        {},
+        DEFAULT_OPTIONS,
+        loaderUtils.getOptions(loaderContext),
+        // eslint-disable-next-line global-require, import/no-dynamic-require
+        { context: require(appDataModule) },
+    );
     validateOptions(OPTIONS_SCHEMA, options, 'loader-html');
 
     const nunjucksLoader = new nunjucks.FileSystemLoader(options.searchPath, { noCache: true });

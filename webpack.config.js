@@ -6,7 +6,7 @@ const path = require('path');
 const glob = require('glob');
 const md5File = require('md5-file');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
@@ -41,7 +41,7 @@ const PUBLIC_PATH = configurePublicPath();
 const ROOT_PATH = SANDBOX ? APP.PUBLIC_PATH_SANDBOX : '/';
 
 const { browserslist, name: PACKAGE_NAME } = require('./package.json');
-const HTML_DATA = require('./src/app.data.js');
+// const HTML_DATA = require('./src/app.data.js');
 const SvgoPlugin = require('./plugin.svgo.js');
 const BrotliPlugin = (PROD ? require('brotli-webpack-plugin') : () => {});
 const CompressionPlugin = (PROD ? require('compression-webpack-plugin') : () => {});
@@ -335,7 +335,7 @@ module.exports = {
                 options: {
                     context: Object.assign(
                         {},
-                        HTML_DATA,
+                        // HTML_DATA,
                         APP,
                         {
                             NODE_ENV,
