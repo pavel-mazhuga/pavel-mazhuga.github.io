@@ -11,7 +11,7 @@
 ## В сборку включены:
 * jQuery последней версии (https://jquery.com/)
 * Bootstrap 4 (https://getbootstrap.com/)
-* Barba.js — библиотека для PJAX переходов между страницами (http://barbajs.org/)
+* Barba v2 — библиотека для PJAX переходов между страницами (http://barbajs.org/)
     - src/js/views => здесь лежат вьюхи страниц сайта
     - src/js/transitions => здесь лежат транзишены между вьюхами
 
@@ -52,6 +52,7 @@
 * **npm run prod:sandbox** — сборка в production-режиме (publicPath === "/sand/{project-name}/dev/" - для деплоя на sandbox-сервер Chipsa)
 * **npm run prod:bitrix** — сборка в production-режиме (publicPath === "[путь от корня до папки с фронтендом]")
 * **npm run build** — релизный билд, запускается в production-режиме, включая все линтеры
+* **npm test** — запуск тестов (unit, e2e)
 
 ## Полезные npm-пакеты:
 * Preact (https://preactjs.com/) - 3kb альтернатива React с аналогичным API.
