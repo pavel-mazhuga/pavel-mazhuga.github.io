@@ -23,6 +23,10 @@ const defaultOptions = {
 
 export default class Modal {
     constructor(name, options = {}) {
+        if (!name) {
+            throw new Error(withPrefix('Expected a name as a first argument.'));
+        }
+
         this.isOpen = false;
         this.options = { ...defaultOptions, ...options };
         this.element = document.querySelector(`[data-modal="${name}"]`);
