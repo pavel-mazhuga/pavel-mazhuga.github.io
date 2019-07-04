@@ -1,4 +1,4 @@
-import { isPhone, isEmail } from '../../../src/js/modules/validator';
+import { isPhone, isEmail } from '../index';
 
 it('validates phone correctly', () => {
     expect(isPhone('89999999999')).toBe(true);
