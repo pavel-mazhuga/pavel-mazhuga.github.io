@@ -8,6 +8,12 @@ const EVENTS = {
     BEFORE_CLOSE: 'before-close',
 };
 
+const CLASSES = {
+    IS_OPENING: 'app-modal--is-opening',
+    IS_CLOSING: 'app-modal--is-closing',
+    OPENED: 'app-modal--opened',
+};
+
 const SELECTORS = {
     CONTAINER: '.app-modal-container',
 };
@@ -91,7 +97,7 @@ export default class Modal {
 
         this.isOpen = true;
         Modal.isOpen = true;
-        this.element.classList.add('is-open');
+        this.element.classList.add(CLASSES.OPENED, CLASSES.IS_OPENING);
         this.initActiveModalListeners();
         Modal.beforeOpen();
         this.options.beforeOpen(this.hooksArgs);
@@ -99,6 +105,7 @@ export default class Modal {
     }
 
     afterOpen() {
+        this.element.classList.remove(CLASSES.IS_OPENING);
         Modal.afterOpen();
         this.options.afterOpen(this.hooksArgs);
         triggerCustomEvent(this.element, EVENTS.AFTER_OPEN);
@@ -106,6 +113,7 @@ export default class Modal {
 
     beforeClose() {
         this.destroyActiveModalListeners();
+        this.element.classList.add(CLASSES.IS_CLOSING);
         Modal.beforeClose();
         this.options.beforeClose(this.hooksArgs);
         triggerCustomEvent(this.element, EVENTS.BEFORE_CLOSE);
@@ -113,7 +121,7 @@ export default class Modal {
 
     afterClose() {
         this.isOpen = false;
-        this.element.classList.remove('is-open');
+        this.element.classList.remove(CLASSES.IS_CLOSING, CLASSES.OPENED);
 
         if (this.elementContent && this.elementContent.scrollTo) {
             this.elementContent.scrollTo(0, 0);
