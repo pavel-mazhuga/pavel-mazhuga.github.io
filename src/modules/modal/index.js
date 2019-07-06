@@ -1,20 +1,22 @@
 import { KEYCODES, triggerCustomEvent } from '../../js/utils';
 import { withPrefix } from './utils';
 
-const EVENTS = {
+export const events = {
+    INIT: 'init',
     BEFORE_OPEN: 'before-open',
     AFTER_OPEN: 'after-open',
     AFTER_CLOSE: 'after-close',
     BEFORE_CLOSE: 'before-close',
+    DESTROY: 'destroy',
 };
 
-const CLASSES = {
+const classes = {
     IS_OPENING: 'app-modal--is-opening',
     IS_CLOSING: 'app-modal--is-closing',
     OPENED: 'app-modal--opened',
 };
 
-const SELECTORS = {
+const selectors = {
     CONTAINER: '.app-modal-container',
 };
 
@@ -41,7 +43,7 @@ export default class Modal {
             throw new Error(withPrefix('Element not found.'));
         }
 
-        this.elementContent = this.element.querySelector(SELECTORS.CONTAINER);
+        this.elementContent = this.element.querySelector(selectors.CONTAINER);
         this.openButtons = Array.from(document.querySelectorAll(`[data-modal-open="${name}"]`));
         this.closeButtons = Array.from(document.querySelectorAll(`[data-modal-close="${name}"]`));
         this.previousActiveElement = null;
@@ -67,6 +69,7 @@ export default class Modal {
     init() {
         this.openButtons.forEach((btn) => btn.addEventListener('click', this.open));
         this.closeButtons.forEach((btn) => btn.addEventListener('click', this.close));
+        triggerCustomEvent(this.element, events.INIT);
     }
 
     destroy() {
@@ -78,6 +81,7 @@ export default class Modal {
         this.openButtons = null;
         this.closeButtons = null;
         this.previousActiveElement = null;
+        triggerCustomEvent(this.element, events.DESTROY);
     }
 
     beforeOpen() {
@@ -97,31 +101,31 @@ export default class Modal {
 
         this.isOpen = true;
         Modal.isOpen = true;
-        this.element.classList.add(CLASSES.OPENED, CLASSES.IS_OPENING);
+        this.element.classList.add(classes.OPENED, classes.IS_OPENING);
         this.initActiveModalListeners();
         Modal.beforeOpen();
         this.options.beforeOpen(this.hooksArgs);
-        triggerCustomEvent(this.element, EVENTS.BEFORE_OPEN);
+        triggerCustomEvent(this.element, events.BEFORE_OPEN);
     }
 
     afterOpen() {
-        this.element.classList.remove(CLASSES.IS_OPENING);
+        this.element.classList.remove(classes.IS_OPENING);
         Modal.afterOpen();
         this.options.afterOpen(this.hooksArgs);
-        triggerCustomEvent(this.element, EVENTS.AFTER_OPEN);
+        triggerCustomEvent(this.element, events.AFTER_OPEN);
     }
 
     beforeClose() {
         this.destroyActiveModalListeners();
-        this.element.classList.add(CLASSES.IS_CLOSING);
+        this.element.classList.add(classes.IS_CLOSING);
         Modal.beforeClose();
         this.options.beforeClose(this.hooksArgs);
-        triggerCustomEvent(this.element, EVENTS.BEFORE_CLOSE);
+        triggerCustomEvent(this.element, events.BEFORE_CLOSE);
     }
 
     afterClose() {
         this.isOpen = false;
-        this.element.classList.remove(CLASSES.IS_CLOSING, CLASSES.OPENED);
+        this.element.classList.remove(classes.IS_CLOSING, classes.OPENED);
 
         if (this.elementContent && this.elementContent.scrollTo) {
             this.elementContent.scrollTo(0, 0);
@@ -139,7 +143,7 @@ export default class Modal {
 
         Modal.afterClose();
         this.options.afterClose(this.hooksArgs);
-        triggerCustomEvent(this.element, EVENTS.AFTER_CLOSE);
+        triggerCustomEvent(this.element, events.AFTER_CLOSE);
     }
 
     async open() {
