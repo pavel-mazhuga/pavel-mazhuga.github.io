@@ -119,13 +119,16 @@ export default class Modal {
             this.elementContent.scrollTo(0, 0);
         }
 
-        [...this.element.parentElement.children].forEach((child) => {
+        Array.from(this.element.parentElement.children).forEach((child) => {
             if (child !== this.element) {
                 child.inert = false;
             }
         });
 
-        this.previousActiveElement.focus();
+        if (this.previousActiveElement) {
+            this.previousActiveElement.focus();
+        }
+
         Modal.afterClose();
         this.options.afterClose(this.hooksArgs);
         triggerCustomEvent(this.element, EVENTS.AFTER_CLOSE);
