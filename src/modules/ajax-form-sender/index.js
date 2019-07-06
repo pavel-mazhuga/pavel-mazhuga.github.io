@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { triggerEvent, triggerCustomEvent } from '../../utils';
+import { triggerEvent, triggerCustomEvent } from '../../js/utils';
 
 export function clearInputs(inputs = []) {
     Array.from(inputs).forEach((input) => {
@@ -29,7 +29,7 @@ export default class AjaxFormSender {
         this.options = options;
         this.method = (options.method || this.form.method).toLowerCase();
         this.inputs = Array.from(form.querySelectorAll(options.inputSelector));
-        
+
         if (['post', 'put', 'delete'].includes(this.method)) {
             this.data = new FormData(form);
             if (options.data) {

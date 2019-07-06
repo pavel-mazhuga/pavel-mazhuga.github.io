@@ -1,4 +1,4 @@
-import { KEYCODES, triggerCustomEvent } from '../../utils';
+import { KEYCODES, triggerCustomEvent } from '../../js/utils';
 import { withPrefix } from './utils';
 
 const EVENTS = {
