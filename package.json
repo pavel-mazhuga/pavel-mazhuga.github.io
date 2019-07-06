@@ -7,7 +7,7 @@
         "url": "repository here"
     },
     "scripts": {
-        "test": "jest",
+        "test": "jest --env=jsdom",
         "dev": "cross-env NODE_ENV=development DEBUG=0 webpack --mode=development",
         "prod:legacy": "cross-env NODE_ENV=production webpack --mode=production",
         "prod:modern": "cross-env NODE_ENV=production BUILD_TYPE=modern webpack --mode=production",
