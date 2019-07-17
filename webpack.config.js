@@ -238,6 +238,7 @@ module.exports = {
                     'google*.html',
                     'yandex_*.html',
                     '*.txt',
+                    'fonts/*',
                     'php/*.php',
                 ].map((from) => ({
                     from,
