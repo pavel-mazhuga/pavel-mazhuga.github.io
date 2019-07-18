@@ -162,8 +162,6 @@
     },
     "devDependencies": {
         "eslint-plugin-jest": "latest",
-        "jest": "latest",
-        "jest-puppeteer": "latest",
-        "puppeteer": "latest"
+        "jest": "latest"
     }
 }
