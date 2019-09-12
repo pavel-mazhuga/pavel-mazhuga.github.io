@@ -41,7 +41,6 @@ const PUBLIC_PATH = configurePublicPath();
 const ROOT_PATH = SANDBOX ? APP.PUBLIC_PATH_SANDBOX : '/';
 
 const { browserslist, name: PACKAGE_NAME } = require('./package.json');
-// const HTML_DATA = require('./src/app.data.js');
 const SvgoPlugin = require('./plugin.svgo.js');
 const BrotliPlugin = (PROD ? require('brotli-webpack-plugin') : () => {});
 const CompressionPlugin = (PROD ? require('compression-webpack-plugin') : () => {});
@@ -255,7 +254,7 @@ module.exports = {
             ...(!isModern ? [
                 new ImageminPlugin({
                     test: /\.(jpeg|jpg|png|gif|svg)$/i,
-                    exclude: /(fonts|font)/i,
+                    exclude: /(fonts|font|upload)/i,
                     name: resourceName('img', false),
                     imageminOptions: require('./imagemin.config.js'),
                     cache: false,
@@ -406,7 +405,6 @@ module.exports = {
                             presets: [
                                 ['@babel/preset-env', {
                                     modules: false,
-                                    loose: true,
                                     corejs: 3,
                                     useBuiltIns: 'usage',
                                     targets: isModern ? {

@@ -48,7 +48,6 @@
         "@babel/core": "latest",
         "@babel/plugin-syntax-dynamic-import": "latest",
         "@babel/plugin-transform-runtime": "latest",
-        "@babel/polyfill": "latest",
         "@babel/preset-env": "latest",
         "@babel/runtime": "latest",
         "@barba/core": "latest",
@@ -146,7 +145,6 @@
         "svgo": "latest",
         "tapable": "latest",
         "terser-webpack-plugin": "latest",
-        "ttf2eot": "latest",
         "url-loader": "latest",
         "validator": "latest",
         "webapp-webpack-plugin": "latest",
@@ -157,7 +155,6 @@
         "webpack-glsl-loader": "latest",
         "webpack-log": "latest",
         "webpack-manifest-plugin": "latest",
-        "wicg-inert": "latest",
         "workbox-webpack-plugin": "latest"
     },
     "devDependencies": {
