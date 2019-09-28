@@ -36,7 +36,6 @@ module.exports = {
                     return `${asset.pathname}?${params.toString()}`;
                 },
             }),
-            require('postcss-momentum-scrolling')(['scroll', 'auto']),
             require('postcss-custom-properties')(),
             require('postcss-font-display')({ display: 'swap' }),
             require('postcss-object-fit-images')(),

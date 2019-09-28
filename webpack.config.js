@@ -133,10 +133,15 @@ module.exports = {
     } : false),
 
     plugins: [
+        ...(WATCH ? [
+            new BrowserSyncPlugin({
+                host: 'localhost',
+                port: 8080,
+            }),
+    ] : []),
         new ManifestPlugin({
             fileName: `manifest-${isModern ? 'modern' : 'legacy'}.json`,
         }),
-        ...(WATCH ? [new BrowserSyncPlugin()] : []),
         ...(isModern ? [] : [
             new CleanWebpackPlugin({
                 cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep', '!.htaccess'],
@@ -399,8 +404,6 @@ module.exports = {
                                 'babel-plugin-transform-async-to-promises',
                                 '@babel/transform-runtime',
                                 '@babel/plugin-syntax-dynamic-import',
-                                // preact
-                                ['@babel/plugin-transform-react-jsx', { pragma: 'h' }],
                             ],
                             presets: [
                                 ['@babel/preset-env', {
@@ -412,7 +415,6 @@ module.exports = {
                                     } : {
                                         browsers: browserslist.legacy,
                                     },
-                                    // exclude: ['es6.promise'],
                                 }],
                             ],
                             envName: NODE_ENV,
@@ -421,10 +423,10 @@ module.exports = {
                 ],
             },
             // GLSL
-            {
-                test: /\.glsl$/i,
-                loader: 'webpack-glsl-loader',
-            },
+            // {
+            //     test: /\.glsl$/i,
+            //     loader: 'webpack-glsl-loader',
+            // },
             // image loaders
             {
                 test: /\.(jpeg|jpg|png|gif|svg)$/i,
