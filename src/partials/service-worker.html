@@ -1,5 +1,4 @@
 {% if APP.USE_SERVICE_WORKER %}
-    <!-- service-worker -->
     <script>
         var SERVICE_WORKER_HASH = {{ APP.SERVICE_WORKER_HASH() | dump | safe }};
         if (!SERVICE_WORKER_HASH) {
@@ -38,5 +37,4 @@
             });
         }
     </script>
-    <!-- /service-worker -->
 {% endif %}

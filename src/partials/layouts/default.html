@@ -16,9 +16,16 @@
 
     {% include 'partials/open-graph.html' %}
 </head>
-{# <body class="{{ PAGE.namespace | replace('.', ' ') }}"> #}
 <body>
-    {% block body %}{% endblock %}
+    {% include 'partials/header.html' %}
+
+    <main data-barba="wrapper" class="main">
+        <div data-barba="container" data-barba-namespace="{{ PAGE.namespace }}">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    {% include 'partials/footer.html' %}
     {% include 'partials/service-worker.html' %}
 </body>
 </html>
