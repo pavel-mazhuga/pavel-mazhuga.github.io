@@ -17,6 +17,7 @@ const HtmlWebpackModernBuildPlugin = require('./plugin.modern-build');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const zopfli = require('@gfx/zopfli');
 const WorkboxPlugin = require('workbox-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 const APP = require('./app.config.js');
 
@@ -47,7 +48,6 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const StyleLintPlugin = (require('stylelint-webpack-plugin'));
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const TerserPlugin = require('terser-webpack-plugin');
-const FaviconsPlugin = require('./plugin.favicons.js');
 
 const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
     ignore: [
@@ -175,14 +175,33 @@ module.exports = {
                 fix: false,
             }),
         ] : []),
-        ...(APP.USE_FAVICONS && !isModern ? [
-            new FaviconsPlugin.AppIcon({
-                logo: path.join(__dirname, '.favicons-source-1024x1024.png'),
+        ...(APP.USE_HTML && APP.USE_FAVICONS && (isModern || !PROD) ? [
+            // new FaviconsPlugin.AppIcon({
+            //     logo: path.join(__dirname, '.favicons-source-1024x1024.png'),
+            //     prefix: 'img/favicon/',
+            // }),
+            // new FaviconsPlugin.FavIcon({
+            //     logo: path.join(__dirname, '.favicons-source-64x64.png'),
+            //     prefix: 'img/favicon/',
+            // }),
+            new FaviconsWebpackPlugin({
+                logo: path.join(__dirname, 'favicon.png'),
+                cache: true,
+                outputPath: BUILD_PATH,
                 prefix: 'img/favicon/',
-            }),
-            new FaviconsPlugin.FavIcon({
-                logo: path.join(__dirname, '.favicons-source-64x64.png'),
-                prefix: 'img/favicon/',
+                inject: true,
+                // favicons: {
+                //     appName: 'my-app',
+                //     appDescription: 'My awesome App',
+                //     developerName: 'Me',
+                //     developerURL: null,
+                //     background: '#ddd',
+                //     theme_color: '#333',
+                //     icons: {
+                //         coast: false,
+                //         yandex: false
+                //     },
+                // },
             }),
         ] : []),
         ...(APP.USE_HTML && (isModern || !PROD) ? SITEMAP.map((template) => {
