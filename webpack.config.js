@@ -42,12 +42,12 @@ const ROOT_PATH = SANDBOX ? APP.PUBLIC_PATH_SANDBOX : '/';
 
 const { browserslist, name: PACKAGE_NAME } = require('./package.json');
 const SvgoPlugin = require('./plugin.svgo.js');
-const BrotliPlugin = (PROD ? require('brotli-webpack-plugin') : () => {});
-const CompressionPlugin = (PROD ? require('compression-webpack-plugin') : () => {});
-const StyleLintPlugin = (USE_LINTERS ? require('stylelint-webpack-plugin') : () => {});
+const BrotliPlugin = require('brotli-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const StyleLintPlugin = (require('stylelint-webpack-plugin'));
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const TerserPlugin = require('terser-webpack-plugin');
-const FaviconsPlugin = (APP.USE_FAVICONS ? require('./plugin.favicons.js') : () => {});
+const FaviconsPlugin = require('./plugin.favicons.js');
 
 const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
     ignore: [
@@ -156,12 +156,6 @@ module.exports = {
             new CaseSensitivePathsPlugin(),
             new webpack.NoEmitOnErrorsPlugin(),
         ] : []),
-        new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery',
-            'window.$': 'jquery',
-            'window.jQuery': 'jquery',
-        }),
         new webpack.DefinePlugin({
             NODE_ENV: JSON.stringify(NODE_ENV),
             ENV: JSON.stringify(process.env.ENV),
@@ -358,16 +352,6 @@ module.exports = {
                 },
             },
             // javascript loaders
-            {
-                test: require.resolve('jquery'),
-                use: [{
-                    loader: 'expose-loader',
-                    options: 'jQuery',
-                }, {
-                    loader: 'expose-loader',
-                    options: '$',
-                }],
-            },
             ...(USE_LINTERS ? [{
                 enforce: 'pre',
                 test: /\.js$/i,
@@ -390,13 +374,6 @@ module.exports = {
                     test: path.join(__dirname, 'node_modules'),
                 },
                 loaders: [
-                    {
-                        loader: 'imports-loader',
-                        options: {
-                            $: 'jquery',
-                            jQuery: 'jquery',
-                        },
-                    },
                     {
                         loader: 'babel-loader',
                         options: {
