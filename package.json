@@ -154,7 +154,10 @@
         "workbox-webpack-plugin": "latest"
     },
     "devDependencies": {
+        "eslint-config-prettier": "latest",
         "eslint-plugin-jest": "latest",
-        "jest": "latest"
+        "eslint-plugin-prettier": "latest",
+        "jest": "latest",
+        "prettier": "latest"
     }
 }

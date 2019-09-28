@@ -7,7 +7,6 @@ const validateOptions = require('schema-utils');
 const weblog = require('webpack-log');
 const deepMerge = require('lodash.merge');
 const posthtml = require('posthtml');
-// const posthtmlCommentAfter = require('posthtml-comment-after');
 
 const appDataModule = require.resolve('./src/app.data.js');
 const helpers = require('./src/helpers/index.js');
@@ -82,7 +81,6 @@ function processHtml(html, options, loaderCallback) {
             return tree;
         });
     }
-    // parser.use(posthtmlCommentAfter());
     parser.process(html).then((result) => {
         let exportString = `export default ${JSON.stringify(result.html)};`;
         exportString = options.requireExport(exportString);
@@ -164,7 +162,7 @@ module.exports = function HtmlLoader() {
             templateData.attributes,
             PAGE,
         ));
-        return Object.assign({}, templateSource, {
+        return { ...templateSource, ...{
             src: [
                 '{#---',
                 templateData.frontmatter
@@ -173,7 +171,8 @@ module.exports = function HtmlLoader() {
                 '---#}',
                 templateData.body,
             ].join('\n'),
-        });
+        }
+        };
     };
 
     logger.info(`processing '${path.relative(__dirname, loaderContext.resourcePath)}'`);
