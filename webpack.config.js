@@ -453,13 +453,7 @@ module.exports = {
                     {
                         loader: 'sass-loader',
                         options: {
-                            data: [
-                                ['$NODE_ENV', NODE_ENV],
-                            ].map((i) => ((k, v) => `${k}: ${JSON.stringify(v)};`)(...i)).join('\n'),
-                            indentWidth: 4,
-                            sourceMap: USE_SOURCE_MAP ? 'inline' : false,
-                            sourceMapEmbed: USE_SOURCE_MAP,
-                            sourceComments: USE_SOURCE_MAP,
+                            sourceMap: USE_SOURCE_MAP,
                         },
                     },
                 ]),
