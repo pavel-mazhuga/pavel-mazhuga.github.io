@@ -14,6 +14,7 @@ module.exports = {
         require('postcss-devtools')({ precise: true }),
         require('postcss-input-style')(),
         require('postcss-responsive-type')(),
+        require('postcss-easings')(),
         ...(PROD ? [
             require('postcss-focus')(),
             require('postcss-focus-within')(),
