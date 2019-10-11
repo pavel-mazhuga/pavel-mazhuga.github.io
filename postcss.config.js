@@ -3,10 +3,9 @@ const path = require('path');
 const { URLSearchParams } = require('url');
 const sortCSSmq = require('sort-css-media-queries');
 
-const PROD = (process.env.NODE_ENV === 'production');
-
 const { browserslist } = require('./package.json');
 
+const PROD = (process.env.NODE_ENV === 'production');
 const INLINE_FILES = ['png', 'jpeg', 'jpg', 'gif', 'svg'];
 
 module.exports = {
@@ -19,7 +18,6 @@ module.exports = {
             require('postcss-focus')(),
             require('postcss-focus-within')(),
             require('postcss-focus-visible')(),
-            require('pleeease-filters')(),
             require('postcss-image-set-polyfill')(),
             require('postcss-url')({
                 filter(asset) {
@@ -44,13 +42,14 @@ module.exports = {
             require('postcss-will-change')(),
             require('css-mqpacker')({ sort: sortCSSmq.desktopFirst }),
             require('autoprefixer')({ browsers: browserslist.legacy }),
+            // this is always last
             require('cssnano')({
                 preset: ['default', {
                     discardComments: { removeAll: true },
                 }],
-            }), // this is always last
+            }),
         ] : []),
         require('postcss-browser-reporter')(),
-        require('postcss-reporter')(), // this is always last
+        require('postcss-reporter')(),
     ],
 };
