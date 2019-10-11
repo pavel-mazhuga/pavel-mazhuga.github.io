@@ -29,7 +29,7 @@ const isModern = process.env.BUILD_TYPE === 'modern';
 const WATCH = process.argv.indexOf('--watch') !== -1 || process.argv.indexOf('-w') !== -1;
 const DEV_SERVER = path.basename(require.main.filename, '.js') === 'webpack-dev-server';
 const USE_SOURCE_MAP = DEV_SERVER;
-const USE_LINTERS = PROD;
+const USE_LINTERS = false;
 
 const configurePublicPath = () => {
     if (SANDBOX) return APP.PUBLIC_PATH_SANDBOX;
@@ -45,7 +45,6 @@ const { browserslist, name: PACKAGE_NAME } = require('./package.json');
 const SvgoPlugin = require('./plugin.svgo.js');
 const BrotliPlugin = require('brotli-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
-const StyleLintPlugin = (require('stylelint-webpack-plugin'));
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const TerserPlugin = require('terser-webpack-plugin');
 
@@ -163,18 +162,6 @@ module.exports = {
             ROOT_PATH: JSON.stringify(ROOT_PATH),
             SENTRY_DSN: JSON.stringify(APP.SENTRY_DSN),
         }),
-        ...(USE_LINTERS && !isModern ? [
-            new StyleLintPlugin({
-                syntax: 'scss',
-                files: '**/*.scss',
-                configFile: './.stylelintrc',
-                ignorePath: './.stylelintignore',
-                emitErrors: false,
-                failOnError: false,
-                lintDirtyModulesOnly: DEV_SERVER,
-                fix: false,
-            }),
-        ] : []),
         ...(APP.USE_HTML && APP.USE_FAVICONS && (isModern || !PROD) ? [
             // new FaviconsPlugin.AppIcon({
             //     logo: path.join(__dirname, '.favicons-source-1024x1024.png'),
