@@ -6,29 +6,6 @@
         "type": "git",
         "url": "repository here"
     },
-    "scripts": {
-        "test": "jest",
-        "dev": "cross-env NODE_ENV=development DEBUG=0 webpack --mode=development",
-        "prod:legacy": "cross-env NODE_ENV=production webpack --mode=production",
-        "prod:modern": "cross-env NODE_ENV=production BUILD_TYPE=modern webpack --mode=production",
-        "prod": "npm run prod:legacy && npm run prod:modern",
-        "prod:sandbox": "cross-env ENV=sandbox npm run prod:legacy && cross-env ENV=sandbox npm run prod:modern",
-        "prod:bitrix": "cross-env ENV=bitrix npm run prod:legacy && cross-env ENV=bitrix npm run prod:modern",
-        "watch": "npm run watch:dev",
-        "watch:dev": "cross-env NODE_ENV=development DEBUG=0 webpack --watch -d",
-        "watch:prod": "cross-env NODE_ENV=production DEBUG=0 webpack --watch -p",
-        "js-lint": "cross-env NODE_ENV=development eslint --config .eslintrc --ignore-path .eslintignore --fix *.js src/**/*.js",
-        "html-lint": "cross-env NODE_ENV=development node ./script.html-lint.js",
-        "lint": "npm run js-lint && npm run html-lint",
-        "start": "cross-env NODE_ENV=development webpack-dev-server --hot --mode=development",
-        "build": "npm-run-all test js-lint prod html-lint",
-        "browserslist": "npx browserslist",
-        "subsetting": "call ./fonts.subsetting.bat",
-        "bundle-analyzer:legacy": "cd ./node_modules/.cache && start bundle-analyzer-legacy-production.html",
-        "bundle-analyzer:modern": "cd ./node_modules/.cache && start bundle-analyzer-modern-production.html",
-        "bundle-analyzer": "npm run bundle-analyzer:legacy && npm run bundle-analyzer:modern",
-        "ba": "npm run bundle-analyzer"
-    },
     "author": "Pavel Mazhuga",
     "license": "MIT",
     "browserslist": [
@@ -42,6 +19,43 @@
         "last 2 Firefox versions",
         "last 2 Opera versions"
     ],
+    "scripts": {
+        "test": "jest",
+        "dev": "cross-env NODE_ENV=development DEBUG=0 webpack --mode=development",
+        "prod:legacy": "cross-env NODE_ENV=production webpack --mode=production",
+        "prod:modern": "cross-env NODE_ENV=production BUILD_TYPE=modern webpack --mode=production",
+        "prod": "npm run prod:legacy && npm run prod:modern",
+        "prod:sandbox": "cross-env ENV=sandbox npm run prod:legacy && cross-env ENV=sandbox npm run prod:modern",
+        "prod:bitrix": "cross-env ENV=bitrix npm run prod:legacy && cross-env ENV=bitrix npm run prod:modern",
+        "watch": "npm run watch:dev",
+        "watch:dev": "cross-env NODE_ENV=development DEBUG=0 webpack --watch --mode=development",
+        "watch:prod": "cross-env NODE_ENV=production DEBUG=0 webpack --watch -p",
+        "lint:js": "cross-env NODE_ENV=development eslint --config .eslintrc --ignore-path .eslintignore --fix *.js src/**/*.js",
+        "lint:html": "cross-env NODE_ENV=development node ./script.html-lint.js",
+        "lint": "npm run lint:js && npm run lint:html",
+        "start": "cross-env NODE_ENV=development webpack-dev-server --hot --mode=development",
+        "build": "npm-run-all test lint:js prod lint:html",
+        "browserslist": "npx browserslist",
+        "subsetting": "call ./fonts.subsetting.bat",
+        "bundle-analyzer:legacy": "cd ./node_modules/.cache && start bundle-analyzer-legacy-production.html",
+        "bundle-analyzer:modern": "cd ./node_modules/.cache && start bundle-analyzer-modern-production.html",
+        "bundle-analyzer": "npm run bundle-analyzer:legacy && npm run bundle-analyzer:modern",
+        "ba": "npm run bundle-analyzer",
+        "lint-staged": "lint-staged"
+    },
+    "lint-staged": {
+        "src/**/*.{js,jsx,ts,tsx,json,md,css,scss,html}": [
+            "pretty-quick --staged"
+        ],
+        "src/**/*.{js,jsx,ts,tsx}": [
+            "jest --findRelatedTests"
+        ]
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
     "dependencies": {
         "@babel/cli": "latest",
         "@babel/core": "latest",
@@ -146,12 +160,15 @@
         "workbox-webpack-plugin": "latest"
     },
     "devDependencies": {
-        "webpack-dev-server": "latest",
         "eslint-config-prettier": "latest",
         "eslint-plugin-jest": "latest",
         "eslint-plugin-prettier": "latest",
         "favicons-webpack-plugin": "latest",
+        "husky": "latest",
         "jest": "latest",
-        "prettier": "latest"
+        "lint-staged": "latest",
+        "prettier": "latest",
+        "pretty-quick": "latest",
+        "webpack-dev-server": "latest"
     }
 }
