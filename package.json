@@ -169,6 +169,7 @@
         "lint-staged": "latest",
         "prettier": "latest",
         "pretty-quick": "latest",
-        "webpack-dev-server": "latest"
+        "webpack-dev-server": "latest",
+        "webpack-merge": "latest"
     }
 }

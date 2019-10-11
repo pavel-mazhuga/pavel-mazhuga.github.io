@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 const md5File = require('md5-file');
+const merge = require('webpack-merge');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -343,17 +344,13 @@ module.exports = {
                 test: /\.html$/i,
                 loader: './loader.html.js',
                 options: {
-                    context: Object.assign(
-                        {},
-                        // HTML_DATA,
-                        APP,
-                        {
-                            NODE_ENV,
-                            PUBLIC_PATH,
-                            ROOT_PATH,
-                            SERVICE_WORKER_HASH,
-                        },
-                    ),
+                    context: {
+                        ...APP,
+                        NODE_ENV,
+                        PUBLIC_PATH,
+                        ROOT_PATH,
+                        SERVICE_WORKER_HASH,
+                    },
                     searchPath: SRC_PATH,
                 },
             },
