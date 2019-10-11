@@ -56,22 +56,28 @@ function processHtml(html, options, loaderCallback) {
         parser.use((tree) => {
             const expression = Object.keys(options.requireTags).map((tag) => ({
                 tag,
-                attrs: options.requireTags[tag].reduce((attrs, attr) => ({
-                    ...attrs,
-                    [attr]: true,
-                }), {}),
+                attrs: options.requireTags[tag].reduce(
+                    (attrs, attr) => ({
+                        ...attrs,
+                        [attr]: true,
+                    }),
+                    {},
+                ),
             }));
             tree.match(expression, (node) => {
                 options.requireTags[node.tag].forEach((attr) => {
-                    if (!(attr in node.attrs) || ('data-require-ignore' in node.attrs)) return;
+                    if (!(attr in node.attrs) || 'data-require-ignore' in node.attrs) return;
 
                     const val = node.attrs[attr];
                     if (attr in ['srcset', 'data-srcset']) {
-                        node.attrs[attr] = val.split(SRCSET_SEPARATOR).map((src) => {
-                            const [url, size] = src.split(SRC_SEPARATOR, 2);
-                            if (IGNORE_PATTERN.test(url) || options.requireIgnore.test(url)) return src;
-                            return `${options.requireIdent(url)} ${size}`;
-                        }).join(', ');
+                        node.attrs[attr] = val
+                            .split(SRCSET_SEPARATOR)
+                            .map((src) => {
+                                const [url, size] = src.split(SRC_SEPARATOR, 2);
+                                if (IGNORE_PATTERN.test(url) || options.requireIgnore.test(url)) return src;
+                                return `${options.requireIdent(url)} ${size}`;
+                            })
+                            .join(', ');
                     } else if (!IGNORE_PATTERN.test(val) && !options.requireIgnore.test(val)) {
                         node.attrs[attr] = options.requireIdent(val);
                     }
@@ -81,11 +87,14 @@ function processHtml(html, options, loaderCallback) {
             return tree;
         });
     }
-    parser.process(html).then((result) => {
-        let exportString = `export default ${JSON.stringify(result.html)};`;
-        exportString = options.requireExport(exportString);
-        loaderCallback(null, exportString);
-    }).catch(loaderCallback);
+    parser
+        .process(html)
+        .then((result) => {
+            let exportString = `export default ${JSON.stringify(result.html)};`;
+            exportString = options.requireExport(exportString);
+            loaderCallback(null, exportString);
+        })
+        .catch(loaderCallback);
 }
 
 module.exports = function HtmlLoader() {
@@ -114,13 +123,14 @@ module.exports = function HtmlLoader() {
         options.requireReplace[ident] = url;
         return ident;
     };
-    options.requireExport = (exportString) => exportString.replace(REQUIRE_PATTERN, (match) => {
-        if (!options.requireReplace[match]) return match;
-        const url = options.requireReplace[match];
-        logger.info(`require('${url}')`);
-        const request = loaderUtils.urlToRequest(url, options.searchPath);
-        return `"+require(${JSON.stringify(request)})+"`;
-    });
+    options.requireExport = (exportString) =>
+        exportString.replace(REQUIRE_PATTERN, (match) => {
+            if (!options.requireReplace[match]) return match;
+            const url = options.requireReplace[match];
+            logger.info(`require('${url}')`);
+            const request = loaderUtils.urlToRequest(url, options.searchPath);
+            return `"+require(${JSON.stringify(request)})+"`;
+        });
 
     nunjucksEnvironment.addFilter('require', options.requireIdent);
     nunjucksEnvironment.addGlobal('require', options.requireIdent);
@@ -129,14 +139,12 @@ module.exports = function HtmlLoader() {
         nunjucksEnvironment.addGlobal(name, helper);
     });
 
-    const publicPath = ((options.context.APP || {}).PUBLIC_PATH || path.sep);
+    const publicPath = (options.context.APP || {}).PUBLIC_PATH || path.sep;
     const resourcePath = path.sep + path.relative(options.searchPath, loaderContext.resourcePath);
     const baseName = path.basename(resourcePath, '.html');
-    const resourceUrl = (
-        baseName === 'index'
-            ? path.dirname(resourcePath)
-            : path.dirname(resourcePath) + path.posix.sep + baseName
-    ) + path.posix.sep;
+    const resourceUrl =
+        (baseName === 'index' ? path.dirname(resourcePath) : path.dirname(resourcePath) + path.posix.sep + baseName) +
+        path.posix.sep;
 
     nunjucksEnvironment.addGlobal('APP', options.context);
     const PAGE = {
@@ -157,21 +165,20 @@ module.exports = function HtmlLoader() {
             return templateSource;
         }
         const templateData = frontMatter(templateSource.src);
-        nunjucksEnvironment.addGlobal('PAGE', deepMerge(
-            nunjucksEnvironment.getGlobal('PAGE') || {},
-            templateData.attributes,
-            PAGE,
-        ));
-        return { ...templateSource, ...{
-            src: [
-                '{#---',
-                templateData.frontmatter
-                    .replace('#}', escape('#}'))
-                    .replace('{#', escape('{#')),
-                '---#}',
-                templateData.body,
-            ].join('\n'),
-        }
+        nunjucksEnvironment.addGlobal(
+            'PAGE',
+            deepMerge(nunjucksEnvironment.getGlobal('PAGE') || {}, templateData.attributes, PAGE),
+        );
+        return {
+            ...templateSource,
+            ...{
+                src: [
+                    '{#---',
+                    templateData.frontmatter.replace('#}', escape('#}')).replace('{#', escape('{#')),
+                    '---#}',
+                    templateData.body,
+                ].join('\n'),
+            },
         };
     };
 

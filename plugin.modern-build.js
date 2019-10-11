@@ -46,7 +46,7 @@ class ModernBuildPlugin {
                         }
                         return newArr;
                     }, [])
-                    .forEach(fileName =>
+                    .forEach((fileName) =>
                         data.body.push({
                             tagName: 'script',
                             closeTag: true,
