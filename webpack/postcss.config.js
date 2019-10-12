@@ -41,7 +41,7 @@ module.exports = {
             require('postcss-flexbugs-fixes')(),
             require('postcss-will-change')(),
             require('css-mqpacker')({ sort: sortCSSmq.desktopFirst }),
-            require('autoprefixer')({ browsers: browserslist.legacy }),
+            require('autoprefixer')({ browsers: browserslist.browsers }),
             // this is always last
             require('cssnano')({
                 preset: ['default', {

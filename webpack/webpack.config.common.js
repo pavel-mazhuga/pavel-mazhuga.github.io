@@ -280,8 +280,6 @@ const baseConfig = {
     },
 
     output: {
-        // filename: `js/${isModern ? 'modern' : 'legacy'}/[name].min${PROD ? '.[contenthash:8]' : ''}.js`,
-        // chunkFilename: `js/${isModern ? 'modern' : 'legacy'}/[name].min${PROD ? '.[contenthash:8]' : ''}.js`,
         path: BUILD_PATH,
         publicPath: PUBLIC_PATH,
     },
@@ -300,7 +298,7 @@ const baseConfig = {
     plugins: [
         ...(WATCH ? [new BrowserSyncPlugin({ host: 'localhost', port: 8080 })] : []),
         new MiniCssExtractPlugin({
-            filename: `css/app.min${PROD ? '.[contenthash:8]' : ''}.css`,
+            filename: `css/app${PROD ? '.[contenthash:8]' : ''}.css`,
             allChunks: true,
         }),
         new webpack.DefinePlugin({
