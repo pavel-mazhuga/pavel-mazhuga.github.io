@@ -12,7 +12,7 @@ module.exports = {
     HTML_PRETTY: true,
     USE_FAVICONS: false,
     USE_COMPRESSION: false,
-    USE_SERVICE_WORKER: true,
+    USE_SERVICE_WORKER: false,
     SENTRY_DSN: '',
     PUBLIC_PATH_DEFAULT: '/',
     PUBLIC_PATH_BITRIX: '/local/templates/main/',
