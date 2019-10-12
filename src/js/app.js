@@ -1,8 +1,10 @@
+/* USE_SERVICE_WORKER */
 import '../css/app.scss';
 import './sentry';
 import './polyfills';
 import barba from '@barba/core';
 
+import registerServiceWorker from './register-sw';
 // Transitions
 // import FadeTransition from './transitions/fade';
 // Views
@@ -16,3 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         views: [IndexPageView],
     });
 });
+
+if (USE_SERVICE_WORKER) {
+    registerServiceWorker();
+}

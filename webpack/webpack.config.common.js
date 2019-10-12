@@ -117,8 +117,6 @@ const configureHtmlLoader = () => ({
             ROOT_PATH,
             PUBLIC_PATH,
             NODE_ENV,
-            USE_SERVICE_WORKER,
-            SERVICE_WORKER_HASH,
         },
         searchPath: SRC_PATH,
     },
@@ -233,18 +231,18 @@ const configureServiceWorker = (useServiceWorker) => {
     if (useServiceWorker) {
         return [
             new WorkboxPlugin.GenerateSW({
-                // cacheId: PACKAGE_NAME,
-                // swDest: SERVICE_WORKER_PATH,
+                cacheId: PACKAGE_NAME,
+                swDest: SERVICE_WORKER_PATH,
                 importWorkboxFrom: 'local',
                 clientsClaim: true,
                 skipWaiting: true,
                 precacheManifestFilename: slash(
                     path.join(SERVICE_WORKER_BASE, 'service-worker-precache.js?[manifestHash]'),
                 ),
-                // globDirectory: slash(BUILD_PATH),
-                // globPatterns: ['js/**/*.js', 'css/*.css', 'fonts/*.woff2'],
-                // globIgnores: ['*.map', '*.LICENSE'],
-                // include: [],
+                globDirectory: slash(BUILD_PATH),
+                globPatterns: ['js/**/*.js', 'css/*.css', 'fonts/*.woff2'],
+                globIgnores: ['*.map', '*.LICENSE'],
+                include: [],
                 runtimeCaching: [
                     {
                         urlPattern: new RegExp(`${PUBLIC_PATH}(css|js|fonts)/`),
@@ -308,6 +306,8 @@ const baseConfig = {
             PUBLIC_PATH: JSON.stringify(PUBLIC_PATH),
             ROOT_PATH: JSON.stringify(ROOT_PATH),
             SENTRY_DSN: JSON.stringify(SENTRY_DSN),
+            USE_SERVICE_WORKER,
+            SERVICE_WORKER_HASH,
         }),
     ],
 };
