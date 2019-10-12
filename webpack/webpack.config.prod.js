@@ -7,6 +7,7 @@ const ImageminPlugin = require('imagemin-webpack');
 const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const BrotliPlugin = require('brotli-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const PreloadWebpackPlugin = require('preload-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const zopfli = require('@gfx/zopfli');
 
@@ -116,6 +117,11 @@ module.exports = [
             ...configureHtmlWebpackPlugin(USE_HTML),
             new SvgoPlugin({ enabled: true }),
             ...configureHtmlModernBuildPlugin(USE_HTML),
+            // new PreloadWebpackPlugin({
+            //     // rel: 'preload',
+            //     // include: ['some'],
+            //     // excludeHtmlNames: ['example.html'],
+            // }),
             ...configureHtmlBeautifyPlugin(USE_HTML, HTML_PRETTY),
             new BundleAnalyzerPlugin(configureBundleAnalyzerPlugin('modern')),
         ],
