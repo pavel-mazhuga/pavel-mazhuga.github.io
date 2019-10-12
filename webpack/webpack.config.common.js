@@ -94,7 +94,7 @@ const configureHtmlWebpackPlugin = (useHtml) => {
                     minifyJS: !HTML_PRETTY,
                 },
                 hash: !PROD,
-                cache: !PROD,
+                cache: true,
                 title: TITLE,
             });
         });
@@ -124,7 +124,7 @@ const configureHtmlLoader = () => ({
     },
 });
 
-const configureBabelLoader = (browserList) => ({
+const configureBabelLoader = (supportsESModules) => ({
     test: /\.jsx?$/i,
     exclude: {
         test: path.join(__dirname, '../node_modules'),
@@ -147,7 +147,10 @@ const configureBabelLoader = (browserList) => ({
                             corejs: 3,
                             useBuiltIns: 'usage',
                             targets: {
-                                browsers: browserList,
+                                ...(supportsESModules
+                                    ? { esmodules: true }
+                                    : { browsers: browserslist.legacyBrowsers }),
+                                // browsers: browserList,
                             },
                         },
                     ],
@@ -309,8 +312,6 @@ const baseConfig = {
             SENTRY_DSN: JSON.stringify(SENTRY_DSN),
         }),
     ],
-
-    devtool: USE_SOURCE_MAP ? 'eval-source-map' : 'nosources-source-map',
 };
 
 const legacyConfig = {
@@ -320,7 +321,8 @@ const legacyConfig = {
     },
 
     module: {
-        rules: [configureBabelLoader(Object.values(browserslist.legacyBrowsers))],
+        // rules: [configureBabelLoader(Object.values(browserslist.legacyBrowsers))],
+        rules: [configureBabelLoader()],
     },
 
     plugins: [
@@ -362,7 +364,8 @@ const modernConfig = {
     },
 
     module: {
-        rules: [configureBabelLoader(Object.values(browserslist.modernBrowsers))],
+        // rules: [configureBabelLoader(Object.values(browserslist.modernBrowsers))],
+        rules: [configureBabelLoader(true)],
     },
 
     plugins: [new ManifestPlugin(configureManifest('manifest-modern.json'))],
@@ -389,4 +392,5 @@ module.exports = {
     SERVICE_WORKER_PATH,
     LEGACY_TYPE,
     MODERN_TYPE,
+    USE_SOURCE_MAP,
 };

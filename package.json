@@ -23,7 +23,7 @@
         "modernBrowsers": [
             "Android >= 5",
             "iOS >= 10",
-            "Safari >= 10",
+            "Safari >= 10.1",
             "last 2 Edge versions",
             "last 2 Chrome versions",
             "last 2 ChromeAndroid versions",

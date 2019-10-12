@@ -10,8 +10,9 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const zopfli = require('@gfx/zopfli');
 
+const HtmlWebpackModernBuildPlugin = require('./plugins/plugin.modern-build');
 const SvgoPlugin = require('./plugins/plugin.svgo.js');
-const { USE_COMPRESSION, USE_HTML } = require('../webpack.settings');
+const { USE_COMPRESSION, USE_HTML, HTML_PRETTY } = require('../webpack.settings');
 const { resourceName } = require('./utils');
 const {
     configureHtmlWebpackPlugin,
@@ -46,13 +47,14 @@ const configureCompression = (useCompression, buildType) => {
     return [];
 };
 
-const configureHtmlBeautifyPlugin = (prettyHtml) => (prettyHtml ? [new HtmlBeautifyPlugin()] : []);
+const configureHtmlBeautifyPlugin = (useHtml, prettyHtml) => (useHtml && prettyHtml ? [new HtmlBeautifyPlugin()] : []);
+
+const configureHtmlModernBuildPlugin = (useHtml) => (useHtml ? [new HtmlWebpackModernBuildPlugin()] : []);
 
 const baseConfig = {
     mode: 'production',
 
     devtool: 'source-map',
-    // devtool: 'nosources-source-map',
 
     optimization: {
         minimizer: [
@@ -107,7 +109,8 @@ module.exports = [
         plugins: [
             ...configureHtmlWebpackPlugin(USE_HTML),
             new SvgoPlugin({ enabled: true }),
-            ...configureHtmlBeautifyPlugin(),
+            ...configureHtmlModernBuildPlugin(USE_HTML),
+            ...configureHtmlBeautifyPlugin(USE_HTML, HTML_PRETTY),
         ],
     }),
 ];

@@ -1,7 +1,12 @@
 const merge = require('webpack-merge');
 
 const { USE_HTML } = require('../webpack.settings');
-const { configureHtmlWebpackPlugin, legacyConfig, SERVICE_WORKER_PATH } = require('./webpack.config.common');
+const {
+    configureHtmlWebpackPlugin,
+    legacyConfig,
+    SERVICE_WORKER_PATH,
+    USE_SOURCE_MAP,
+} = require('./webpack.config.common');
 
 module.exports = [
     merge(legacyConfig, {
@@ -24,5 +29,7 @@ module.exports = [
         plugins: [...configureHtmlWebpackPlugin(USE_HTML)],
 
         performance: false,
+
+        devtool: USE_SOURCE_MAP ? 'eval-source-map' : 'nosources-source-map',
     }),
 ];
