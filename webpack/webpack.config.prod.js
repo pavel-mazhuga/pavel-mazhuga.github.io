@@ -22,8 +22,6 @@ const {
     MODERN_TYPE,
 } = require('./webpack.config.common');
 
-const configureBundleReportName = (buildType) => `bundle-analyzer-${buildType}-production.html`;
-
 const configureCompression = (useCompression, buildType) => {
     if (useCompression) {
         return [
@@ -50,6 +48,18 @@ const configureCompression = (useCompression, buildType) => {
 const configureHtmlBeautifyPlugin = (useHtml, prettyHtml) => (useHtml && prettyHtml ? [new HtmlBeautifyPlugin()] : []);
 
 const configureHtmlModernBuildPlugin = (useHtml) => (useHtml ? [new HtmlWebpackModernBuildPlugin()] : []);
+
+const configureBundleAnalyzerPlugin = (buildType) => ({
+    analyzerMode: 'static',
+    openAnalyzer: false,
+    reportFilename: path.join(
+        __dirname,
+        '../',
+        'node_modules',
+        '.cache',
+        `bundle-analyzer-${buildType}-production.html`,
+    ),
+});
 
 const baseConfig = {
     mode: 'production',
@@ -81,11 +91,6 @@ const baseConfig = {
     plugins: [
         new CaseSensitivePathsPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
-        new BundleAnalyzerPlugin({
-            analyzerMode: 'static',
-            openAnalyzer: false,
-            reportFilename: path.join(__dirname, '../', 'node_modules', '.cache', configureBundleReportName('modern')),
-        }),
         ...configureCompression(USE_COMPRESSION),
     ],
 };
@@ -102,6 +107,7 @@ module.exports = [
                 cache: false,
                 loader: true,
             }),
+            new BundleAnalyzerPlugin(configureBundleAnalyzerPlugin('legacy')),
         ],
     }),
 
@@ -111,6 +117,7 @@ module.exports = [
             new SvgoPlugin({ enabled: true }),
             ...configureHtmlModernBuildPlugin(USE_HTML),
             ...configureHtmlBeautifyPlugin(USE_HTML, HTML_PRETTY),
+            new BundleAnalyzerPlugin(configureBundleAnalyzerPlugin('modern')),
         ],
     }),
 ];
