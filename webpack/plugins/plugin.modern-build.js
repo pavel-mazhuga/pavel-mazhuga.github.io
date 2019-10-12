@@ -1,5 +1,5 @@
 /* eslint-disable */
-const { BUILD_PATH } = require('./app.config.js');
+const { BUILD_PATH } = require('../../app.config.js');
 
 // Safari 10.1 не поддерживает атрибут nomodule.
 // Эта переменная содержит фикс для Safari в виде строки.

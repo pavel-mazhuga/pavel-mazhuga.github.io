@@ -3,7 +3,7 @@ const path = require('path');
 const { URLSearchParams } = require('url');
 const sortCSSmq = require('sort-css-media-queries');
 
-const { browserslist } = require('./package.json');
+const { browserslist } = require('../package.json');
 
 const PROD = (process.env.NODE_ENV === 'production');
 const INLINE_FILES = ['png', 'jpeg', 'jpg', 'gif', 'svg'];

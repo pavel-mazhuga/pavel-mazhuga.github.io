@@ -8,8 +8,8 @@ const weblog = require('webpack-log');
 const deepMerge = require('lodash.merge');
 const posthtml = require('posthtml');
 
-const appDataModule = require.resolve('./src/app.data.js');
-const helpers = require('./src/helpers/index.js');
+const appDataModule = require.resolve('../../src/app.data.js');
+const helpers = require('../../src/helpers/index.js');
 
 const logger = weblog({ name: 'loader-html' });
 

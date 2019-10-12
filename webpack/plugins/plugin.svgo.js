@@ -4,7 +4,7 @@ const posthtml = require('posthtml');
 const posthtmlRender = require('posthtml-render');
 
 const SVGO = require('svgo');
-const svgoConfig = require('./svgo.config.js');
+const svgoConfig = require('../svgo.config.js');
 const deasync = require('deasync');
 
 const DEFAULT_OPTIONS = {
@@ -28,12 +28,15 @@ module.exports = class SvgoPlugin {
                 let minifiedSvg;
                 const originalSvg = posthtmlRender(node);
 
-                svgoInstance.optimize(originalSvg).then((result) => {
-                    minifiedSvg = result;
-                }).catch((error) => {
-                    minifiedSvg = { data: originalSvg };
-                    return callback(error);
-                });
+                svgoInstance
+                    .optimize(originalSvg)
+                    .then((result) => {
+                        minifiedSvg = result;
+                    })
+                    .catch((error) => {
+                        minifiedSvg = { data: originalSvg };
+                        return callback(error);
+                    });
                 deasync.loopWhile(() => minifiedSvg === undefined);
 
                 node.attrs = {};
@@ -45,7 +48,10 @@ module.exports = class SvgoPlugin {
             return tree;
         });
 
-        parser.process(html).then((result) => callback(null, result.html)).catch(callback);
+        parser
+            .process(html)
+            .then((result) => callback(null, result.html))
+            .catch(callback);
     }
 
     apply(compiler) {

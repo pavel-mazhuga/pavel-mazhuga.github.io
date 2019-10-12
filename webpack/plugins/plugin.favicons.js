@@ -1,7 +1,7 @@
 const deepMerge = require('lodash.merge');
 const ImageSize = require('image-size');
 const WebappWebpackPlugin = require('webapp-webpack-plugin');
-const APP = require('./app.config.js');
+const APP = require('../../app.config.js');
 
 const DEFAULT_FAVICON = {
     logo: './.favicons-source-64x64.png',

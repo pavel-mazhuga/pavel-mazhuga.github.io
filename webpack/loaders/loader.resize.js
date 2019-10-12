@@ -10,6 +10,7 @@ const weblog = require('webpack-log');
 const logger = weblog({ name: 'loader-resize' });
 
 const resizeCache = flatCache.load('loader-resize.json', path.resolve('./node_modules/.cache/'));
+
 module.exports.resizeCache = resizeCache;
 
 module.exports = function ResizeLoader(content) {
@@ -18,7 +19,7 @@ module.exports = function ResizeLoader(content) {
     const loaderCallback = this.async();
 
     const query = loaderContext.resourceQuery ? loaderUtils.parseQuery(loaderContext.resourceQuery) : {};
-    const nextLoader = (query.inline === 'inline' ? urlLoader : fileLoader);
+    const nextLoader = query.inline === 'inline' ? urlLoader : fileLoader;
     if (!('resize' in query)) {
         return loaderCallback(null, nextLoader.call(loaderContext, content));
     }
@@ -31,12 +32,16 @@ module.exports = function ResizeLoader(content) {
 
     const resourceHash = md5File.sync(loaderContext.resourcePath);
     const cacheKey = `${relativePath}?${JSON.stringify(query)}&${resourceHash}`;
-    let [, resizeWidth,, resizeHeight, resizeFlag] = query.resize.trim().match(/^(\d*)(x(\d*))?([!><^])?$/);
+    let [, resizeWidth, , resizeHeight, resizeFlag] = query.resize.trim().match(/^(\d*)(x(\d*))?([!><^])?$/);
     resizeWidth = parseInt(resizeWidth, 10);
     resizeHeight = parseInt(resizeHeight, 10);
     resizeFlag = (resizeFlag || '').trim();
     const resizeFlagNames = {
-        '': '', '!': '-ignore-aspect', '>': '-shrink-larger', '<': '-enlarge-smaller', '^': '-fill-area',
+        '': '',
+        '!': '-ignore-aspect',
+        '>': '-shrink-larger',
+        '<': '-enlarge-smaller',
+        '^': '-fill-area',
     };
     if (!(resizeFlag in resizeFlagNames)) {
         return loaderCallback(`Unknown resize flag: '${query.resize}'`);
@@ -44,9 +49,10 @@ module.exports = function ResizeLoader(content) {
 
     const sourceFormat = resourceInfo.ext.substr(1).toLowerCase();
     const format = query.format.toLowerCase() || sourceFormat;
-    const name = (query.name || (
-        `${resourceInfo.name}@resize-${resizeWidth || ''}x${resizeHeight || ''}${resizeFlagNames[resizeFlag]}`
-    )) + (query.suffix ? `-${query.suffix}` : '');
+    const name =
+        (query.name ||
+            `${resourceInfo.name}@resize-${resizeWidth || ''}x${resizeHeight || ''}${resizeFlagNames[resizeFlag]}`) +
+        (query.suffix ? `-${query.suffix}` : '');
 
     const cacheData = resizeCache.getKey(cacheKey);
     if (cacheData !== undefined && cacheData.type === 'Buffer' && cacheData.data) {
