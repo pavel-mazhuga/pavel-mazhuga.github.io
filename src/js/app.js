@@ -1,4 +1,4 @@
-/* USE_SERVICE_WORKER */
+/* global USE_SERVICE_WORKER */
 import '../css/app.scss';
 import './sentry';
 import './polyfills';
@@ -20,5 +20,5 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 if (USE_SERVICE_WORKER) {
-    registerServiceWorker();
+    window.addEventListener('load', registerServiceWorker);
 }
