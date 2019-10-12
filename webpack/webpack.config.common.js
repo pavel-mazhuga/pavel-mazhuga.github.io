@@ -328,6 +328,24 @@ const legacyConfig = {
             cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep', '!.htaccess'],
             cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
         }),
+
+        new ManifestPlugin(configureManifest('manifest-legacy.json')),
+    ],
+};
+
+const modernConfig = {
+    output: {
+        filename: configureJsFilename('modern', PROD),
+        chunkFilename: configureJsFilename('modern', PROD),
+    },
+
+    module: {
+        // rules: [configureBabelLoader(Object.values(browserslist.modernBrowsers))],
+        rules: [configureBabelLoader(true)],
+    },
+
+    plugins: [
+        new ManifestPlugin(configureManifest('manifest-modern.json')),
         new CopyWebpackPlugin(
             [
                 ...[
@@ -350,23 +368,8 @@ const legacyConfig = {
                 debug: 'info',
             },
         ),
-        new ManifestPlugin(configureManifest('manifest-legacy.json')),
         ...configureServiceWorker(USE_SERVICE_WORKER),
     ],
-};
-
-const modernConfig = {
-    output: {
-        filename: configureJsFilename('modern', PROD),
-        chunkFilename: configureJsFilename('modern', PROD),
-    },
-
-    module: {
-        // rules: [configureBabelLoader(Object.values(browserslist.modernBrowsers))],
-        rules: [configureBabelLoader(true)],
-    },
-
-    plugins: [new ManifestPlugin(configureManifest('manifest-modern.json'))],
 
     resolve: {
         alias: {
