@@ -1,5 +1,4 @@
 /* global SERVICE_WORKER_HASH */
-
 export default () => {
     if (!SERVICE_WORKER_HASH) {
         throw new Error('[sw-precache] Service Worker hash error, please set hash: md5_file("/service-worker.js").');
