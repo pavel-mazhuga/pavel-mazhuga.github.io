@@ -108,15 +108,14 @@ const configureHtmlLoader = () => ({
     loader: './webpack/loaders/loader.html.js',
     options: {
         context: {
-            APP: {
-                LANGUAGE,
-                TITLE,
-                DESCRIPTION,
-                THEME_COLOR,
-                BACKGROUND_COLOR,
-                SENTRY_DSN,
-                PUBLIC_PATH,
-            },
+            LANGUAGE,
+            TITLE,
+            DESCRIPTION,
+            THEME_COLOR,
+            BACKGROUND_COLOR,
+            SENTRY_DSN,
+            ROOT_PATH,
+            PUBLIC_PATH,
             NODE_ENV,
             SERVICE_WORKER_HASH,
         },
