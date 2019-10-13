@@ -218,14 +218,7 @@ const configureCssLoader = () => ({
     ]),
 });
 
-const configureManifest = (fileName) => ({
-    fileName,
-    // basePath: settings.manifestConfig.basePath,
-    // map: (file) => {
-    //     file.name = file.name.replace(/(\.[a-f0-9]{32})(\..*)$/, '$2');
-    //     return file;
-    // },
-});
+const configureManifest = (fileName) => ({ fileName });
 
 const configureServiceWorker = (useServiceWorker) => {
     if (useServiceWorker) {
