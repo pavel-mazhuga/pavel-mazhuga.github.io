@@ -1,7 +1,7 @@
 /* global SERVICE_WORKER_HASH */
 export default () => {
     if (!SERVICE_WORKER_HASH) {
-        throw new Error('[sw-precache] Service Worker hash error, please set hash: md5_file("/service-worker.js").');
+        throw new Error('[sw-precache] Service Worker hash error.');
     }
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker
@@ -19,7 +19,7 @@ export default () => {
                                 }
                                 break;
                             case 'redundant':
-                                console.error('[sw-precache] The installing service worker became redundant.');
+                                console.error('[sw-precache] The installing of service worker became redundant.');
                                 break;
                             default:
                                 break;

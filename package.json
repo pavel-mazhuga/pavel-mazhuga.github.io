@@ -111,7 +111,6 @@
         "html-beautify-webpack-plugin": "latest",
         "html-webpack-plugin": "latest",
         "htmllint": "latest",
-        "image-size": "latest",
         "imagemin-gifsicle": "latest",
         "imagemin-jpegtran": "latest",
         "imagemin-mozjpeg": "latest",

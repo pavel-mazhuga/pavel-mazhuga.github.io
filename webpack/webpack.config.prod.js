@@ -98,6 +98,10 @@ const baseConfig = {
 
 module.exports = [
     merge(legacyConfig, baseConfig, {
+        plugins: [new BundleAnalyzerPlugin(configureBundleAnalyzerPlugin('legacy'))],
+    }),
+
+    merge(modernConfig, baseConfig, {
         plugins: [
             new ImageminPlugin({
                 test: /\.(jpeg|jpg|png|gif|svg)$/i,
@@ -108,20 +112,14 @@ module.exports = [
                 cache: false,
                 loader: true,
             }),
-            new BundleAnalyzerPlugin(configureBundleAnalyzerPlugin('legacy')),
-        ],
-    }),
-
-    merge(modernConfig, baseConfig, {
-        plugins: [
             ...configureHtmlWebpackPlugin(USE_HTML),
             new SvgoPlugin({ enabled: true }),
-            ...configureHtmlModernBuildPlugin(USE_HTML),
             // new PreloadWebpackPlugin({
             //     // rel: 'preload',
             //     // include: ['some'],
             //     // excludeHtmlNames: ['example.html'],
             // }),
+            ...configureHtmlModernBuildPlugin(USE_HTML),
             ...configureHtmlBeautifyPlugin(USE_HTML, HTML_PRETTY),
             new BundleAnalyzerPlugin(configureBundleAnalyzerPlugin('modern')),
         ],
