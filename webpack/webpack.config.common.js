@@ -131,7 +131,7 @@ const configureBabelLoader = (supportsESModules) => ({
         {
             loader: 'babel-loader',
             options: {
-                // cacheDirectory: true,
+                cacheDirectory: true,
                 plugins: [
                     'babel-plugin-transform-async-to-promises',
                     '@babel/transform-runtime',
@@ -328,7 +328,6 @@ const legacyConfig = {
             cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep', '!.htaccess'],
             cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
         }),
-
         new ManifestPlugin(configureManifest('manifest-legacy.json')),
     ],
 };
