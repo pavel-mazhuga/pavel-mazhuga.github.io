@@ -17,6 +17,7 @@ const { USE_COMPRESSION, USE_HTML, HTML_PRETTY } = require('../webpack.settings'
 const { resourceName } = require('./utils');
 const {
     configureHtmlWebpackPlugin,
+    configureCopyPlugin,
     legacyConfig,
     modernConfig,
     // LEGACY_TYPE,
@@ -121,6 +122,7 @@ module.exports = [
             // }),
             ...configureHtmlModernBuildPlugin(USE_HTML),
             ...configureHtmlBeautifyPlugin(USE_HTML, HTML_PRETTY),
+            configureCopyPlugin(),
             new BundleAnalyzerPlugin(configureBundleAnalyzerPlugin('modern')),
         ],
     }),

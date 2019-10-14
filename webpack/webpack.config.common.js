@@ -336,6 +336,32 @@ const legacyConfig = {
     ],
 };
 
+const configureCopyPlugin = () =>
+    new CopyWebpackPlugin(
+        [
+            ...[
+                '**/.htaccess',
+                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp}',
+                'google*.html',
+                'yandex_*.html',
+                '*.txt',
+                'fonts/*',
+                'audio/**/*',
+                'video/**/*',
+                'php/*.php',
+            ].map((from) => ({
+                from,
+                to: BUILD_PATH,
+                context: SRC_PATH,
+                ignore: SITEMAP,
+            })),
+        ],
+        {
+            copyUnmodified: !PROD,
+            debug: 'info',
+        },
+    );
+
 const modernConfig = {
     output: {
         filename: configureJsFilename(MODERN_TYPE, PROD),
@@ -350,30 +376,6 @@ const modernConfig = {
     plugins: [
         new webpack.DefinePlugin(configureDefinePlugin(MODERN_TYPE)),
         new ManifestPlugin(configureManifest('manifest-modern.json')),
-        new CopyWebpackPlugin(
-            [
-                ...[
-                    '**/.htaccess',
-                    'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp}',
-                    'google*.html',
-                    'yandex_*.html',
-                    '*.txt',
-                    'fonts/*',
-                    'audio/**/*',
-                    'video/**/*',
-                    'php/*.php',
-                ].map((from) => ({
-                    from,
-                    to: BUILD_PATH,
-                    context: SRC_PATH,
-                    ignore: SITEMAP,
-                })),
-            ],
-            {
-                copyUnmodified: !PROD,
-                debug: 'info',
-            },
-        ),
         ...configureServiceWorker(USE_SERVICE_WORKER),
     ],
 
@@ -396,6 +398,7 @@ module.exports = {
     })(baseConfig, modernConfig),
 
     configureHtmlWebpackPlugin,
+    configureCopyPlugin,
     SERVICE_WORKER_PATH,
     LEGACY_TYPE,
     MODERN_TYPE,

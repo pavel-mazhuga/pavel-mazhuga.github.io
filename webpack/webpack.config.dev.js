@@ -3,6 +3,7 @@ const merge = require('webpack-merge');
 const { USE_HTML } = require('../webpack.settings');
 const {
     configureHtmlWebpackPlugin,
+    configureCopyPlugin,
     legacyConfig,
     SERVICE_WORKER_PATH,
     USE_SOURCE_MAP,
@@ -26,7 +27,7 @@ module.exports = [
             },
         },
 
-        plugins: [...configureHtmlWebpackPlugin(USE_HTML)],
+        plugins: [...configureHtmlWebpackPlugin(USE_HTML), configureCopyPlugin()],
 
         performance: false,
 
