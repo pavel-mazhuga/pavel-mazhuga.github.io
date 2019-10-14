@@ -119,6 +119,7 @@
         "imagemin-svgo": "latest",
         "imagemin-webpack": "latest",
         "imports-loader": "latest",
+        "intersection-observer": "latest",
         "loader-utils": "latest",
         "lodash.debounce": "latest",
         "lodash.merge": "latest",
@@ -169,9 +170,12 @@
         "workbox-webpack-plugin": "latest"
     },
     "devDependencies": {
+        "@babel/plugin-proposal-optional-chaining": "latest",
+        "@babel/plugin-transform-react-jsx": "latest",
         "eslint-config-prettier": "latest",
         "eslint-plugin-jest": "latest",
         "eslint-plugin-prettier": "latest",
+        "eslint-plugin-react": "latest",
         "favicons-webpack-plugin": "latest",
         "husky": "latest",
         "jest": "latest",

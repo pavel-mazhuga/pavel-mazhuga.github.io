@@ -136,6 +136,14 @@ const configureBabelLoader = (supportsESModules) => ({
                     'babel-plugin-transform-async-to-promises',
                     '@babel/transform-runtime',
                     '@babel/plugin-syntax-dynamic-import',
+                    '@babel/plugin-proposal-optional-chaining',
+                    [
+                        '@babel/plugin-transform-react-jsx',
+                        {
+                            pragma: 'h',
+                            pragmaFrag: 'Fragment',
+                        },
+                    ],
                 ],
                 presets: [
                     [
@@ -262,6 +270,17 @@ const configureServiceWorker = (useServiceWorker) => {
     return [];
 };
 
+const configureDefinePlugin = (buildType) => ({
+    NODE_ENV: JSON.stringify(NODE_ENV),
+    ENV: JSON.stringify(process.env.ENV),
+    PUBLIC_PATH: JSON.stringify(PUBLIC_PATH),
+    ROOT_PATH: JSON.stringify(ROOT_PATH),
+    SENTRY_DSN: JSON.stringify(SENTRY_DSN),
+    BUILD_TYPE: JSON.stringify(buildType),
+    USE_SERVICE_WORKER,
+    SERVICE_WORKER_HASH,
+});
+
 const configureJsFilename = (buildType, isProd) => `js/${buildType}/[name]${isProd ? '.[contenthash:8]' : ''}.js`;
 
 const baseConfig = {
@@ -293,22 +312,13 @@ const baseConfig = {
             filename: `css/app${PROD ? '.[contenthash:8]' : ''}.css`,
             allChunks: true,
         }),
-        new webpack.DefinePlugin({
-            NODE_ENV: JSON.stringify(NODE_ENV),
-            ENV: JSON.stringify(process.env.ENV),
-            PUBLIC_PATH: JSON.stringify(PUBLIC_PATH),
-            ROOT_PATH: JSON.stringify(ROOT_PATH),
-            SENTRY_DSN: JSON.stringify(SENTRY_DSN),
-            USE_SERVICE_WORKER,
-            SERVICE_WORKER_HASH,
-        }),
     ],
 };
 
 const legacyConfig = {
     output: {
-        filename: configureJsFilename('legacy', PROD),
-        chunkFilename: configureJsFilename('legacy', PROD),
+        filename: configureJsFilename(LEGACY_TYPE, PROD),
+        chunkFilename: configureJsFilename(LEGACY_TYPE, PROD),
     },
 
     module: {
@@ -321,14 +331,15 @@ const legacyConfig = {
             cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep', '!.htaccess'],
             cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
         }),
+        new webpack.DefinePlugin(configureDefinePlugin(LEGACY_TYPE)),
         new ManifestPlugin(configureManifest('manifest-legacy.json')),
     ],
 };
 
 const modernConfig = {
     output: {
-        filename: configureJsFilename('modern', PROD),
-        chunkFilename: configureJsFilename('modern', PROD),
+        filename: configureJsFilename(MODERN_TYPE, PROD),
+        chunkFilename: configureJsFilename(MODERN_TYPE, PROD),
     },
 
     module: {
@@ -337,6 +348,7 @@ const modernConfig = {
     },
 
     plugins: [
+        new webpack.DefinePlugin(configureDefinePlugin(MODERN_TYPE)),
         new ManifestPlugin(configureManifest('manifest-modern.json')),
         new CopyWebpackPlugin(
             [
@@ -347,6 +359,8 @@ const modernConfig = {
                     'yandex_*.html',
                     '*.txt',
                     'fonts/*',
+                    'audio/**/*',
+                    'video/**/*',
                     'php/*.php',
                 ].map((from) => ({
                     from,

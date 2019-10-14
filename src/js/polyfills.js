@@ -1,3 +1,8 @@
+/* global BUILD_TYPE */
 /* eslint global-require: "off" */
 import 'focus-visible';
-// import 'picturefill';
+// import 'intersection-observer';
+
+if (BUILD_TYPE === 'legacy') {
+    // require('picturefill');
+}
