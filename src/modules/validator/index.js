@@ -6,22 +6,22 @@ export { isEmail, equals };
 
 function getLang() {
     switch (true) {
-    case /en/.test(document.documentElement.lang):
-        return 'en';
-    default:
-        return 'ru';
+        case /en/.test(document.documentElement.lang):
+            return 'en';
+        default:
+            return 'ru';
     }
 }
 
 export function clearMessages(form) {
-    const messages = Array.from(form.querySelectorAll('.app-message'));
-    messages.forEach((messageElement) => {
-            messageElement.textContent = '';
+    const messageElements = Array.from(form.querySelectorAll('.app-message'));
+    messageElements.forEach((messageElement) => {
+        messageElement.textContent = '';
     });
 }
 
 export function isPhone(string) {
-    return (/^((8|\+7)[- ]?)?(\(?\d{3}\)?[- ]?)?[\d\- ]{5,10}$/i).test(string);
+    return /^((8|\+7)[- ]?)?(\(?\d{3}\)?[- ]?)?[\d\- ]{5,10}$/i.test(string);
 }
 
 export function validateInput(input) {
@@ -48,9 +48,12 @@ export function validateInput(input) {
     // Валидация селекта
     if (input.classList.contains('js-validate--select')) {
         const options = Array.from(this.inputs.querySelectorAll('option'));
-        const selectedOptions = options.filter((option) => option.selected
-            && !option.hasAttribute('placeholder')
-            && option.innerText !== input.getAttribute('placeholder'));
+        const selectedOptions = options.filter(
+            (option) =>
+                option.selected &&
+                !option.hasAttribute('placeholder') &&
+                option.innerText !== input.getAttribute('placeholder'),
+        );
         return !!selectedOptions.length;
     }
 
@@ -67,7 +70,7 @@ export function validateInput(input) {
     // Кастомная валидация через регулярное выражение
     if (input.classList.contains('js-validate--custom')) {
         const regExp = input.getAttribute('data-custom-validation') || '.*';
-        return (new RegExp(regExp, 'i')).test(input.value);
+        return new RegExp(regExp, 'i').test(input.value);
     }
 
     // Default
@@ -92,9 +95,10 @@ export default (form, options = DEFAULT_OPTIONS) => {
 
         inputs.forEach((input) => {
             const isValid = validateInput(input);
-            const messageElement = input.parentElement && input.parentElement.querySelector('.app-message')
-                ? input.parentElement.querySelector('.app-message')
-                : null;
+            const messageElement =
+                input.parentElement && input.parentElement.querySelector('.app-message')
+                    ? input.parentElement.querySelector('.app-message')
+                    : null;
 
             if (isValid) {
                 input.classList.remove('is-error');
@@ -106,23 +110,24 @@ export default (form, options = DEFAULT_OPTIONS) => {
                     messageElement.textContent = '';
 
                     switch (true) {
-                    case input.value.trim().length === 0 && input.hasAttribute('required'):
-                        messageElement.textContent = options.messages[lang].EMPTY_FIELD;
-                        break;
-                    case input.classList.contains('js-validate--email'):
-                        messageElement.textContent = options.messages[lang].INVALIDATED_EMAIL;
-                        break;
-                    case input.classList.contains('js-validate--phone'):
-                        messageElement.textContent = options.messages[lang].INVALIDATED_PHONE;
-                        break;
-                    case input.classList.contains('js-validate--equivalent'):
-                        messageElement.textContent = options.messages[lang].INVALIDATED_EQUALS;
-                        break;
-                    case input.classList.contains('js-validate--custom') && input.hasAttribute('data-custom-validation-error-message'):
-                        messageElement.textContent = input.getAttribute('data-custom-validation-error-message');
-                        break;
-                    default:
-                        break;
+                        case input.value.trim().length === 0 && input.hasAttribute('required'):
+                            messageElement.textContent = options.messages[lang].EMPTY_FIELD;
+                            break;
+                        case input.classList.contains('js-validate--email'):
+                            messageElement.textContent = options.messages[lang].INVALIDATED_EMAIL;
+                            break;
+                        case input.classList.contains('js-validate--phone'):
+                            messageElement.textContent = options.messages[lang].INVALIDATED_PHONE;
+                            break;
+                        case input.classList.contains('js-validate--equivalent'):
+                            messageElement.textContent = options.messages[lang].INVALIDATED_EQUALS;
+                            break;
+                        case input.classList.contains('js-validate--custom') &&
+                            input.hasAttribute('data-custom-validation-error-message'):
+                            messageElement.textContent = input.getAttribute('data-custom-validation-error-message');
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
