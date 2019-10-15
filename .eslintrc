@@ -12,7 +12,7 @@
         "no-param-reassign": [2, { "props": false }],
         "unicode-bom": ["warn", "never"],
         "max-len": ["warn", 120, 4],
-        "indent": ["warn", 4],
+        "indent": ["warn", 4, { "SwitchCase": 1 }],
         "max-lines": [
             "warn",
             {
