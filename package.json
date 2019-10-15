@@ -77,7 +77,6 @@
         "@gfx/zopfli": "latest",
         "@sentry/browser": "latest",
         "autoprefixer": "latest",
-        "axios": "latest",
         "babel-eslint": "latest",
         "babel-loader": "latest",
         "babel-plugin-transform-async-to-promises": "latest",
@@ -167,6 +166,7 @@
         "webpack-cli": "latest",
         "webpack-log": "latest",
         "webpack-manifest-plugin": "latest",
+        "whatwg-fetch": "latest",
         "workbox-webpack-plugin": "latest"
     },
     "devDependencies": {

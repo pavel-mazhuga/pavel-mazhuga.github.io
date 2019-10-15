@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { triggerEvent, triggerCustomEvent } from '../../js/utils';
+import { triggerEvent, triggerCustomEvent } from '../../js/utils/trigger-event';
 
 export const clearInputs = (inputs = []) => {
     Array.from(inputs).forEach((input) => {
@@ -45,23 +44,16 @@ export default (form, _options = defaultOptions) => {
         form.classList.add('js-ajax-form--loading');
         options.onBeforeSend();
         triggerCustomEvent(form, 'send');
-        let response;
 
         try {
+            let response;
+
             if (method === 'get') {
-                response = await axios.get(url);
+                response = await fetch(url, { method }).then((res) => res.json());
             }
 
-            if (method === 'post') {
-                response = await axios.post(url, data);
-            }
-
-            if (method === 'put') {
-                response = await axios.put(url, data);
-            }
-
-            if (method === 'delete') {
-                response = await axios.delete(url, data);
+            if (['post', 'put', 'delete'].includes(method)) {
+                response = await fetch(url, { method, data }).then((res) => res.json());
             }
 
             options.onSuccess(response.data);
