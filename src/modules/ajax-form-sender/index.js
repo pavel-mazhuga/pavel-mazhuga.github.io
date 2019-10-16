@@ -36,6 +36,12 @@ export default (form, _options = defaultOptions) => {
         }
     }
 
+    const appendData = (..._data) => {
+        if (data instanceof FormData) {
+            data.append(..._data);
+        }
+    };
+
     const send = async (url = form.action) => {
         if (!(url && typeof url === 'string')) {
             throw new Error('Form does not have "action" attibute and url has not been provided');
@@ -95,5 +101,5 @@ export default (form, _options = defaultOptions) => {
 
     form.addEventListener('submit', onSubmit);
 
-    return { send, destroy };
+    return { appendData, send, destroy };
 };
