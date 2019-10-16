@@ -56,9 +56,6 @@
     "lint-staged": {
         "src/**/*.{js,jsx,ts,tsx,json,md,css,scss,html}": [
             "pretty-quick --staged"
-        ],
-        "src/**/*.{js,jsx,ts,tsx}": [
-            "jest --findRelatedTests"
         ]
     },
     "husky": {
