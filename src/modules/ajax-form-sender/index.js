@@ -56,14 +56,14 @@ export default (form, _options = defaultOptions) => {
                 response = await fetch(url, { method, data }).then((res) => res.json());
             }
 
-            options.onSuccess(response.data);
-            triggerCustomEvent(form, 'success', { data: response.data });
+            options.onSuccess(response);
+            triggerCustomEvent(form, 'success', { data: response });
             form.classList.add('js-ajax-form--success');
             Array.from(form.querySelectorAll('.app-message')).forEach((messageElement) => {
                 messageElement.textContent = '';
             });
 
-            return response.data;
+            return response;
         } catch (err) {
             options.onError(err);
             triggerCustomEvent(form, 'error', { error: err });
