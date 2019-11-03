@@ -110,7 +110,7 @@ module.exports = [
                 name: resourceName('img'),
                 // eslint-disable-next-line global-require
                 imageminOptions: require('./imagemin.config.js'),
-                cache: false,
+                cache: true,
                 loader: true,
             }),
             ...configureHtmlWebpackPlugin(USE_HTML),
