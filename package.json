@@ -46,7 +46,7 @@
         "start": "cross-env NODE_ENV=development webpack-dev-server --hot --config webpack/webpack.config.dev.js",
         "build": "npm-run-all test lint:js prod lint:html",
         "browserslist": "npx browserslist",
-        "subsetting": "call ./fonts.subsetting.bat",
+        "subsetting": "node ./subset-fonts.js",
         "bundle-analyzer:legacy": "cd ./node_modules/.cache && start bundle-analyzer-legacy-production.html",
         "bundle-analyzer:modern": "cd ./node_modules/.cache && start bundle-analyzer-modern-production.html",
         "bundle-analyzer": "npm run bundle-analyzer:legacy && npm run bundle-analyzer:modern",
