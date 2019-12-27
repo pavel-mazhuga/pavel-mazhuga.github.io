@@ -2,7 +2,7 @@
 
 ## Требование:
 
--   Node.js версии 8 или выше (https://nodejs.org/en/). С нодой автоматически ставится пакетный менеджер - NPM (Node Package Manager) (https://www.npmjs.com/). Проверить версию ноды можно командой **node -v**.
+-   Node.js версии 11 или выше (https://nodejs.org/en/). С нодой автоматически ставится пакетный менеджер - NPM (Node Package Manager) (https://www.npmjs.com/). Проверить версию ноды можно командой **node -v**.
 -   Глобально установленный webpack 4: **npm i -g webpack-cli**
 -   Для сабсеттинга шрифтов:
     -   Python
@@ -42,17 +42,16 @@
 -   **npm run browserslist** — список поддерживаемых браузеров
 -   **npm run dev** — сборка в development-режиме
 -   **npm run watch** — watch в production-режиме
--   **npm run watch-dev** — watch в development-режиме
--   **npm run watch-prod** — watch в production-режиме
--   **npm run js-lint** — линтер js
--   **npm run css-lint** — линтер css
--   **npm run css-format** — форматер css, используется в паре с **npm run css-lint**
--   **npm run html-lint** — линтер html
+-   **npm run watch:dev** — watch в development-режиме
+-   **npm run watch:prod** — watch в production-режиме
+-   **npm run lint:css** — линтер js
+-   **npm run lint:css** — линтер css
+-   **npm run lint:html** — линтер html
 -   **npm run lint** — запуск всех линтеров (для проверки корректности html/css/js перед тем, как отдать бэкендеру)
 -   **npm run subsetting** — сабсеттинг шрифтов (удаляются неиспользуемые глифы, значительно уменьшается размер шрифта).
--   **npm start** — сервер в development-режиме
+-   **npm start** — сервер в development-режиме (node-сервер)
 -   **npm run prod** — сборка в production-режиме (publicPath === "/")
--   **npm run prod:sandbox** — сборка в production-режиме (publicPath === "/sand/{project-name}/dev/" - для деплоя на sandbox-сервер Chipsa)
+-   **npm run prod:sandbox** — сборка в production-режиме (publicPath === "/sand/{project-name}/" - для деплоя на sandbox-сервер Chipsa)
 -   **npm run prod:bitrix** — сборка в production-режиме (publicPath === "[путь от корня до папки с фронтендом]")
 -   **npm run build** — релизный билд, запускается в production-режиме, включая все линтеры
 -   **npm test** — запуск тестов (unit, e2e)
