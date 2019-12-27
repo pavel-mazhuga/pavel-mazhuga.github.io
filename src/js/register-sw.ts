@@ -28,7 +28,7 @@ export default () => {
                 };
                 if (
                     localStorage.getItem('SERVICE_WORKER_HASH') !== SERVICE_WORKER_HASH &&
-                    (registration.installing && registration.installing.state === 'installed')
+                    registration.installing && registration.installing.state === 'installed'
                 ) {
                     console.log('[sw-precache] Service Worker was updated because hash changed.');
                     try {

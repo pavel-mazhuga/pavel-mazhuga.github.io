@@ -34,11 +34,15 @@
     "scripts": {
         "test": "jest",
         "dev": "cross-env NODE_ENV=development webpack --config webpack/webpack.config.dev.js",
-        "prod": "cross-env NODE_ENV=production webpack --config webpack/webpack.config.prod.js",
+        "prod:build": "cross-env NODE_ENV=production webpack --config webpack/webpack.config.prod.js",
+        "prod:modern": "cross-env BUILD_TYPE=modern npm run prod:build",
+        "prod:legacy": "cross-env BUILD_TYPE=legacy npm run prod:build",
+        "prod": "npm run prod:legacy && npm run prod:modern",
         "prod:sandbox": "cross-env ENV=sandbox npm run prod",
         "prod:bitrix": "cross-env ENV=bitrix npm run prod",
-        "watch": "npm run watch:dev",
+        "watch": "npm run watch:dev:bitrix",
         "watch:dev": "cross-env NODE_ENV=development webpack --watch --config webpack/webpack.config.dev.js",
+        "watch:dev:bitrix": "cross-env ENV=bitrix npm run watch:dev",
         "watch:prod": "cross-env NODE_ENV=production webpack --watch -p",
         "lint:js": "cross-env NODE_ENV=development eslint --config .eslintrc --ignore-path .eslintignore --fix *.js src/**/*.js",
         "lint:html": "cross-env NODE_ENV=development node ./script.html-lint.js",
@@ -50,18 +54,7 @@
         "bundle-analyzer:legacy": "cd ./node_modules/.cache && start bundle-analyzer-legacy-production.html",
         "bundle-analyzer:modern": "cd ./node_modules/.cache && start bundle-analyzer-modern-production.html",
         "bundle-analyzer": "npm run bundle-analyzer:legacy && npm run bundle-analyzer:modern",
-        "ba": "npm run bundle-analyzer",
-        "lint-staged": "lint-staged"
-    },
-    "lint-staged": {
-        "src/**/*.{js,jsx,ts,tsx,json,md,css,scss}": [
-            "pretty-quick --staged"
-        ]
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
+        "ba": "npm run bundle-analyzer"
     },
     "dependencies": {
         "@babel/cli": "latest",
@@ -169,17 +162,20 @@
     "devDependencies": {
         "@babel/plugin-proposal-optional-chaining": "latest",
         "@babel/plugin-transform-react-jsx": "latest",
+        "@babel/preset-typescript": "latest",
+        "@typescript-eslint/eslint-plugin": "latest",
+        "@typescript-eslint/parser": "latest",
         "eslint-config-prettier": "latest",
         "eslint-plugin-jest": "latest",
         "eslint-plugin-prettier": "latest",
         "eslint-plugin-react": "latest",
+        "eslint-plugin-react-hooks": "latest",
         "favicons-webpack-plugin": "latest",
-        "husky": "latest",
         "jest": "latest",
-        "lint-staged": "latest",
         "preload-webpack-plugin": "^3.0.0-beta.4",
         "prettier": "latest",
         "pretty-quick": "latest",
+        "typescript": "latest",
         "webpack-dev-server": "latest",
         "webpack-merge": "latest"
     }

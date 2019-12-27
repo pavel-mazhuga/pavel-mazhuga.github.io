@@ -4,13 +4,14 @@ const { USE_HTML } = require('../webpack.settings');
 const {
     configureHtmlWebpackPlugin,
     configureCopyPlugin,
-    legacyConfig,
+    configureCleanWebpackPlugin,
+    modernConfig,
     SERVICE_WORKER_PATH,
-    USE_SOURCE_MAP,
+    // USE_SOURCE_MAP,
 } = require('./webpack.config.common');
 
 module.exports = [
-    merge(legacyConfig, {
+    merge(modernConfig, {
         mode: 'development',
 
         watchOptions: {
@@ -27,10 +28,11 @@ module.exports = [
             },
         },
 
-        plugins: [...configureHtmlWebpackPlugin(USE_HTML), configureCopyPlugin()],
+        plugins: [configureCleanWebpackPlugin(), ...configureHtmlWebpackPlugin(USE_HTML), configureCopyPlugin()],
 
         performance: false,
 
-        devtool: USE_SOURCE_MAP ? 'eval-source-map' : 'nosources-source-map',
+        // devtool: USE_SOURCE_MAP ? 'eval-source-map' : 'nosources-source-map',
+        devtool: 'eval-source-map',
     }),
 ];

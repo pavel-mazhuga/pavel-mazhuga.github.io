@@ -7,7 +7,7 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
-const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
+// const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -56,7 +56,7 @@ const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
 
 const PUBLIC_PATH = configurePublicPath();
 const ROOT_PATH = configureRootPath();
-const WATCH = process.argv.indexOf('--watch') !== -1 || process.argv.indexOf('-w') !== -1;
+// const WATCH = process.argv.indexOf('--watch') !== -1 || process.argv.indexOf('-w') !== -1;
 const PROD = NODE_ENV === 'production';
 const DEV_SERVER = path.basename(require.main.filename, '.js') === 'webpack-dev-server';
 const USE_SOURCE_MAP = DEV_SERVER;
@@ -123,9 +123,21 @@ const configureHtmlLoader = () => ({
 });
 
 const configureBabelLoader = (supportsESModules) => ({
-    test: /\.jsx?$/i,
+    test: /\.(js|ts)x?$/i,
+    resolve: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    },
     exclude: {
         test: path.join(__dirname, '../node_modules'),
+        // ...(supportsESModules
+        //     ? {}
+        //     : {
+        //           exclude: {
+        //               test: [
+        //                   path.resolve(__dirname, '../node_modules/idlize'),
+        //               ],
+        //           },
+        //       }),
     },
     loaders: [
         {
@@ -135,7 +147,12 @@ const configureBabelLoader = (supportsESModules) => ({
                 plugins: [
                     'babel-plugin-transform-async-to-promises',
                     '@babel/transform-runtime',
-                    '@babel/plugin-syntax-dynamic-import',
+                    [
+                        '@babel/plugin-syntax-dynamic-import',
+                        {
+                            allChunks: true,
+                        },
+                    ],
                     '@babel/plugin-proposal-optional-chaining',
                     [
                         '@babel/plugin-transform-react-jsx',
@@ -156,8 +173,15 @@ const configureBabelLoader = (supportsESModules) => ({
                                 ...(supportsESModules
                                     ? { esmodules: true }
                                     : { browsers: browserslist.legacyBrowsers }),
-                                // browsers: browserList,
                             },
+                        },
+                    ],
+                    [
+                        '@babel/preset-typescript',
+                        {
+                            jsxPragma: 'h',
+                            isTSX: true,
+                            allExtensions: true,
                         },
                     ],
                 ],
@@ -281,13 +305,51 @@ const configureDefinePlugin = (buildType) => ({
     SERVICE_WORKER_HASH,
 });
 
-const configureJsFilename = (buildType, isProd) => `js/${buildType}/[name]${isProd ? '.[contenthash:8]' : ''}.js`;
+const configureJsFilename = (buildType, isProd) => `js/${buildType}/[name].js`;
+
+const configureCopyPlugin = () =>
+    new CopyWebpackPlugin(
+        [
+            ...[
+                '**/.htaccess',
+                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp}',
+                'google*.html',
+                'yandex_*.html',
+                '*.txt',
+                'fonts/*',
+                'audio/**/*',
+                'video/**/*',
+                'upload/**/*',
+                'php/*.php',
+            ].map((from) => ({
+                from,
+                to: BUILD_PATH,
+                context: SRC_PATH,
+                ignore: SITEMAP,
+            })),
+            ...['node_modules/lightgallery.js/dist/**/*'].map((from) => ({
+                from,
+                to: BUILD_PATH,
+                context: '../',
+            })),
+        ],
+        {
+            copyUnmodified: !PROD,
+            debug: 'info',
+        },
+    );
+
+const configureCleanWebpackPlugin = () =>
+    new CleanWebpackPlugin({
+        cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep', '!.htaccess'],
+        cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
+    });
 
 const baseConfig = {
     name: PACKAGE_NAME,
 
     entry: {
-        app: `${SRC_PATH}/js/app.js`,
+        app: `${SRC_PATH}/js/app.ts`,
     },
 
     output: {
@@ -307,12 +369,22 @@ const baseConfig = {
     },
 
     plugins: [
-        ...(WATCH ? [new BrowserSyncPlugin({ host: 'localhost', port: 8080 })] : []),
+        // ...(WATCH ? [new BrowserSyncPlugin({ host: 'localhost', port: 8080 })] : []),
         new MiniCssExtractPlugin({
-            filename: `css/app${PROD ? '.[contenthash:8]' : ''}.css`,
+            filename: `css/app.css`,
             allChunks: true,
+            chunkFilename: 'css/[name].css',
         }),
     ],
+
+    resolve: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        alias: {
+            react: 'preact/compat',
+            'react-dom/test-utils': 'preact/test-utils',
+            'react-dom': 'preact/compat',
+        },
+    },
 };
 
 const legacyConfig = {
@@ -322,45 +394,14 @@ const legacyConfig = {
     },
 
     module: {
-        // rules: [configureBabelLoader(Object.values(browserslist.legacyBrowsers))],
         rules: [configureBabelLoader()],
     },
 
     plugins: [
-        new CleanWebpackPlugin({
-            cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep', '!.htaccess'],
-            cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
-        }),
         new webpack.DefinePlugin(configureDefinePlugin(LEGACY_TYPE)),
         new ManifestPlugin(configureManifest('manifest-legacy.json')),
     ],
 };
-
-const configureCopyPlugin = () =>
-    new CopyWebpackPlugin(
-        [
-            ...[
-                '**/.htaccess',
-                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp}',
-                'google*.html',
-                'yandex_*.html',
-                '*.txt',
-                'fonts/*',
-                'audio/**/*',
-                'video/**/*',
-                'php/*.php',
-            ].map((from) => ({
-                from,
-                to: BUILD_PATH,
-                context: SRC_PATH,
-                ignore: SITEMAP,
-            })),
-        ],
-        {
-            copyUnmodified: !PROD,
-            debug: 'info',
-        },
-    );
 
 const modernConfig = {
     output: {
@@ -369,7 +410,6 @@ const modernConfig = {
     },
 
     module: {
-        // rules: [configureBabelLoader(Object.values(browserslist.modernBrowsers))],
         rules: [configureBabelLoader(true)],
     },
 
@@ -399,6 +439,7 @@ module.exports = {
 
     configureHtmlWebpackPlugin,
     configureCopyPlugin,
+    configureCleanWebpackPlugin,
     SERVICE_WORKER_PATH,
     LEGACY_TYPE,
     MODERN_TYPE,

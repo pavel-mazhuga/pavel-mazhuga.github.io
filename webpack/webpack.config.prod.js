@@ -7,17 +7,17 @@ const ImageminPlugin = require('imagemin-webpack');
 const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const BrotliPlugin = require('brotli-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
-const PreloadWebpackPlugin = require('preload-webpack-plugin');
+// const PreloadWebpackPlugin = require('preload-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const zopfli = require('@gfx/zopfli');
 
 const HtmlWebpackModernBuildPlugin = require('./plugins/plugin.modern-build');
-const SvgoPlugin = require('./plugins/plugin.svgo.js');
 const { USE_COMPRESSION, USE_HTML, HTML_PRETTY } = require('../webpack.settings');
 const { resourceName } = require('./utils');
 const {
     configureHtmlWebpackPlugin,
     configureCopyPlugin,
+    configureCleanWebpackPlugin,
     legacyConfig,
     modernConfig,
     // LEGACY_TYPE,
@@ -97,33 +97,31 @@ const baseConfig = {
     ],
 };
 
-module.exports = [
-    merge(legacyConfig, baseConfig, {
-        plugins: [new BundleAnalyzerPlugin(configureBundleAnalyzerPlugin('legacy'))],
-    }),
+const { BUILD_TYPE } = process.env;
 
-    merge(modernConfig, baseConfig, {
-        plugins: [
-            new ImageminPlugin({
-                test: /\.(jpeg|jpg|png|gif|svg)$/i,
-                exclude: /(fonts|font|upload)/i,
-                name: resourceName('img'),
-                // eslint-disable-next-line global-require
-                imageminOptions: require('./imagemin.config.js'),
-                cache: true,
-                loader: true,
-            }),
-            ...configureHtmlWebpackPlugin(USE_HTML),
-            new SvgoPlugin({ enabled: true }),
-            // new PreloadWebpackPlugin({
-            //     // rel: 'preload',
-            //     // include: ['some'],
-            //     // excludeHtmlNames: ['example.html'],
-            // }),
-            ...configureHtmlModernBuildPlugin(USE_HTML),
-            ...configureHtmlBeautifyPlugin(USE_HTML, HTML_PRETTY),
-            configureCopyPlugin(),
-            new BundleAnalyzerPlugin(configureBundleAnalyzerPlugin('modern')),
-        ],
-    }),
-];
+module.exports =
+    BUILD_TYPE === 'modern'
+        ? merge(modernConfig, baseConfig, {
+              plugins: [
+                  new ImageminPlugin({
+                      test: /\.(jpeg|jpg|png|gif|svg)$/i,
+                      exclude: /(fonts|font|upload)/i,
+                      name: resourceName('img'),
+                      // eslint-disable-next-line global-require
+                      imageminOptions: require('./imagemin.config.js'),
+                      cache: true,
+                      loader: true,
+                  }),
+                  ...configureHtmlWebpackPlugin(USE_HTML),
+                  ...configureHtmlModernBuildPlugin(USE_HTML),
+                  ...configureHtmlBeautifyPlugin(USE_HTML, HTML_PRETTY),
+                  configureCopyPlugin(),
+                  new BundleAnalyzerPlugin(configureBundleAnalyzerPlugin('modern')),
+              ],
+          })
+        : merge(legacyConfig, baseConfig, {
+              plugins: [
+                  configureCleanWebpackPlugin(),
+                  new BundleAnalyzerPlugin(configureBundleAnalyzerPlugin('legacy')),
+              ],
+          });
