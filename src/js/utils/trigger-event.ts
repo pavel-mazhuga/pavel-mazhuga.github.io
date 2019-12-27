@@ -1,4 +1,4 @@
-export function triggerEvent(el, eventName) {
+export function triggerEvent(el: Element, eventName: string) {
     let event;
 
     if (window.event) {
@@ -16,7 +16,7 @@ export function triggerEvent(el, eventName) {
     el.dispatchEvent(event);
 }
 
-export function triggerCustomEvent(el, eventName, data = {}) {
+export function triggerCustomEvent(el: Element, eventName: string, data: any) {
     let event;
 
     if (window.CustomEvent) {

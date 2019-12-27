@@ -1,4 +1,8 @@
-export default function wrap(el, wrapNodeType = 'div', options = {}) {
+interface WrapOptions {
+    class?: string;
+}
+
+export default (el: Element, wrapNodeType = 'div', options: WrapOptions = {}): Element => {
     const parent = el.parentNode;
     const wrapper = document.createElement(wrapNodeType);
 
@@ -13,4 +17,4 @@ export default function wrap(el, wrapNodeType = 'div', options = {}) {
     }
 
     return el;
-}
+};
