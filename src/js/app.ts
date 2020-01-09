@@ -1,4 +1,4 @@
-import '../css/app.scss';
+import './webpack-imports';
 import './sentry';
 import './polyfills';
 import barba from '@barba/core';
