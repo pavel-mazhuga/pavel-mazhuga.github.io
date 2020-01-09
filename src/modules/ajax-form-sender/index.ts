@@ -1,6 +1,6 @@
 import { triggerEvent, triggerCustomEvent } from '../../js/utils/trigger-event';
 
-export const clearInputs = (inputs = []) => {
+export const clearInputs = (inputs: HTMLInputElement[] = []) => {
     Array.from(inputs).forEach((input) => {
         if (input.type === 'checkbox') {
             input.checked = false;
@@ -13,8 +13,8 @@ export const clearInputs = (inputs = []) => {
 
 const defaultOptions = {
     onBeforeSend: () => {},
-    onSuccess: () => {},
-    onError: () => {},
+    onSuccess: (response: Response) => {},
+    onError: (err: Error) => {},
     onComplete: () => {},
     data: {},
     shouldClearInputs: true,
@@ -22,11 +22,12 @@ const defaultOptions = {
     method: 'get',
 };
 
-export default (form, _options = defaultOptions) => {
+export default (form: HTMLFormElement, _options = defaultOptions) => {
     const options = { ...defaultOptions, ..._options };
     const { method } = options;
-    const inputs = Array.from(form.querySelectorAll(options.inputSelector));
-    let data;
+    const inputs = Array.from(form.querySelectorAll(options.inputSelector)) as HTMLInputElement[];
+    let data: any;
+
     if (['post', 'put', 'delete'].includes(method)) {
         data = new FormData(form);
         if (options.data) {
@@ -36,7 +37,7 @@ export default (form, _options = defaultOptions) => {
         }
     }
 
-    const appendData = (..._data) => {
+    const appendData = (..._data: [string, string | Blob, string | undefined]) => {
         if (data instanceof FormData) {
             data.append(..._data);
         }
@@ -52,14 +53,12 @@ export default (form, _options = defaultOptions) => {
         triggerCustomEvent(form, 'send');
 
         try {
-            let response;
+            let response: Response;
 
             if (method === 'get') {
                 response = await fetch(url, { method }).then((res) => res.json());
-            }
-
-            if (['post', 'put', 'delete'].includes(method)) {
-                response = await fetch(url, { method, data }).then((res) => res.json());
+            } else {
+                response = await fetch(url, { method, body: data }).then((res) => res.json());
             }
 
             options.onSuccess(response);
@@ -86,7 +85,7 @@ export default (form, _options = defaultOptions) => {
         }
     };
 
-    const onSubmit = (event) => {
+    const onSubmit = (event: any) => {
         event.preventDefault();
         send();
     };
