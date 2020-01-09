@@ -33,7 +33,7 @@
         "watch:dev:bitrix": "cross-env ENV=bitrix npm run watch:dev",
         "watch:prod": "cross-env NODE_ENV=production webpack --watch -p",
         "lint:js": "cross-env NODE_ENV=development eslint --config .eslintrc --ignore-path .eslintignore --fix *.js src/**/*.js",
-        "lint:html": "cross-env NODE_ENV=development node ./script.html-lint.js",
+        "lint:html": "cross-env NODE_ENV=development node ./webpack/script.html-lint.js",
         "lint": "npm run lint:js && npm run lint:html",
         "start": "cross-env NODE_ENV=development webpack-dev-server --hot --config webpack/webpack.config.dev.js",
         "build": "npm-run-all test lint:js prod lint:html",
