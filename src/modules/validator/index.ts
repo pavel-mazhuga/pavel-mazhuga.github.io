@@ -13,18 +13,18 @@ function getLang() {
     }
 }
 
-export function clearMessages(form) {
+export function clearMessages(form: Element) {
     const messageElements = Array.from(form.querySelectorAll('.app-message'));
     messageElements.forEach((messageElement) => {
         messageElement.textContent = '';
     });
 }
 
-export function isPhone(string) {
+export function isPhone(string: string): boolean {
     return /^((8|\+7)[- ]?)?(\(?\d{3}\)?[- ]?)?[\d\- ]{5,10}$/i.test(string);
 }
 
-export function validateInput(input) {
+export function validateInput(input: HTMLInputElement): boolean {
     // Валидация заполненности поля
     if (input.hasAttribute('required') && input.value.trim().length === 0) {
         return false;
@@ -47,7 +47,7 @@ export function validateInput(input) {
 
     // Валидация селекта
     if (input.classList.contains('js-validate--select')) {
-        const options = Array.from(this.inputs.querySelectorAll('option'));
+        const options = Array.from(input.querySelectorAll('option'));
         const selectedOptions = options.filter(
             (option) =>
                 option.selected &&
@@ -63,8 +63,8 @@ export function validateInput(input) {
             return false;
         }
         const fieldName = input.getAttribute('data-equivalent-name');
-        const field = document.querySelector(`[name="${fieldName}"]`);
-        return equals(input.value, field.value);
+        const field = document.querySelector(`[name="${fieldName}"]`) as HTMLInputElement | null;
+        return field ? equals(input.value, field.value) : false;
     }
 
     // Кастомная валидация через регулярное выражение
@@ -85,8 +85,8 @@ const DEFAULT_OPTIONS = {
     onValidationComplete: () => {},
 };
 
-export default (form, options = DEFAULT_OPTIONS) => {
-    const inputs = Array.from(form.querySelectorAll(options.inputSelector));
+export default (form: HTMLFormElement, options = DEFAULT_OPTIONS) => {
+    const inputs = Array.from(form.querySelectorAll(options.inputSelector)) as HTMLInputElement[];
 
     function validate() {
         let isFormValid = true;
