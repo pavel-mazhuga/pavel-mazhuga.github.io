@@ -39,8 +39,8 @@
         "build": "npm-run-all test lint:js prod lint:html",
         "browserslist": "npx browserslist",
         "subsetting": "node ./subset-fonts.js",
-        "bundle-analyzer:legacy": "cd ./node_modules/.cache && start bundle-analyzer-legacy-production.html",
-        "bundle-analyzer:modern": "cd ./node_modules/.cache && start bundle-analyzer-modern-production.html",
+        "bundle-analyzer:legacy": "cd ./node_modules/.cache && open-cli bundle-analyzer-legacy-production.html",
+        "bundle-analyzer:modern": "cd ./node_modules/.cache && open-cli bundle-analyzer-modern-production.html",
         "bundle-analyzer": "npm run bundle-analyzer:legacy && npm run bundle-analyzer:modern",
         "ba": "npm run bundle-analyzer"
     },
@@ -106,6 +106,7 @@
         "node-sass": "latest",
         "npm-run-all": "latest",
         "nunjucks": "latest",
+        "open-cli": "latest",
         "picturefill": "latest",
         "postcss": "latest",
         "postcss-browser-reporter": "latest",
