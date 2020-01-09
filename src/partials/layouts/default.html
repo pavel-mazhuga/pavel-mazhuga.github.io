@@ -19,10 +19,8 @@
     <body>
         {% include 'partials/header.html' %}
 
-        <main data-barba="wrapper" class="main">
-            <div data-barba="container" data-barba-namespace="{{ PAGE.namespace }}">
-                {% block content %}{% endblock %}
-            </div>
+        <main class="main">
+            {% block content %}{% endblock %}
         </main>
 
         {% include 'partials/footer.html' %}

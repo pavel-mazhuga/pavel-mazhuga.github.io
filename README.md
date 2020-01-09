@@ -12,9 +12,6 @@
 ## В сборку включены:
 
 -   Bootstrap 4 (https://getbootstrap.com/)
--   Barba v2 — библиотека для PJAX переходов между страницами (http://barbajs.org/)
-    -   src/js/views => здесь лежат вьюхи страниц сайта
-    -   src/js/transitions => здесь лежат транзишены между вьюхами
 
 Список всех npm-пакетов можно посмотреть в файле package.json.
 
@@ -44,10 +41,9 @@
 -   **npm run watch** — watch в production-режиме
 -   **npm run watch:dev** — watch в development-режиме
 -   **npm run watch:prod** — watch в production-режиме
--   **npm run lint:css** — линтер js
--   **npm run lint:css** — линтер css
+-   **npm run lint:js** — линтер js
 -   **npm run lint:html** — линтер html
--   **npm run lint** — запуск всех линтеров (для проверки корректности html/css/js перед тем, как отдать бэкендеру)
+-   **npm run lint** — запуск всех линтеров (для проверки корректности html/js перед тем, как отдать бэкендеру)
 -   **npm run subsetting** — сабсеттинг шрифтов (удаляются неиспользуемые глифы, значительно уменьшается размер шрифта).
 -   **npm start** — сервер в development-режиме (node-сервер)
 -   **npm run prod** — сборка в production-режиме (publicPath === "/")
