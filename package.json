@@ -8,29 +8,17 @@
     },
     "author": "Pavel Mazhuga",
     "license": "MIT",
-    "browserslist": {
-        "legacyBrowsers": [
-            "Android >= 5",
-            "IE >= 11",
-            "iOS >= 10",
-            "Safari >= 10",
-            "last 2 Edge versions",
-            "last 2 Chrome versions",
-            "last 2 ChromeAndroid versions",
-            "last 2 Firefox versions",
-            "last 2 Opera versions"
-        ],
-        "modernBrowsers": [
-            "Android >= 5",
-            "iOS >= 10",
-            "Safari >= 10.1",
-            "last 2 Edge versions",
-            "last 2 Chrome versions",
-            "last 2 ChromeAndroid versions",
-            "last 2 Firefox versions",
-            "last 2 Opera versions"
-        ]
-    },
+    "browserslist": [
+        "Android >= 5",
+        "IE >= 11",
+        "iOS >= 10",
+        "Safari >= 10",
+        "last 2 Edge versions",
+        "last 2 Chrome versions",
+        "last 2 ChromeAndroid versions",
+        "last 2 Firefox versions",
+        "last 2 Opera versions"
+    ],
     "scripts": {
         "test": "jest",
         "dev": "cross-env NODE_ENV=development webpack --config webpack/webpack.config.dev.js",

@@ -170,9 +170,7 @@ const configureBabelLoader = (supportsESModules) => ({
                             corejs: 3,
                             useBuiltIns: 'usage',
                             targets: {
-                                ...(supportsESModules
-                                    ? { esmodules: true }
-                                    : { browsers: browserslist.legacyBrowsers }),
+                                ...(supportsESModules ? { esmodules: true } : { browsers: browserslist }),
                             },
                         },
                     ],
