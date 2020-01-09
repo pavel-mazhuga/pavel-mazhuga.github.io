@@ -6,6 +6,6 @@ import 'focus-visible';
 if (BUILD_TYPE === 'legacy') {
     require('whatwg-fetch');
     require('core-js/es/symbol');
-    require('core-js/promise/finally');
+    require('core-js/es/promise/finally');
     // require('picturefill');
 }
