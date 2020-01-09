@@ -66,6 +66,7 @@
         "@barba/core": "latest",
         "@gfx/zopfli": "latest",
         "@sentry/browser": "latest",
+        "@types/validator": "^12.0.1",
         "autoprefixer": "latest",
         "babel-eslint": "latest",
         "babel-loader": "latest",

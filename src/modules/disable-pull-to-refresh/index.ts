@@ -1,25 +1,24 @@
 export default () => {
-    const isHtmlOverscrollBehaviorDisabled = window
-        .getComputedStyle(document.documentElement)
-        .getPropertyValue('overscroll-behavior') !== 'auto';
+    const isHtmlOverscrollBehaviorDisabled =
+        window.getComputedStyle(document.documentElement).getPropertyValue('overscroll-behavior') !== 'auto';
 
     if (CSS && CSS.supports('overscroll-behavior', 'none')) {
         if (!isHtmlOverscrollBehaviorDisabled) {
-            document.documentElement.style.overscrollBehavior = 'none';
+            (document.documentElement.style as any).overscrollBehavior = 'none';
         }
 
         return () => {};
     }
 
-    let _startY;
+    let _startY = 0;
 
-    const onTouchStart = (event) => {
+    const onTouchStart = (event: TouchEvent) => {
         _startY = event.touches[0].pageY;
     };
 
-    const onTouchMove = (event) => {
+    const onTouchMove = (event: TouchEvent) => {
         const y = event.touches[0].pageY;
-        if (document.scrollingElement.scrollTop === 0 && y > _startY) {
+        if (document.scrollingElement?.scrollTop === 0 && y > _startY) {
             event.preventDefault();
         }
     };

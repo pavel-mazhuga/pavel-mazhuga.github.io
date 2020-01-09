@@ -1,22 +1,22 @@
-export default function loadScript(url) {
+export default function loadScript(url: string) {
     return new Promise((resolve, reject) => {
-        if (!window.loadedScripts) {
-            window.loadedScripts = {};
+        if (!(window as any).loadedScripts) {
+            (window as any).loadedScripts = {};
         }
 
-        if (window.loadedScripts[url]) {
-            resolve(window.loadedScripts[url]);
+        if ((window as any).loadedScripts[url]) {
+            resolve((window as any).loadedScripts[url]);
         }
 
         const script = document.createElement('script');
 
         script.onerror = (err) => {
-            window.loadedScripts[url] = false;
+            (window as any).loadedScripts[url] = false;
             reject(err);
         };
 
         script.onload = () => {
-            window.loadedScripts[url] = true;
+            (window as any).loadedScripts[url] = true;
             resolve(script);
         };
 
