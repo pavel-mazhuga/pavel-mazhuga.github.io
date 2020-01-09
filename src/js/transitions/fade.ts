@@ -1,6 +1,6 @@
 export default {
     name: 'fade-transition',
-    sync: true,
+    // sync: true,
     from: 'index-page',
     to: {
         namespace: ['about-page'],
