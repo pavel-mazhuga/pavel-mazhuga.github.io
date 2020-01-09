@@ -16,7 +16,7 @@ export function triggerEvent(el: Element, eventName: string) {
     el.dispatchEvent(event);
 }
 
-export function triggerCustomEvent(el: Element, eventName: string, data: any) {
+export function triggerCustomEvent(el: Element, eventName: string, data?: any) {
     let event;
 
     if (window.CustomEvent) {
