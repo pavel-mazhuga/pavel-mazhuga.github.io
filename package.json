@@ -130,7 +130,7 @@
         "posthtml-render": "latest",
         "sass-loader": "latest",
         "schema-utils": "latest",
-        "sharp": "latest",
+        "sharp": "^0.22.4",
         "slash": "latest",
         "sort-css-media-queries": "latest",
         "style-loader": "latest",
