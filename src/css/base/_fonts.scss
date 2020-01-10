@@ -11,7 +11,7 @@
     @return $string;
 }
 
-@mixin font-face($name, $path, $weight: null, $style: null, $exts: eot woff2 woff ttf svg) {
+@mixin font-face($name, $path, $weight: null, $style: null, $exts: woff2 woff ttf) {
     $src: null;
     $extmods: (
         eot: '?',
@@ -39,4 +39,4 @@
 
 /* stylelint-enable */
 
-// @include font-face(Samplinoff, '../fonts/Samplinoff', null, null, eot woff2 woff ttf);
+// @include font-face(Samplinoff, '../fonts/Samplinoff', null, null, woff2 woff ttf);
