@@ -167,6 +167,7 @@ const configureBabelLoader = (supportsESModules) => ({
                         '@babel/preset-env',
                         {
                             modules: false,
+                            loose: true,
                             corejs: 3,
                             useBuiltIns: 'usage',
                             targets: {
