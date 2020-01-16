@@ -139,7 +139,6 @@
         "terser-webpack-plugin": "latest",
         "url-loader": "latest",
         "validator": "latest",
-        "webapp-webpack-plugin": "latest",
         "webpack": "latest",
         "webpack-bundle-analyzer": "latest",
         "webpack-cli": "latest",
