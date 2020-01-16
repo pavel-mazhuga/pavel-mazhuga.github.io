@@ -75,6 +75,7 @@
         "css-mqpacker": "latest",
         "cssnano": "latest",
         "deasync": "latest",
+        "element-matches-polyfill": "^1.0.0",
         "eslint": "latest",
         "eslint-config-airbnb-base": "latest",
         "eslint-loader": "latest",

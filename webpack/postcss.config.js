@@ -39,7 +39,7 @@ module.exports = {
             require('postcss-font-display')({ display: 'swap' }),
             require('postcss-object-fit-images')(),
             require('postcss-flexbugs-fixes')(),
-            require('postcss-will-change')(),
+            // require('postcss-will-change')(),
             require('css-mqpacker')({ sort: sortCSSmq.desktopFirst }),
             require('autoprefixer')({ browsers: browserslist.browsers }),
             // this is always last
