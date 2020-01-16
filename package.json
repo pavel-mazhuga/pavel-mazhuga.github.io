@@ -154,6 +154,7 @@
         "@babel/preset-typescript": "latest",
         "@typescript-eslint/eslint-plugin": "latest",
         "@typescript-eslint/parser": "latest",
+        "comlink-loader": "latest",
         "eslint-config-prettier": "latest",
         "eslint-plugin-jest": "latest",
         "eslint-plugin-prettier": "latest",

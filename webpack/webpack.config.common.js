@@ -330,6 +330,7 @@ const configureCopyPlugin = () =>
                 from,
                 to: BUILD_PATH,
                 context: '../',
+                cache: !PROD,
             })),
         ],
         {
@@ -343,6 +344,19 @@ const configureCleanWebpackPlugin = () =>
         cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep', '!.htaccess'],
         cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
     });
+
+const configureComlinkLoader = () => ({
+    // TODO: add ts support
+    test: /\.worker\.(js|ts)$/i,
+    use: [
+        {
+            loader: 'comlink-loader',
+            options: {
+                singleton: true,
+            },
+        },
+    ],
+});
 
 const baseConfig = {
     name: PACKAGE_NAME,
@@ -364,7 +378,13 @@ const baseConfig = {
     },
 
     module: {
-        rules: [configureHtmlLoader(), configureFontLoader(), configureImageLoader(), configureCssLoader()],
+        rules: [
+            configureHtmlLoader(),
+            configureFontLoader(),
+            configureImageLoader(),
+            configureCssLoader(),
+            configureComlinkLoader(),
+        ],
     },
 
     plugins: [
