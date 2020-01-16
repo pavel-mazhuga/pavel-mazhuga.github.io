@@ -148,6 +148,7 @@
         "workbox-webpack-plugin": "latest"
     },
     "devDependencies": {
+        "@babel/plugin-proposal-nullish-coalescing-operator": "^7.8.3",
         "@babel/plugin-proposal-optional-chaining": "latest",
         "@babel/plugin-transform-react-jsx": "latest",
         "@babel/preset-typescript": "latest",
