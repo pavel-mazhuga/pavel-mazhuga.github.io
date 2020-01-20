@@ -149,7 +149,8 @@ const configureBabelLoader = (supportsESModules) => ({
                     [
                         '@babel/plugin-transform-runtime',
                         {
-                            corejs: 3,
+                            regenerator: false,
+                            useESModules: supportsESModules,
                         },
                     ],
                     [
