@@ -154,12 +154,6 @@ const configureBabelLoader = (supportsESModules) => ({
                         },
                     ],
                     [
-                        '@babel/plugin-syntax-dynamic-import',
-                        {
-                            allChunks: true,
-                        },
-                    ],
-                    [
                         '@babel/plugin-transform-react-jsx',
                         {
                             pragma: 'h',
