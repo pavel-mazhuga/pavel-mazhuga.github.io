@@ -146,15 +146,18 @@ const configureBabelLoader = (supportsESModules) => ({
                 cacheDirectory: true,
                 plugins: [
                     'babel-plugin-transform-async-to-promises',
-                    '@babel/transform-runtime',
+                    [
+                        '@babel/plugin-transform-runtime',
+                        {
+                            corejs: 3,
+                        },
+                    ],
                     [
                         '@babel/plugin-syntax-dynamic-import',
                         {
                             allChunks: true,
                         },
                     ],
-                    '@babel/plugin-proposal-optional-chaining',
-                    '@babel/plugin-proposal-nullish-coalescing-operator',
                     [
                         '@babel/plugin-transform-react-jsx',
                         {
