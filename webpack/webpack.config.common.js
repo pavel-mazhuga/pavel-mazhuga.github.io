@@ -329,6 +329,7 @@ const configureCopyPlugin = () =>
                 to: BUILD_PATH,
                 context: SRC_PATH,
                 ignore: SITEMAP,
+                cache: !PROD,
             })),
             ...['node_modules/lightgallery.js/dist/**/*'].map((from) => ({
                 from,
