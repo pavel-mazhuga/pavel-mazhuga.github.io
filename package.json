@@ -27,7 +27,7 @@
         "prod:legacy": "cross-env BUILD_TYPE=legacy npm run prod",
         "build": "npm run prod:legacy && npm run prod:modern",
         "build:sandbox": "cross-env ENV=sandbox npm run build",
-        "build:bitrix": "cross-env ENV=bitrix npm run build",
+        "build:bitrix": "cross-env ENV=bitrix npm run build && npm run generate-assets-includes",
         "watch": "npm run watch:dev:bitrix",
         "watch:dev": "cross-env NODE_ENV=development webpack --watch --config webpack/webpack.config.dev.js",
         "watch:dev:bitrix": "cross-env ENV=bitrix npm run watch:dev",
@@ -41,7 +41,8 @@
         "bundle-analyzer:legacy": "cd ./node_modules/.cache && open-cli bundle-analyzer-legacy-production.html",
         "bundle-analyzer:modern": "cd ./node_modules/.cache && open-cli bundle-analyzer-modern-production.html",
         "bundle-analyzer": "npm run bundle-analyzer:legacy && npm run bundle-analyzer:modern",
-        "ba": "npm run bundle-analyzer"
+        "ba": "npm run bundle-analyzer",
+        "generate-assets-includes": "node ./webpack/generate-assets-php-includes.js"
     },
     "dependencies": {
         "@babel/cli": "latest",

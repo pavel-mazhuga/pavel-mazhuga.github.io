@@ -66,6 +66,9 @@ const SERVICE_WORKER_HASH = () => (fs.existsSync(SERVICE_WORKER_PATH) ? md5File.
 const LEGACY_TYPE = 'legacy';
 const MODERN_TYPE = 'modern';
 
+const configureCssFilename = (isProd) => `css/[name]${isProd ? '.[contenthash:8]' : ''}.css`;
+const configureJsFilename = (buildType, isProd) => `js/${buildType}/[name]${isProd ? '.[contenthash:8]' : ''}.js`;
+
 const configureHtmlWebpackPlugin = (useHtml) => {
     if (useHtml) {
         return SITEMAP.map((template) => {
@@ -303,8 +306,6 @@ const configureDefinePlugin = (buildType) => ({
     SERVICE_WORKER_HASH,
 });
 
-const configureJsFilename = (buildType, isProd) => `js/${buildType}/[name].js`;
-
 const configureCopyPlugin = () =>
     new CopyWebpackPlugin(
         [
@@ -319,6 +320,7 @@ const configureCopyPlugin = () =>
                 'video/**/*',
                 'upload/**/*',
                 'php/*.php',
+                'php_includes/*.php',
             ].map((from) => ({
                 from,
                 to: BUILD_PATH,
@@ -390,9 +392,9 @@ const baseConfig = {
     plugins: [
         // ...(WATCH ? [new BrowserSyncPlugin({ host: 'localhost', port: 8080 })] : []),
         new MiniCssExtractPlugin({
-            filename: `css/app.css`,
+            filename: configureCssFilename(PROD),
             allChunks: true,
-            chunkFilename: 'css/[name].css',
+            chunkFilename: configureCssFilename(PROD),
         }),
     ],
 
