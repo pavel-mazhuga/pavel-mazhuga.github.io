@@ -13,7 +13,7 @@ const jsFilenamesMap = new Map();
 cssFilenamesMap.set(
     {
         srcTemplatePath: path.join(__dirname, '../src/php_includes/css.php'),
-        destTemplatePath: path.join(__dirname, '../build/php_includes/css.php'),
+        destTemplatePath: path.join(__dirname, '../../includes/css.php'),
     },
     [
         {
@@ -30,7 +30,7 @@ cssFilenamesMap.set(
 jsFilenamesMap.set(
     {
         srcTemplatePath: path.join(__dirname, '../src/php_includes/js.php'),
-        destTemplatePath: path.join(__dirname, '../build/php_includes/js.php'),
+        destTemplatePath: path.join(__dirname, '../../includes/js.php'),
     },
     [
         {
