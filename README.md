@@ -3,7 +3,6 @@
 ## Требование:
 
 -   Node.js версии 11 или выше (https://nodejs.org/en/). С нодой автоматически ставится пакетный менеджер - NPM (Node Package Manager) (https://www.npmjs.com/). Проверить версию ноды можно командой **node -v**.
--   Глобально установленный webpack 4: **npm i -g webpack-cli**
 -   Для сабсеттинга шрифтов:
     -   Python
     -   Fonttools (https://github.com/fonttools/fonttools): **pip install fonttools**
@@ -46,11 +45,10 @@
 -   **npm run lint** — запуск всех линтеров (для проверки корректности html/js перед тем, как отдать бэкендеру)
 -   **npm run subsetting** — сабсеттинг шрифтов (удаляются неиспользуемые глифы, значительно уменьшается размер шрифта).
 -   **npm start** — сервер в development-режиме (node-сервер)
--   **npm run prod** — сборка в production-режиме (publicPath === "/")
--   **npm run prod:sandbox** — сборка в production-режиме (publicPath === "/sand/{project-name}/" - для деплоя на sandbox-сервер Chipsa)
--   **npm run prod:bitrix** — сборка в production-режиме (publicPath === "[путь от корня до папки с фронтендом]")
--   **npm run build** — релизный билд, запускается в production-режиме, включая все линтеры
--   **npm test** — запуск тестов (unit, e2e)
+-   **npm run build** — сборка в production-режиме (publicPath === "/")
+-   **npm run build:sandbox** — сборка в production-режиме (publicPath === "/sand/{project-name}/" - для деплоя на sandbox-сервер Chipsa)
+-   **npm run build:bitrix** — сборка в production-режиме (publicPath === "[путь от корня до папки с фронтендом]")
+-   **npm test** — запуск тестов
 
 ## Полезные npm-пакеты:
 
