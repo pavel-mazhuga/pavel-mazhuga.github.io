@@ -13,6 +13,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 
+const BitrixInsertHashesPlugin = require('./plugins/plugin.bitrix-insert-hashes');
 const { resourceName } = require('./utils');
 const {
     LANGUAGE,
@@ -360,6 +361,18 @@ const configureComlinkLoader = () => ({
     ],
 });
 
+const configureBitrixInsertHashesPlugin = () =>
+    new BitrixInsertHashesPlugin({
+        css: {
+            srcTemplatePath: path.join(__dirname, '../src/php_includes/css.php'),
+            destTemplatePath: path.join(__dirname, '../../includes/css.php'),
+        },
+        js: {
+            srcTemplatePath: path.join(__dirname, '../src/php_includes/js.php'),
+            destTemplatePath: path.join(__dirname, '../../includes/js.php'),
+        },
+    });
+
 const baseConfig = {
     name: PACKAGE_NAME,
 
@@ -438,6 +451,7 @@ const modernConfig = {
         new webpack.DefinePlugin(configureDefinePlugin(MODERN_TYPE)),
         new ManifestPlugin(configureManifest('manifest-modern.json')),
         ...configureServiceWorker(USE_SERVICE_WORKER),
+        ...(BITRIX ? [configureBitrixInsertHashesPlugin()] : []),
     ],
 
     resolve: {
