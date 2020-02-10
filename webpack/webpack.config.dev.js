@@ -7,6 +7,7 @@ const {
     configureCleanWebpackPlugin,
     modernConfig,
     SERVICE_WORKER_PATH,
+    configureBrowsersync,
     // USE_SOURCE_MAP,
 } = require('./webpack.config.common');
 
@@ -28,7 +29,7 @@ module.exports = [
             },
         },
 
-        plugins: [configureCleanWebpackPlugin(), ...configureHtmlWebpackPlugin(USE_HTML), configureCopyPlugin()],
+        plugins: [configureCleanWebpackPlugin(), ...configureHtmlWebpackPlugin(USE_HTML), configureCopyPlugin(), configureBrowsersync()],
 
         performance: false,
 
