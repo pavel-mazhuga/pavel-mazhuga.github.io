@@ -461,6 +461,12 @@ const modernConfig = {
     },
 };
 
+const configureBrowsersync = () => new BrowserSyncPlugin({
+    host: 'localhost',
+    port: 3000,
+    server: { baseDir: ['build'] }
+  })
+
 module.exports = {
     legacyConfig: merge.strategy({
         module: 'prepend',
@@ -473,6 +479,7 @@ module.exports = {
     })(baseConfig, modernConfig),
 
     configureHtmlWebpackPlugin,
+    configureBrowsersync,
     configureCopyPlugin,
     configureCleanWebpackPlugin,
     SERVICE_WORKER_PATH,
