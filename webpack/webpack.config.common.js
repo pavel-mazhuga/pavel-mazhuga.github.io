@@ -7,7 +7,7 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
-// const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -126,7 +126,54 @@ const configureHtmlLoader = () => ({
     },
 });
 
-const configureBabelLoader = (supportsESModules) => ({
+const babelLoader = (supportsESModules = false) => ({
+    loader: 'babel-loader',
+    options: {
+        cacheDirectory: true,
+        plugins: [
+            'babel-plugin-transform-async-to-promises',
+            [
+                '@babel/plugin-transform-runtime',
+                {
+                    regenerator: false,
+                    useESModules: supportsESModules,
+                },
+            ],
+            [
+                '@babel/plugin-transform-react-jsx',
+                {
+                    pragma: 'h',
+                    pragmaFrag: 'Fragment',
+                },
+            ],
+        ],
+        presets: [
+            [
+                '@babel/preset-env',
+                {
+                    modules: false,
+                    loose: true,
+                    corejs: 3,
+                    useBuiltIns: 'usage',
+                    targets: {
+                        ...(supportsESModules ? { esmodules: true } : { browsers: browserslist }),
+                    },
+                },
+            ],
+            [
+                '@babel/preset-typescript',
+                {
+                    jsxPragma: 'h',
+                    isTSX: true,
+                    allExtensions: true,
+                },
+            ],
+        ],
+        envName: NODE_ENV,
+    },
+});
+
+const configureBabelLoader = (supportsESModules = false) => ({
     test: /\.(js|ts)x?$/i,
     resolve: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
@@ -143,54 +190,7 @@ const configureBabelLoader = (supportsESModules) => ({
         //           },
         //       }),
     },
-    loaders: [
-        {
-            loader: 'babel-loader',
-            options: {
-                cacheDirectory: true,
-                plugins: [
-                    'babel-plugin-transform-async-to-promises',
-                    [
-                        '@babel/plugin-transform-runtime',
-                        {
-                            regenerator: false,
-                            useESModules: supportsESModules,
-                        },
-                    ],
-                    [
-                        '@babel/plugin-transform-react-jsx',
-                        {
-                            pragma: 'h',
-                            pragmaFrag: 'Fragment',
-                        },
-                    ],
-                ],
-                presets: [
-                    [
-                        '@babel/preset-env',
-                        {
-                            modules: false,
-                            loose: true,
-                            corejs: 3,
-                            useBuiltIns: 'usage',
-                            targets: {
-                                ...(supportsESModules ? { esmodules: true } : { browsers: browserslist }),
-                            },
-                        },
-                    ],
-                    [
-                        '@babel/preset-typescript',
-                        {
-                            jsxPragma: 'h',
-                            isTSX: true,
-                            allExtensions: true,
-                        },
-                    ],
-                ],
-                envName: NODE_ENV,
-            },
-        },
-    ],
+    loaders: [babelLoader(supportsESModules)],
 });
 
 // const configureGlslLoader = () => ({
@@ -348,7 +348,7 @@ const configureCleanWebpackPlugin = () =>
         cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
     });
 
-const configureComlinkLoader = () => ({
+const configureComlinkLoader = (supportsESModules = false) => ({
     // TODO: add ts support
     test: /\.worker\.(js|ts)$/i,
     use: [
@@ -358,6 +358,7 @@ const configureComlinkLoader = () => ({
                 singleton: true,
             },
         },
+        babelLoader(supportsESModules),
     ],
 });
 
@@ -393,13 +394,7 @@ const baseConfig = {
     },
 
     module: {
-        rules: [
-            configureHtmlLoader(),
-            configureFontLoader(),
-            configureImageLoader(),
-            configureCssLoader(),
-            configureComlinkLoader(),
-        ],
+        rules: [configureHtmlLoader(), configureFontLoader(), configureImageLoader(), configureCssLoader()],
     },
 
     plugins: [
@@ -428,7 +423,7 @@ const legacyConfig = {
     },
 
     module: {
-        rules: [configureBabelLoader()],
+        rules: [configureComlinkLoader(), configureBabelLoader()],
     },
 
     plugins: [
@@ -444,7 +439,7 @@ const modernConfig = {
     },
 
     module: {
-        rules: [configureBabelLoader(true)],
+        rules: [configureComlinkLoader(true), configureBabelLoader(true)],
     },
 
     plugins: [
@@ -461,11 +456,12 @@ const modernConfig = {
     },
 };
 
-const configureBrowsersync = () => new BrowserSyncPlugin({
-    host: 'localhost',
-    port: 3000,
-    server: { baseDir: ['build'] }
-  })
+const configureBrowsersync = () =>
+    new BrowserSyncPlugin({
+        host: 'localhost',
+        port: 3000,
+        server: { baseDir: ['build'] },
+    });
 
 module.exports = {
     legacyConfig: merge.strategy({
