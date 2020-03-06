@@ -348,8 +348,20 @@ const configureCleanWebpackPlugin = () =>
         cleanAfterEveryBuildPatterns: ['**/*.br', '**/*.gz'],
     });
 
+const configureWorkerLoader = (supportsESModules = false) => ({
+    test: /\.named-worker\.(js|ts)$/i,
+    use: [
+        {
+            loader: 'worker-loader',
+            options: {
+                name: 'js/[name].js',
+            },
+        },
+        babelLoader(supportsESModules),
+    ],
+});
+
 const configureComlinkLoader = (supportsESModules = false) => ({
-    // TODO: add ts support
     test: /\.worker\.(js|ts)$/i,
     use: [
         {
@@ -423,7 +435,7 @@ const legacyConfig = {
     },
 
     module: {
-        rules: [configureComlinkLoader(), configureBabelLoader()],
+        rules: [configureComlinkLoader(), configureWorkerLoader(), configureBabelLoader()],
     },
 
     plugins: [
@@ -439,7 +451,7 @@ const modernConfig = {
     },
 
     module: {
-        rules: [configureComlinkLoader(true), configureBabelLoader(true)],
+        rules: [configureComlinkLoader(true), configureWorkerLoader(true), configureBabelLoader(true)],
     },
 
     plugins: [
