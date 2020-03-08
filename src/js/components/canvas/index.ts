@@ -1,5 +1,5 @@
 /* global PUBLIC_PATH */
-import { createOffscreenCanvas } from '../../offscreen-canvas-proxy';
+import { createOffscreenCanvas, OffscreenBaseData } from '../../offscreen-canvas-proxy';
 import Canvas, { randomId } from './canvas-module';
 
 interface MainThreadData {
@@ -27,14 +27,17 @@ export default async () => {
         },
     );
 
+    const onBodyClick = async () => {
+        const { shouldRender } = await instance.getState();
+        await instance.setState({ shouldRender: !shouldRender });
+    };
+
     const init = () => {
-        document.body.addEventListener('click', async () => {
-            const { shouldRender } = await instance.getState();
-            await instance.setState({ shouldRender: !shouldRender });
-        });
+        document.body.addEventListener('click', onBodyClick);
     };
 
     const destroy = async () => {
+        document.body.removeEventListener('click', onBodyClick);
         await instance.destroy();
         await instance.releaseProxy();
     };

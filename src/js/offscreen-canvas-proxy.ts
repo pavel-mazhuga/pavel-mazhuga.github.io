@@ -68,9 +68,17 @@ export function createOffscreenCanvas<T>({ canvas, workerUrl, id }: ProxyData, d
 }
 
 export class BaseEntity {
-    constructor() {
+    private rAF: number;
+
+    canvas: HTMLCanvasElement;
+
+    isWorker: boolean;
+
+    constructor(options: OffscreenBaseData) {
         this.rAF = 0;
         this.state = {};
+        this.canvas = options.canvas;
+        this.isWorker = options.isWorker;
     }
 
     async getState() {
