@@ -64,6 +64,7 @@
         "browserslist": "latest",
         "case-sensitive-paths-webpack-plugin": "latest",
         "clean-webpack-plugin": "latest",
+        "comlink": "^4.2.0",
         "compression-webpack-plugin": "latest",
         "copy-webpack-plugin": "latest",
         "core-js": "latest",

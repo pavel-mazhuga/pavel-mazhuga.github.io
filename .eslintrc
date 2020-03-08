@@ -29,6 +29,7 @@
         "@typescript-eslint/explicit-function-return-type": "off",
         "react/prop-types": "off",
         "import/extensions": "off",
+        "class-methods-use-this": "off",
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "warn"
     },
