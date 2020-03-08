@@ -1,6 +1,6 @@
 /* global PUBLIC_PATH */
 import { createOffscreenCanvas } from '../../offscreen-canvas-proxy';
-import Canvas from './canvas-module';
+import Canvas, { randomId } from './canvas-module';
 
 interface MainThreadData {
     dpr: number;
@@ -18,6 +18,7 @@ export default async () => {
         {
             canvas,
             workerUrl: `${PUBLIC_PATH}js/canvas.named-worker.js`,
+            id: randomId,
         },
         {
             dpr: window.devicePixelRatio,

@@ -3,7 +3,7 @@ import { wrap } from 'comlink';
 interface ProxyData {
     canvas: HTMLCanvasElement;
     workerUrl: string;
-    // name: string;
+    id: string;
 }
 
 export interface OffscreenBaseData {
@@ -14,10 +14,10 @@ export interface OffscreenBaseData {
 /**
  * @param  {} canvas - HTMLCanvasElement
  * @param  {} workerUrl - path to the worker file
- * @param  {} name - unique name for accessing module from 'window' object
+ * @param  {} id - unique id for accessing module from 'window' object
  * (if 'transferControlToOffscreen' is not supported)
  */
-export function createOffscreenCanvas<T>({ canvas, workerUrl }: ProxyData, data: Record<string, any>): Promise<T> {
+export function createOffscreenCanvas<T>({ canvas, workerUrl, id }: ProxyData, data: Record<string, any>): Promise<T> {
     return new Promise((resolve, reject) => {
         if (canvas.transferControlToOffscreen) {
             try {
@@ -46,21 +46,21 @@ export function createOffscreenCanvas<T>({ canvas, workerUrl }: ProxyData, data:
                 reject(err);
             }
         } else {
+            // const randomId = `__offscreen-canvas-proxy__${Math.floor(Math.random())}`;
             const script = document.createElement('script');
+            // script.dataset.id = randomId;
             script.src = workerUrl;
             script.async = true;
             script.onload = () => {
-                const randomId = `__offscreen-canvas-proxy__${Math.floor(Math.random())}`;
                 resolve(
-                    (window as any)[randomId]({
+                    new (window as any)[id]({
                         canvas,
                         isWorker: false,
                         ...data,
                     }),
                 );
-                (window as any)[randomId] = null;
+                (window as any)[id] = null;
             };
-
             script.onerror = (err) => reject(err);
             document.head.appendChild(script);
         }

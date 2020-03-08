@@ -5,6 +5,8 @@ interface State {
     shouldRender: boolean;
 }
 
+export const randomId = `__offscreen-canvas-proxy__${Math.floor(Math.random())}`;
+
 export default class Canvas extends BaseEntity {
     private rAF: number;
 
@@ -42,4 +44,8 @@ export default class Canvas extends BaseEntity {
     async destroy() {
         cancelAnimationFrame(this.rAF);
     }
+}
+
+if (typeof window !== 'undefined') {
+    window[randomId] = Canvas;
 }
