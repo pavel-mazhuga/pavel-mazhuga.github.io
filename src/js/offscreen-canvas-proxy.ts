@@ -46,9 +46,7 @@ export function createOffscreenCanvas<T>({ canvas, workerUrl, id }: ProxyData, d
                 reject(err);
             }
         } else {
-            // const randomId = `__offscreen-canvas-proxy__${Math.floor(Math.random())}`;
             const script = document.createElement('script');
-            // script.dataset.id = randomId;
             script.src = workerUrl;
             script.async = true;
             script.onload = () => {
