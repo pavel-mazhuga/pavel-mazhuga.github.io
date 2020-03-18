@@ -86,6 +86,7 @@ const DEFAULT_OPTIONS = {
 };
 
 export default (form: HTMLFormElement, options = DEFAULT_OPTIONS) => {
+    form.setAttribute('novalidate', 'true');
     const inputs = Array.from(form.querySelectorAll(options.inputSelector)) as HTMLInputElement[];
 
     function validate() {
