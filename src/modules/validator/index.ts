@@ -1,5 +1,7 @@
 import isEmail from 'validator/lib/isEmail';
 import equals from 'validator/lib/equals';
+import { findParent } from '@chipsadesign/frontend-utils';
+
 import messages from './messages';
 
 export { isEmail, equals };
@@ -24,29 +26,44 @@ export function isPhone(string: string): boolean {
     return /^((8|\+7)[- ]?)?(\(?\d{3}\)?[- ]?)?[\d\- ]{5,10}$/i.test(string);
 }
 
-export function validateInput(input: HTMLInputElement): boolean {
-    // Валидация заполненности поля
-    if (input.hasAttribute('required') && input.value.trim().length === 0) {
-        return false;
-    }
+function isPhoneInput(input: HTMLInputElement) {
+    return input.type === 'tel' || input.classList.contains('js-validate--phone');
+}
 
+function isEmailInput(input: HTMLInputElement) {
+    return input.type === 'email' || input.classList.contains('js-validate--email');
+}
+
+function isCheckboxInput(input: HTMLInputElement) {
+    return input.type === 'checkbox';
+}
+
+function isSelectInput(input: HTMLInputElement) {
+    return input.tagName === 'select' || input.classList.contains('js-validate--select');
+}
+
+function isEmptyInput(input: HTMLInputElement) {
+    return input.value.trim().length === 0;
+}
+
+export function validateInput(input: HTMLInputElement): boolean {
     // Валидация электронной почты
-    if (input.classList.contains('js-validate--email')) {
+    if (isEmailInput(input)) {
         return input.hasAttribute('required') || input.value.trim().length > 0 ? isEmail(input.value) : true;
     }
 
     // Валидация телефона
-    if (input.classList.contains('js-validate--phone')) {
+    if (isPhoneInput(input)) {
         return input.hasAttribute('required') || input.value.trim().length > 0 ? isPhone(input.value) : true;
     }
 
     // Валидация чекбокса
-    if (input.classList.contains('js-validate--checkbox')) {
-        return input.checked;
+    if (isCheckboxInput(input)) {
+        return input.hasAttribute('required') ? input.checked : true;
     }
 
     // Валидация селекта
-    if (input.classList.contains('js-validate--select')) {
+    if (isSelectInput(input)) {
         const options = Array.from(input.querySelectorAll('option'));
         const selectedOptions = options.filter(
             (option) =>
@@ -54,7 +71,7 @@ export function validateInput(input: HTMLInputElement): boolean {
                 !option.hasAttribute('placeholder') &&
                 option.innerText !== input.getAttribute('placeholder'),
         );
-        return !!selectedOptions.length;
+        return input.hasAttribute('required') ? !!selectedOptions.length : true;
     }
 
     // Валидация равенства двух строк
@@ -73,6 +90,11 @@ export function validateInput(input: HTMLInputElement): boolean {
         return new RegExp(regExp, 'i').test(input.value);
     }
 
+    // Валидация заполненности поля
+    if (input.hasAttribute('required') && isEmptyInput(input)) {
+        return false;
+    }
+
     // Default
     return true;
 }
@@ -86,7 +108,6 @@ const DEFAULT_OPTIONS = {
 };
 
 export default (form: HTMLFormElement, options = DEFAULT_OPTIONS) => {
-    form.setAttribute('novalidate', 'true');
     const inputs = Array.from(form.querySelectorAll(options.inputSelector)) as HTMLInputElement[];
 
     function validate() {
@@ -96,29 +117,38 @@ export default (form: HTMLFormElement, options = DEFAULT_OPTIONS) => {
 
         inputs.forEach((input) => {
             const isValid = validateInput(input);
-            const messageElement =
-                input.parentElement && input.parentElement.querySelector('.app-message')
-                    ? input.parentElement.querySelector('.app-message')
-                    : null;
+            const choicesDiv = findParent('div.choices', input);
+            const messageElement = (choicesDiv || input).parentElement?.querySelector('.app-message');
 
             if (isValid) {
                 input.classList.remove('is-error');
+
+                if (choicesDiv) {
+                    choicesDiv.classList.remove('is-error');
+                }
             } else {
                 isFormValid = false;
                 input.classList.add('is-error');
+
+                if (choicesDiv) {
+                    choicesDiv.classList.add('is-error');
+                }
 
                 if (messageElement) {
                     messageElement.textContent = '';
 
                     switch (true) {
-                        case input.value.trim().length === 0 && input.hasAttribute('required'):
+                        case isEmptyInput(input) && input.hasAttribute('required'):
                             messageElement.textContent = options.messages[lang].EMPTY_FIELD;
                             break;
-                        case input.classList.contains('js-validate--email'):
+                        case isEmailInput(input):
                             messageElement.textContent = options.messages[lang].INVALIDATED_EMAIL;
                             break;
-                        case input.classList.contains('js-validate--phone'):
+                        case isPhoneInput(input):
                             messageElement.textContent = options.messages[lang].INVALIDATED_PHONE;
+                            break;
+                        case isSelectInput(input):
+                            messageElement.textContent = options.messages[lang].INVALIDATED_SELECT;
                             break;
                         case input.classList.contains('js-validate--equivalent'):
                             messageElement.textContent = options.messages[lang].INVALIDATED_EQUALS;
@@ -139,6 +169,7 @@ export default (form: HTMLFormElement, options = DEFAULT_OPTIONS) => {
         } else {
             options.onValidationError();
         }
+
         options.onValidationComplete();
 
         return isFormValid;
