@@ -312,28 +312,28 @@ const configureCopyPlugin = () =>
         [
             ...[
                 '**/.htaccess',
-                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp}',
+                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp,exr}',
                 'google*.html',
                 'yandex_*.html',
                 '*.txt',
-                'fonts/*',
+                'fonts/**/*',
                 'audio/**/*',
                 'video/**/*',
                 'upload/**/*',
-                'php/*.php',
+                'php/**/*.php',
                 'php_includes/*.php',
             ].map((from) => ({
                 from,
                 to: BUILD_PATH,
                 context: SRC_PATH,
                 ignore: SITEMAP,
-                cache: !PROD,
+                cache: true,
             })),
             ...['node_modules/lightgallery.js/dist/**/*'].map((from) => ({
                 from,
                 to: BUILD_PATH,
                 context: '../',
-                cache: !PROD,
+                cache: true,
             })),
         ],
         {
@@ -384,6 +384,13 @@ const configureBitrixInsertHashesPlugin = () =>
             srcTemplatePath: path.join(__dirname, '../src/php_includes/js.php'),
             destTemplatePath: path.join(__dirname, '../../includes/js.php'),
         },
+    });
+
+const configureBrowsersync = () =>
+    new BrowserSyncPlugin({
+        host: 'localhost',
+        port: 3000,
+        server: { baseDir: ['build'] },
     });
 
 const baseConfig = {
@@ -467,13 +474,6 @@ const modernConfig = {
         },
     },
 };
-
-const configureBrowsersync = () =>
-    new BrowserSyncPlugin({
-        host: 'localhost',
-        port: 3000,
-        server: { baseDir: ['build'] },
-    });
 
 module.exports = {
     legacyConfig: merge.strategy({
