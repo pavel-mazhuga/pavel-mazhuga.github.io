@@ -8,7 +8,6 @@ const {
     modernConfig,
     SERVICE_WORKER_PATH,
     configureBrowsersync,
-    // USE_SOURCE_MAP,
 } = require('./webpack.config.common');
 
 const BROWSERSYNC = process.argv.indexOf('--browsersync') !== -1;
@@ -40,7 +39,6 @@ module.exports = [
 
         performance: false,
 
-        // devtool: USE_SOURCE_MAP ? 'eval-source-map' : 'nosources-source-map',
         devtool: 'eval-source-map',
     }),
 ];

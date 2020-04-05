@@ -57,7 +57,6 @@ const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
 
 const PUBLIC_PATH = configurePublicPath();
 const ROOT_PATH = configureRootPath();
-// const WATCH = process.argv.indexOf('--watch') !== -1 || process.argv.indexOf('-w') !== -1;
 const PROD = NODE_ENV === 'production';
 const DEV_SERVER = path.basename(require.main.filename, '.js') === 'webpack-dev-server';
 const USE_SOURCE_MAP = DEV_SERVER;
@@ -193,10 +192,10 @@ const configureBabelLoader = (supportsESModules = false) => ({
     loaders: [babelLoader(supportsESModules)],
 });
 
-// const configureGlslLoader = () => ({
-//     test: /\.glsl$/i,
-//     loader: 'webpack-glsl-loader',
-// });
+const configureGlslLoader = () => ({
+    test: /\.glsl$/i,
+    loader: 'webpack-glsl-loader',
+});
 
 const configureImageLoader = () => ({
     test: /\.(jpe?g|png|gif|svg)$/i,
@@ -413,11 +412,16 @@ const baseConfig = {
     },
 
     module: {
-        rules: [configureHtmlLoader(), configureFontLoader(), configureImageLoader(), configureCssLoader()],
+        rules: [
+            configureHtmlLoader(),
+            configureFontLoader(),
+            configureImageLoader(),
+            configureCssLoader(),
+            configureGlslLoader(),
+        ],
     },
 
     plugins: [
-        // ...(WATCH ? [new BrowserSyncPlugin({ host: 'localhost', port: 8080 })] : []),
         new MiniCssExtractPlugin({
             filename: configureCssFilename(PROD),
             allChunks: true,
