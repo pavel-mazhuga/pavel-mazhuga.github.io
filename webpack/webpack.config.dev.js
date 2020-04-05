@@ -10,8 +10,6 @@ const {
     configureBrowsersync,
 } = require('./webpack.config.common');
 
-const BROWSERSYNC = process.argv.indexOf('--browsersync') !== -1;
-
 module.exports = [
     merge(modernConfig, {
         mode: 'development',
@@ -34,7 +32,7 @@ module.exports = [
             configureCleanWebpackPlugin(),
             ...configureHtmlWebpackPlugin(USE_HTML),
             configureCopyPlugin(),
-            ...(BROWSERSYNC ? [configureBrowsersync()] : []),
+            configureBrowsersync(),
         ],
 
         performance: false,
