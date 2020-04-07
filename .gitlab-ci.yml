@@ -1,0 +1,173 @@
+# На сервере:
+# 1. ssh-keygen
+# 2. Копировать приватный ключ, положить в переменную PRODUCTION_PRIVATE_KEY в gitlab
+# 3. Копировать публичный ключ (ssh-keyscan <SERVER IP>), добавить в ~/.ssh/authorized_keys на сервере
+# 4. WIP: Добавить в переменную SSH_KNOWN_HOSTS в gitlab
+
+image: node:13-alpine
+
+variables:
+    FRONTEND_PATH: 'local/templates/main/frontend'
+
+stages:
+    - build_frontend
+    - deploy_frontend_dev
+    # - deploy_backend_dev
+    # - deploy_frontend_prod
+    # - deploy_backend_prod
+
+build_frontend:
+    stage: build_frontend
+    only:
+        refs:
+            - dev
+            # - master
+        changes:
+            - local/templates/main/frontend/**/*
+    script:
+        - cd $FRONTEND_PATH/
+        - npm install
+        - npm test
+        - npm run build:sandbox
+    artifacts:
+        paths:
+            - $FRONTEND_PATH/build/
+    cache:
+        paths:
+            - $FRONTEND_PATH/node_modules/
+
+deploy_frontend_dev:
+    stage: deploy_frontend_dev
+    variables:
+        PROJECT_HOST: 'root@91.230.210.213'
+        PROJECT_PATH: '/var/www/chipsa/data/www/frontend.chipsa.ru/malinovka/'
+        BRANCH_NAME: dev
+    only:
+        refs:
+            - dev
+        changes:
+            - local/templates/main/frontend/**/*
+    artifacts:
+        paths:
+            - $FRONTEND_PATH/build/
+    before_script:
+        - 'which ssh-agent || ( apk update && apk add openssh-client )'
+        - eval $(ssh-agent -s)
+        - echo "$STAGING_PRIVATE_KEY" | ssh-add -
+        - mkdir -p ~/.ssh
+        - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        # Dangerous: vulnerable to MITM attacks
+        # - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    script:
+        # Проверяем, есть ли rsync, если нет - устанавливаем
+        - which rsync || ( apk update && apk add rsync )
+        # Создаем временные папки
+        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_tmp && mkdir $PROJECT_PATH/_tmp"
+        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_old && mkdir $PROJECT_PATH/_old"
+        # Создаем папку build, если она не существует
+        - ssh -p22 $PROJECT_HOST "mkdir -p $PROJECT_PATH/$FRONTEND_PATH/build"
+        # Копируем билд фронтенда с сервера gitlab ci
+        - rsync -zarvh $FRONTEND_PATH/build/* $PROJECT_HOST:$PROJECT_PATH/_tmp
+        # Меняем старый и новый билды фронтенда местами
+        - ssh -p22 $PROJECT_HOST "( ( find $PROJECT_PATH/$FRONTEND_PATH/build -mindepth 1 | read ) && mv $PROJECT_PATH/$FRONTEND_PATH/build/* $PROJECT_PATH/_old ) && mv $PROJECT_PATH/_tmp/* $PROJECT_PATH/$FRONTEND_PATH/build"
+        # Удаляем временные папки
+        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_old"
+        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_tmp"
+        # Пуллим изменения из репозитория
+        - ssh -p22 $PROJECT_HOST "cd $PROJECT_PATH/ && git checkout $BRANCH_NAME && git pull origin $BRANCH_NAME --force"
+        # Ощичаем кэш битрикса
+        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/bitrix/cache/*"
+
+deploy_backend_dev:
+    stage: deploy_backend_dev
+    variables:
+        PROJECT_HOST: 'root@91.230.210.213'
+        PROJECT_PATH: '/var/www/chipsa/data/www/moremilk.chipsa.ru/'
+        BRANCH_NAME: dev
+    artifacts:
+        paths:
+            - $FRONTEND_PATH/build/
+    only:
+        refs:
+            - dev
+    before_script:
+        - which ssh-agent || ( apk update && apk add openssh-client )
+        - eval $(ssh-agent -s)
+        - echo "$STAGING_PRIVATE_KEY" | ssh-add -
+        - mkdir -p ~/.ssh
+        - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        # Dangerous: vulnerable to MITM attacks
+        # - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    script:
+        # Пуллим изменения из репозитория
+        - ssh -p22 $PROJECT_HOST "cd $PROJECT_PATH/ && git checkout $BRANCH_NAME && git pull origin $BRANCH_NAME --force"
+        # Ощичаем кэш битрикса
+        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/bitrix/cache/*"
+
+deploy_frontend_prod:
+    stage: deploy_frontend_prod
+    variables:
+        PROJECT_HOST: 'root@91.230.211.236'
+        PROJECT_PATH: '/var/www/www-root/data/www/nadomarket.ru/'
+        BRANCH_NAME: master
+    only:
+        refs:
+            - master
+        changes:
+            - local/templates/main/frontend/**/*
+    artifacts:
+        paths:
+            - $FRONTEND_PATH/build/
+    before_script:
+        - 'which ssh-agent || ( apk update && apk add openssh-client )'
+        - eval $(ssh-agent -s)
+        - echo "$PRODUCTION_PRIVATE_KEY" | ssh-add -
+        - mkdir -p ~/.ssh
+        - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        # Dangerous: vulnerable to MITM attacks
+        # - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    script:
+        # Проверяем, есть ли rsync, если нет - устанавливаем
+        - which rsync || ( apk update && apk add rsync )
+        # Создаем временные папки
+        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_tmp && mkdir $PROJECT_PATH/_tmp"
+        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_old && mkdir $PROJECT_PATH/_old"
+        # Создаем папку build, если она не существует
+        - ssh -p22 $PROJECT_HOST "mkdir -p $PROJECT_PATH/$FRONTEND_PATH/build"
+        # Копируем билд фронтенда с сервера gitlab ci
+        - rsync -zarvh $FRONTEND_PATH/build/* $PROJECT_HOST:$PROJECT_PATH/_tmp
+        # Меняем старый и новый билды фронтенда местами
+        - ssh -p22 $PROJECT_HOST "( ( find $PROJECT_PATH/$FRONTEND_PATH/build -mindepth 1 | read ) && mv $PROJECT_PATH/$FRONTEND_PATH/build/* $PROJECT_PATH/_old ) && mv $PROJECT_PATH/_tmp/* $PROJECT_PATH/$FRONTEND_PATH/build"
+        # Удаляем временные папки
+        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_old"
+        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_tmp"
+        # Пуллим изменения из репозитория
+        - ssh -p22 $PROJECT_HOST "cd $PROJECT_PATH/ && git checkout $BRANCH_NAME && git pull origin $BRANCH_NAME --force"
+        # Ощичаем кэш битрикса
+        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/bitrix/cache/*"
+
+deploy_backend_prod:
+    stage: deploy_backend_prod
+    variables:
+        PROJECT_HOST: 'root@91.230.211.236'
+        PROJECT_PATH: '/var/www/www-root/data/www/nadomarket.ru/'
+        BRANCH_NAME: master
+    artifacts:
+        paths:
+            - $FRONTEND_PATH/build/
+    only:
+        refs:
+            - master
+    before_script:
+        - which ssh-agent || ( apk update && apk add openssh-client )
+        - eval $(ssh-agent -s)
+        - echo "$PRODUCTION_PRIVATE_KEY" | ssh-add -
+        - mkdir -p ~/.ssh
+        - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        # Dangerous: vulnerable to MITM attacks
+        # - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    script:
+        # Пуллим изменения из репозитория
+        - ssh -p22 $PROJECT_HOST "cd $PROJECT_PATH/ && git checkout $BRANCH_NAME && git pull origin $BRANCH_NAME --force"
+        # Ощичаем кэш битрикса
+        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/bitrix/cache/*"
