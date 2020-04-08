@@ -1,10 +1,22 @@
 import isEmail from 'validator/lib/isEmail';
 import equals from 'validator/lib/equals';
-import { findParent } from '@chipsadesign/frontend-utils';
+// import { findParent } from '@chipsadesign/frontend-utils';
 
 import messages from './messages';
 
 export { isEmail, equals };
+
+// temp
+function findParent(selector: string, startingElement: Element) {
+    let parent = startingElement;
+
+    while (!parent.matches(selector)) {
+        if (!parent.parentElement) return false;
+        parent = parent.parentElement;
+    }
+
+    return parent;
+}
 
 function getLang() {
     switch (true) {
