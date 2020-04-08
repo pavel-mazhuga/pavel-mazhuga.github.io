@@ -7,7 +7,8 @@
 image: node:13-alpine
 
 variables:
-    FRONTEND_PATH: 'local/templates/main/frontend'
+    # FRONTEND_PATH: 'local/templates/main/frontend'
+    FRONTEND_PATH: ''
 
 stages:
     - build_frontend
@@ -22,8 +23,8 @@ build_frontend:
         refs:
             - dev
             # - master
-        changes:
-            - local/templates/main/frontend/**/*
+        # changes:
+        #     - local/templates/main/frontend/**/*
     script:
         - cd $FRONTEND_PATH/
         - npm install
@@ -45,8 +46,8 @@ deploy_frontend_dev:
     only:
         refs:
             - dev
-        changes:
-            - local/templates/main/frontend/**/*
+        # changes:
+        #     - local/templates/main/frontend/**/*
     artifacts:
         paths:
             - $FRONTEND_PATH/build/
