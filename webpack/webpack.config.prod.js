@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const ImageminPlugin = require('imagemin-webpack');
 const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
 const BrotliPlugin = require('brotli-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
@@ -13,16 +12,16 @@ const zopfli = require('@gfx/zopfli');
 
 const HtmlWebpackModernBuildPlugin = require('./plugins/plugin.modern-build');
 const { USE_COMPRESSION, USE_HTML, HTML_PRETTY } = require('../webpack.settings');
-const { resourceName } = require('./utils');
 const {
     configureHtmlWebpackPlugin,
     configureCopyPlugin,
     configureCleanWebpackPlugin,
     legacyConfig,
     modernConfig,
-    // LEGACY_TYPE,
     MODERN_TYPE,
 } = require('./webpack.config.common');
+
+const { BUILD_TYPE } = process.env;
 
 const configureCompression = (useCompression, buildType) => {
     if (useCompression) {
@@ -97,21 +96,10 @@ const baseConfig = {
     ],
 };
 
-const { BUILD_TYPE } = process.env;
-
 module.exports =
-    BUILD_TYPE === 'modern'
+    BUILD_TYPE === MODERN_TYPE
         ? merge(modernConfig, baseConfig, {
               plugins: [
-                  new ImageminPlugin({
-                      test: /\.(jpeg|jpg|png|gif|svg)$/i,
-                      exclude: /(fonts|font|upload)/i,
-                      name: resourceName('img'),
-                      // eslint-disable-next-line global-require
-                      imageminOptions: require('./imagemin.config.js'),
-                      cache: true,
-                      loader: true,
-                  }),
                   ...configureHtmlWebpackPlugin(USE_HTML),
                   ...configureHtmlModernBuildPlugin(USE_HTML),
                   ...configureHtmlBeautifyPlugin(USE_HTML, HTML_PRETTY),
