@@ -2,9 +2,10 @@
     "parser": "@typescript-eslint/parser",
     "extends": ["airbnb-base", "plugin:@typescript-eslint/recommended", "plugin:react/recommended", "prettier"],
     "env": {
-        "browser": true
+        "browser": true,
+        "jest/globals": true
     },
-    "plugins": ["import", "@typescript-eslint", "react", "react-hooks"],
+    "plugins": ["import", "@typescript-eslint", "jest", "react", "react-hooks"],
     "rules": {
         "no-console": "off",
         "no-param-reassign": [2, { "props": false }],
