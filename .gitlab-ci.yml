@@ -7,8 +7,8 @@
 image: node:13-alpine
 
 variables:
-    # FRONTEND_PATH: 'local/templates/main/frontend'
-    FRONTEND_PATH: ''
+    # FRONTEND_PATH: './local/templates/main/frontend'
+    FRONTEND_PATH: '.'
 
 stages:
     - build_frontend

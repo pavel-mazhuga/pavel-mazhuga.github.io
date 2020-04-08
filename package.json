@@ -20,7 +20,7 @@
         "last 2 Opera versions"
     ],
     "scripts": {
-        "test": "jest",
+        "test": "jest --passWithNoTests",
         "dev": "cross-env NODE_ENV=development webpack --config webpack/webpack.config.dev.js",
         "prod": "cross-env NODE_ENV=production webpack --config webpack/webpack.config.prod.js",
         "prod:modern": "cross-env BUILD_TYPE=modern npm run prod",
