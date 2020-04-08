@@ -4,7 +4,7 @@
 # 3. Копировать публичный ключ (ssh-keyscan <SERVER IP>), добавить в ~/.ssh/authorized_keys на сервере
 # 4. WIP: Добавить в переменную SSH_KNOWN_HOSTS в gitlab
 
-image: node:13-alpine
+image: node:12-alpine
 
 variables:
     # FRONTEND_PATH: './local/templates/main/frontend'
