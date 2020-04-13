@@ -4,7 +4,6 @@ const merge = require('webpack-merge');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
-const BrotliPlugin = require('brotli-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 // const PreloadWebpackPlugin = require('preload-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -26,12 +25,17 @@ const { BUILD_TYPE } = process.env;
 const configureCompression = (useCompression, buildType) => {
     if (useCompression) {
         return [
-            new BrotliPlugin({
-                asset: '[path].br[query]',
-                test: buildType === MODERN_TYPE ? /\.(js|css|html)$/ : /\.(js)$/,
+            new CompressionPlugin({
+                test: buildType === MODERN_TYPE ? /\.(css|js|html|json)(\?.*)?$/i : /\.(js)(\?.*)?$/i,
+                filename: '[path].br[query]',
+                compressionOptions: {
+                    level: 11,
+                },
+                algorithm: 'brotliCompress',
+                cache: path.join(__dirname, 'node_modules', '.cache', `compression-webpack-plugin-br`),
             }),
             new CompressionPlugin({
-                test: buildType === MODERN_TYPE ? /\.(css|js|html)(\?.*)?$/i : /\.(js)(\?.*)?$/i,
+                test: buildType === MODERN_TYPE ? /\.(css|js|html|json)(\?.*)?$/i : /\.(js)(\?.*)?$/i,
                 filename: '[path].gz[query]',
                 compressionOptions: {
                     numiterations: 15,
@@ -39,6 +43,7 @@ const configureCompression = (useCompression, buildType) => {
                 algorithm(input, compressionOptions, callback) {
                     return zopfli.gzip(input, compressionOptions, callback);
                 },
+                cache: path.join(__dirname, 'node_modules', '.cache', `compression-webpack-plugin-gz`),
             }),
         ];
     }

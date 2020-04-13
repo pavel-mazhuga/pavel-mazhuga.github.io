@@ -57,7 +57,6 @@
         "babel-plugin-transform-async-to-promises": "latest",
         "babel-preset-airbnb": "latest",
         "bootstrap": "latest",
-        "brotli-webpack-plugin": "latest",
         "browser-sync": "latest",
         "browser-sync-webpack-plugin": "latest",
         "browserslist": "latest",
