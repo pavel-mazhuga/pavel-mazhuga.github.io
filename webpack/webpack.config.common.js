@@ -66,8 +66,9 @@ const SERVICE_WORKER_HASH = () => (fs.existsSync(SERVICE_WORKER_PATH) ? md5File.
 const LEGACY_TYPE = 'legacy';
 const MODERN_TYPE = 'modern';
 
-const configureCssFilename = (isProd) => `css/[name]${isProd ? '.[contenthash:8]' : ''}.css`;
-const configureJsFilename = (buildType, isProd) => `js/${buildType}/[name]${isProd ? '.[contenthash:8]' : ''}.js`;
+const configureCssFilename = (isProd) => (isProd ? 'css/[name].[contenthash:8].css' : 'css/[name].css?[contenthash:8]');
+const configureJsFilename = (buildType, isProd) =>
+    isProd ? `js/${buildType}/[name].[contenthash:8].js` : `js/${buildType}/[name].js?[contenthash:8]`;
 
 const configureHtmlWebpackPlugin = (useHtml) => {
     if (useHtml) {
