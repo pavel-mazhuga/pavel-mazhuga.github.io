@@ -1,1 +1,1 @@
-export { default as KEYCODES } from './keycodes';
+export { default as KEYCODES } from './keyCodes';
