@@ -6,53 +6,72 @@ import { CacheFirst, StaleWhileRevalidate, NetworkFirst } from 'workbox-strategi
 import * as navigationPreload from 'workbox-navigation-preload';
 import { precacheAndRoute } from 'workbox-precaching';
 
-const OFFLINE_CACHE_NAME = 'offline-html';
-const FALLBACK_HTML_URL = `${ROOT_PATH}offline/index.html`;
+const OFFLINE_CACHE_NAME = 'offline';
+const OFFLINE_HTML_URL = `${ROOT_PATH}offline/index.html`;
+const OFFLINE_IMG_URL = `${PUBLIC_PATH}img/not-found.jpg`;
 
 export function registerRoutes() {
-    const networkFirst = new NetworkFirst({
-        cacheName: 'html',
-        plugins: [
-            new ExpirationPlugin({
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 Days
-            }),
-        ],
-        networkTimeoutSeconds: 10,
-    });
-
     self.addEventListener('install', async (event) => {
-        event.waitUntil(caches.open(OFFLINE_CACHE_NAME).then((cache) => cache.add(FALLBACK_HTML_URL)));
+        event.waitUntil(
+            caches.open(OFFLINE_CACHE_NAME).then((cache) => {
+                cache.add(OFFLINE_HTML_URL);
+                cache.add(OFFLINE_IMG_URL);
+            }),
+        );
     });
 
     navigationPreload.enable();
 
+    // Non-content Images
     registerRoute(
-        /\.(?:png|gif|jpg|jpeg|svg|webp|ico)$/,
+        /\.(?:png|gif|svg|ico)$/,
         new StaleWhileRevalidate({
             cacheName: 'images',
             plugins: [
                 new ExpirationPlugin({
-                    maxEntries: 60,
+                    maxEntries: 30,
                     maxAgeSeconds: 60 * 60 * 24 * 30, // 30 Days
                 }),
             ],
         }),
     );
 
-    registerRoute(
-        new RegExp(`${PUBLIC_PATH}(css|js|wasm)/`),
-        new CacheFirst({
-            cacheName: 'static',
+    // Content images
+    registerRoute(/\.(?:jpg|jpeg|webp)$/, async (params) => {
+        const staleWhileRevalidate = new StaleWhileRevalidate({
+            cacheName: 'images',
             plugins: [
                 new ExpirationPlugin({
                     maxEntries: 50,
                     maxAgeSeconds: 60 * 60 * 24 * 30, // 30 Days
                 }),
             ],
+        });
+
+        try {
+            // Attempt a network request.
+            return staleWhileRevalidate.handle(params);
+        } catch (err) {
+            // If it fails, return the cached image.
+            return caches.match(OFFLINE_IMG_URL, { cacheName: OFFLINE_CACHE_NAME });
+        }
+    });
+
+    // Static assets
+    registerRoute(
+        new RegExp(`${PUBLIC_PATH}(css|js|wasm)/`),
+        new CacheFirst({
+            cacheName: 'static',
+            plugins: [
+                new ExpirationPlugin({
+                    maxEntries: 30,
+                    maxAgeSeconds: 60 * 60 * 24 * 30, // 30 Days
+                }),
+            ],
         }),
     );
 
+    // Fonts
     registerRoute(
         new RegExp(`${PUBLIC_PATH}fonts/*.woff2$`),
         new CacheFirst({
@@ -68,12 +87,23 @@ export function registerRoutes() {
 
     // HTML
     registerRoute(/\//, async (params) => {
+        const networkFirst = new NetworkFirst({
+            cacheName: 'html',
+            plugins: [
+                new ExpirationPlugin({
+                    maxEntries: 30,
+                    maxAgeSeconds: 60 * 60 * 24 * 30, // 30 Days
+                }),
+            ],
+            networkTimeoutSeconds: 10,
+        });
+
         try {
             // Attempt a network request.
             return await networkFirst.handle(params);
         } catch (err) {
             // If it fails, return the cached HTML.
-            return caches.match(FALLBACK_HTML_URL, { cacheName: OFFLINE_CACHE_NAME });
+            return caches.match(OFFLINE_HTML_URL, { cacheName: OFFLINE_CACHE_NAME });
         }
     });
 
