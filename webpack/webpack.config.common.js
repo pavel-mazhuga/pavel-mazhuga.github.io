@@ -257,38 +257,8 @@ const configureManifest = (fileName) => ({ fileName });
 const configureServiceWorker = (useServiceWorker) => {
     if (useServiceWorker) {
         return [
-            new WorkboxPlugin.GenerateSW({
-                cacheId: PACKAGE_NAME,
-                swDest: SERVICE_WORKER_PATH,
-                importWorkboxFrom: 'local',
-                clientsClaim: true,
-                skipWaiting: true,
-                precacheManifestFilename: slash(
-                    path.join(SERVICE_WORKER_BASE, 'service-worker-precache.js?[manifestHash]'),
-                ),
-                globDirectory: slash(BUILD_PATH),
-                globPatterns: ['js/**/*.js', 'css/*.css', 'fonts/*.woff2'],
-                globIgnores: ['*.map', '*.LICENSE'],
-                include: [],
-                runtimeCaching: [
-                    {
-                        urlPattern: new RegExp(`${PUBLIC_PATH}(css|js|fonts)/`),
-                        handler: 'NetworkFirst',
-                        options: {
-                            cacheName: `${PACKAGE_NAME}-assets`,
-                            networkTimeoutSeconds: 10,
-                        },
-                    },
-                    {
-                        urlPattern: /\//,
-                        handler: 'NetworkFirst',
-                        options: {
-                            cacheName: `${PACKAGE_NAME}-html`,
-                            networkTimeoutSeconds: 10,
-                        },
-                    },
-                ],
-                ignoreURLParametersMatching: [/^utm_/, /^[a-fA-F0-9]{32}$/],
+            new WorkboxPlugin.InjectManifest({
+                swSrc: path.resolve(SRC_PATH, 'js/service-worker/service-worker.js'),
             }),
         ];
     }
