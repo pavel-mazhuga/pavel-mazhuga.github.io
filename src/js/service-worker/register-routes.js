@@ -1,6 +1,6 @@
 /* global ROOT_PATH PUBLIC_PATH */
 /* eslint-disable no-restricted-globals */
-import { registerRoute } from 'workbox-routing';
+import { registerRoute, setCatchHandler } from 'workbox-routing';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { CacheFirst, StaleWhileRevalidate, NetworkFirst } from 'workbox-strategies';
 import * as navigationPreload from 'workbox-navigation-preload';
@@ -26,7 +26,7 @@ export function registerRoutes() {
     registerRoute(
         /\.(?:png|gif|svg|ico)$/,
         new StaleWhileRevalidate({
-            cacheName: 'images',
+            cacheName: 'non-content-images',
             plugins: [
                 new ExpirationPlugin({
                     maxEntries: 30,
@@ -37,9 +37,9 @@ export function registerRoutes() {
     );
 
     // Content images
-    registerRoute(/\.(?:jpg|jpeg|webp)$/, async (params) => {
+    registerRoute(/\.(jpg|jpeg|webp)$/, async (params) => {
         const staleWhileRevalidate = new StaleWhileRevalidate({
-            cacheName: 'images',
+            cacheName: 'content-images',
             plugins: [
                 new ExpirationPlugin({
                     maxEntries: 50,
@@ -91,7 +91,7 @@ export function registerRoutes() {
             cacheName: 'html',
             plugins: [
                 new ExpirationPlugin({
-                    maxEntries: 30,
+                    maxEntries: 50,
                     maxAgeSeconds: 60 * 60 * 24 * 30, // 30 Days
                 }),
             ],
@@ -99,11 +99,20 @@ export function registerRoutes() {
         });
 
         try {
-            // Attempt a network request.
             return await networkFirst.handle(params);
         } catch (err) {
-            // If it fails, return the cached HTML.
             return caches.match(OFFLINE_HTML_URL, { cacheName: OFFLINE_CACHE_NAME });
+        }
+    });
+
+    // This "catch" handler is triggered when any of the other routes fail to
+    // generate a response.
+    setCatchHandler(({ event }) => {
+        switch (event.request.destination) {
+            case 'image':
+                return caches.match(OFFLINE_IMG_URL);
+            default:
+                return Response.error();
         }
     });
 
