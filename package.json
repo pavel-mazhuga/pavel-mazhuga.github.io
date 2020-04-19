@@ -159,7 +159,7 @@
         "eslint-plugin-prettier": "latest",
         "eslint-plugin-react": "latest",
         "eslint-plugin-react-hooks": "latest",
-        "favicons-webpack-plugin": "latest",
+        "favicons-webpack-plugin": "^3.0.1",
         "jest": "latest",
         "preload-webpack-plugin": "^3.0.0-beta.4",
         "prettier": "latest",

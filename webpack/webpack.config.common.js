@@ -12,6 +12,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 const BitrixInsertHashesPlugin = require('./plugins/plugin.bitrix-insert-hashes');
 const { resourceName } = require('./utils');
@@ -28,7 +29,9 @@ const {
     SRC_PATH,
     BUILD_PATH,
     HTML_PRETTY,
+    USE_HTML,
     USE_SERVICE_WORKER,
+    USE_FAVICONS,
 } = require('../webpack.settings');
 const { name: PACKAGE_NAME, browserslist } = require('../package.json');
 
@@ -106,6 +109,13 @@ const configureHtmlWebpackPlugin = (useHtml) => {
 
     return [];
 };
+
+const configureFaviconsWebpackPlugin = () =>
+    FaviconsWebpackPlugin({
+        logo: `${SRC_PATH}img/favicon/favicon.png`,
+        cache: true,
+        inject: USE_HTML,
+    });
 
 const configureHtmlLoader = () => ({
     test: /\.html$/i,
@@ -438,6 +448,7 @@ const modernConfig = {
     },
 
     plugins: [
+        ...(USE_FAVICONS ? [configureFaviconsWebpackPlugin()] : []),
         new webpack.DefinePlugin(configureDefinePlugin(MODERN_TYPE)),
         new ManifestPlugin(configureManifest('manifest-modern.json')),
         ...configureServiceWorker(USE_SERVICE_WORKER),
