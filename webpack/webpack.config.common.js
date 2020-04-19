@@ -447,6 +447,7 @@ const modernConfig = {
     resolve: {
         alias: {
             '@barba/core': path.resolve(__dirname, '../node_modules/@barba/core/dist/barba.mjs'),
+            comlink: path.resolve(__dirname, '../node_modules/comlink/dist/esm/comlink.min.mjs'),
         },
     },
 };

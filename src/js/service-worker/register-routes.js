@@ -1,6 +1,6 @@
 /* global ROOT_PATH PUBLIC_PATH */
 /* eslint-disable no-restricted-globals */
-import { registerRoute, setCatchHandler } from 'workbox-routing';
+import { registerRoute /* , setCatchHandler */ } from 'workbox-routing';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { CacheFirst, StaleWhileRevalidate, NetworkFirst } from 'workbox-strategies';
 import * as navigationPreload from 'workbox-navigation-preload';
@@ -107,14 +107,14 @@ export function registerRoutes() {
 
     // This "catch" handler is triggered when any of the other routes fail to
     // generate a response.
-    setCatchHandler(({ event }) => {
-        switch (event.request.destination) {
-            case 'image':
-                return caches.match(OFFLINE_IMG_URL);
-            default:
-                return Response.error();
-        }
-    });
+    // setCatchHandler(({ event }) => {
+    //     switch (event.request.destination) {
+    //         case 'image':
+    //             return caches.match(OFFLINE_IMG_URL);
+    //         default:
+    //             return Response.error();
+    //     }
+    // });
 
     precacheAndRoute(self.__WB_MANIFEST || []);
 }

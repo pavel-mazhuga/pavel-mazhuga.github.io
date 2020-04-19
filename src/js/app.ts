@@ -5,10 +5,9 @@ import './polyfills';
 
 import sw from './sw';
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.documentElement.classList.add('js-ready');
-});
+document.documentElement.classList.add('js-ready');
 
+// Service Worker
 if (USE_SERVICE_WORKER) {
     window.addEventListener('load', () => sw.register());
 } else {
