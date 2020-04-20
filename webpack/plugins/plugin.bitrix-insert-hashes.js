@@ -42,7 +42,7 @@ const writeToFile = ({ srcTemplatePath, destTemplatePath }, replaceData = []) =>
                 return;
             }
 
-            console.log(`[${pluginName}] Paths in ${destTemplatePath} were successfully updated.`);
+            // console.log(`[${pluginName}] Paths in ${destTemplatePath} were successfully updated.`);
         });
     });
 };
