@@ -39,7 +39,7 @@ const writeToFile = ({ srcTemplatePath, destTemplatePath }, replaceData = []) =>
             if (error) {
                 console.error(`[${pluginName}] Error occured trying writing data into ${destTemplatePath} file.`);
                 console.error(error.message);
-                return;
+                // return;
             }
 
             // console.log(`[${pluginName}] Paths in ${destTemplatePath} were successfully updated.`);
