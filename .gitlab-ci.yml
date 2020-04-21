@@ -1,8 +1,8 @@
 # На сервере:
 # 1. ssh-keygen
-# 2. Копировать приватный ключ, положить в переменную PRODUCTION_PRIVATE_KEY в gitlab
-# 3. Копировать публичный ключ (ssh-keyscan <SERVER IP>), добавить в ~/.ssh/authorized_keys на сервере
-# 4. WIP: Добавить в переменную SSH_KNOWN_HOSTS в gitlab
+# 2. Копировать приватный ключ (cat <path_to_ssh_private_key>), положить в переменную PRODUCTION_PRIVATE_KEY в gitlab
+# 3. Копировать публичный ключ (cat <path_to_ssh_public_key>), добавить в ~/.ssh/authorized_keys на сервере
+# 4. Добавить хост сервера (ssh-keyscan <SERVER IP>) в переменную SSH_KNOWN_HOSTS в gitlab
 
 image: node:13-alpine
 
