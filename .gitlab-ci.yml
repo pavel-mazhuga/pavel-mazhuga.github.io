@@ -11,14 +11,12 @@ variables:
     FRONTEND_PATH: '.'
 
 stages:
-    - build_frontend
-    - deploy_frontend_dev
-    # - deploy_backend_dev
-    # - deploy_frontend_prod
-    # - deploy_backend_prod
+    - build
+    - deploy
+    # - pull
 
 build_frontend:
-    stage: build_frontend
+    stage: build
     only:
         refs:
             - dev
@@ -38,7 +36,7 @@ build_frontend:
             - $FRONTEND_PATH/node_modules/
 
 deploy_frontend_dev:
-    stage: deploy_frontend_dev
+    stage: deploy
     variables:
         PROJECT_HOST: 'root@91.230.210.213'
         PROJECT_PATH: '/var/www/chipsa/data/www/frontend.chipsa.ru/malinovka/'
@@ -78,15 +76,13 @@ deploy_frontend_dev:
         - ssh -p22 $PROJECT_HOST "cd $PROJECT_PATH/ && git checkout $BRANCH_NAME && git pull origin $BRANCH_NAME --force"
         # Ощичаем кэш битрикса
         - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/bitrix/cache/*"
-# deploy_backend_dev:
-#     stage: deploy_backend_dev
+#
+# pull_dev:
+#     stage: pull
 #     variables:
 #         PROJECT_HOST: 'root@91.230.210.213'
 #         PROJECT_PATH: '/var/www/chipsa/data/www/moremilk.chipsa.ru/'
 #         BRANCH_NAME: dev
-#     artifacts:
-#         paths:
-#             - $FRONTEND_PATH/build/
 #     only:
 #         refs:
 #             - dev
@@ -105,7 +101,7 @@ deploy_frontend_dev:
 #         - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/bitrix/cache/*"
 
 # deploy_frontend_prod:
-#     stage: deploy_frontend_prod
+#     stage: deploy
 #     variables:
 #         PROJECT_HOST: 'root@91.230.211.236'
 #         PROJECT_PATH: '/var/www/www-root/data/www/nadomarket.ru/'
@@ -146,15 +142,12 @@ deploy_frontend_dev:
 #         # Ощичаем кэш битрикса
 #         - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/bitrix/cache/*"
 
-# deploy_backend_prod:
-#     stage: deploy_backend_prod
+# pull_prod:
+#     stage: pull
 #     variables:
 #         PROJECT_HOST: 'root@91.230.211.236'
 #         PROJECT_PATH: '/var/www/www-root/data/www/nadomarket.ru/'
 #         BRANCH_NAME: master
-#     artifacts:
-#         paths:
-#             - $FRONTEND_PATH/build/
 #     only:
 #         refs:
 #             - master
