@@ -129,6 +129,7 @@
         "terser-webpack-plugin": "latest",
         "url-loader": "latest",
         "validator": "latest",
+        "vue": "^2.6.11",
         "webpack": "latest",
         "webpack-bundle-analyzer": "latest",
         "webpack-cli": "latest",
@@ -165,7 +166,9 @@
         "prettier": "latest",
         "pretty-quick": "latest",
         "typescript": "latest",
-        "webpack-dev-server": "latest",
+        "vue-loader": "^15.9.2",
+        "vue-template-compiler": "^2.6.11",
+        "webpack-dev-server": "^3.11.0",
         "webpack-merge": "latest"
     }
 }

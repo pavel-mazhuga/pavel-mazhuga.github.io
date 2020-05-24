@@ -13,6 +13,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 const BitrixInsertHashesPlugin = require('./plugins/plugin.bitrix-insert-hashes');
 const { resourceName } = require('./utils');
@@ -136,6 +137,11 @@ const configureHtmlLoader = () => ({
     },
 });
 
+const configureVueLoader = () => ({
+    test: /\.vue$/,
+    loader: 'vue-loader',
+});
+
 const babelLoader = (supportsESModules = false) => ({
     loader: 'babel-loader',
     options: {
@@ -186,7 +192,7 @@ const babelLoader = (supportsESModules = false) => ({
 const configureBabelLoader = (supportsESModules = false) => ({
     test: /\.(js|ts)x?$/i,
     resolve: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
     },
     exclude: {
         test: path.join(__dirname, '../node_modules'),
@@ -400,6 +406,7 @@ const baseConfig = {
             configureImageLoader(),
             configureCssLoader(),
             configureGlslLoader(),
+            configureVueLoader(),
         ],
     },
 
@@ -409,14 +416,16 @@ const baseConfig = {
             allChunks: true,
             chunkFilename: configureCssFilename(PROD),
         }),
+        new VueLoaderPlugin(),
     ],
 
     resolve: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
         alias: {
             react: 'preact/compat',
             'react-dom/test-utils': 'preact/test-utils',
             'react-dom': 'preact/compat',
+            // 'vue': 'vue/dist/vue.esm.js',
         },
     },
 };
