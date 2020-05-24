@@ -288,8 +288,8 @@ const configureDefinePlugin = (buildType) => ({
 });
 
 const configureCopyPlugin = () =>
-    new CopyWebpackPlugin(
-        [
+    new CopyWebpackPlugin({
+        patterns: [
             ...[
                 '**/.htaccess',
                 'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp,exr}',
@@ -306,21 +306,21 @@ const configureCopyPlugin = () =>
                 from,
                 to: BUILD_PATH,
                 context: SRC_PATH,
-                ignore: SITEMAP,
-                cache: true,
+                cacheTransform: true,
+                noErrorOnMissing: true,
+                globOptions: {
+                    ignore: SITEMAP,
+                },
             })),
             ...['node_modules/lightgallery.js/dist/**/*'].map((from) => ({
                 from,
                 to: BUILD_PATH,
                 context: '../',
-                cache: true,
+                cacheTransform: true,
+                noErrorOnMissing: true,
             })),
         ],
-        {
-            copyUnmodified: !PROD,
-            debug: 'info',
-        },
-    );
+    });
 
 const configureCleanWebpackPlugin = () =>
     new CleanWebpackPlugin({
