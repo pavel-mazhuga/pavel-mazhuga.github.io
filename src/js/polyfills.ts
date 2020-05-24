@@ -8,7 +8,6 @@ if (BUILD_TYPE === 'legacy') {
     require('core-js/es/promise/finally');
     // require('core-js/es/map');
     // require('core-js/es/set');
-    require('element-matches-polyfill');
-    // require('picturefill');
+    // require('element-matches-polyfill');
     require('whatwg-fetch');
 }
