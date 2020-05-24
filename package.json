@@ -35,7 +35,6 @@
         "lint:js": "cross-env NODE_ENV=development eslint --config .eslintrc --ignore-path .eslintignore --fix *.js src/**/*.js",
         "lint": "npm run lint:js",
         "start": "cross-env NODE_ENV=development webpack-dev-server --hot --config webpack/webpack.config.dev.js",
-        "browserslist": "npx browserslist",
         "subsetting": "node ./subset-fonts.js",
         "bundle-analyzer:legacy": "cd ./node_modules/.cache && open-cli bundle-analyzer-legacy-production.html",
         "bundle-analyzer:modern": "cd ./node_modules/.cache && open-cli bundle-analyzer-modern-production.html",

@@ -2,7 +2,7 @@
 
 ## Требование:
 
--   Node.js версии 11 или выше (https://nodejs.org/en/). С нодой автоматически ставится пакетный менеджер - NPM (Node Package Manager) (https://www.npmjs.com/). Проверить версию ноды можно командой **node -v**.
+-   Node.js версии 12 или выше (https://nodejs.org/en/). С нодой автоматически ставится пакетный менеджер - NPM (Node Package Manager) (https://www.npmjs.com/). Проверить версию ноды можно командой **node -v**.
 -   Для сабсеттинга шрифтов:
     -   Python
     -   Fonttools (https://github.com/fonttools/fonttools): **pip install fonttools**
@@ -11,6 +11,7 @@
 ## В сборку включены:
 
 -   Bootstrap 4 (https://getbootstrap.com/)
+-   Vue.js (https://vuejs.org/)
 
 Список всех npm-пакетов можно посмотреть в файле package.json.
 
@@ -35,14 +36,13 @@
 
 ## Обзор комманд:
 
--   **npm run browserslist** — список поддерживаемых браузеров
+-   **npx browserslist** — список поддерживаемых браузеров
 -   **npm run dev** — сборка в development-режиме
 -   **npm run watch** — watch в production-режиме
 -   **npm run watch:dev** — watch в development-режиме
 -   **npm run watch:prod** — watch в production-режиме
 -   **npm run lint:js** — линтер js
--   **npm run lint:html** — линтер html
--   **npm run lint** — запуск всех линтеров (для проверки корректности html/js перед тем, как отдать бэкендеру)
+-   **npm run lint** — запуск всех линтеров (для проверки корректности файлов перед тем, как отдать бэкендеру)
 -   **npm run subsetting** — сабсеттинг шрифтов (удаляются неиспользуемые глифы, значительно уменьшается размер шрифта).
 -   **npm start** — сервер в development-режиме (node-сервер)
 -   **npm run build** — сборка в production-режиме (publicPath === "/")
@@ -58,3 +58,7 @@
 -   GSAP (https://greensock.com/gsap) - одна из лучших библиотек анимаций.
 -   Pixi.js (http://www.pixijs.com/) - одна из лучших библиотек для работы с 2D WebGL.
 -   Three.js (https://threejs.org/) - одна из лучших библиотек для работы с 3D WebGL.
+
+## Тесты
+
+Work in progress
