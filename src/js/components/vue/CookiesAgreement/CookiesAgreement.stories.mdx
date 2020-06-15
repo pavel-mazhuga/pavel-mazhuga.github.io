@@ -1,0 +1,25 @@
+import { Meta, Story, Props, Preview } from '@storybook/addon-docs/blocks';
+import { withA11y } from '@storybook/addon-a11y';
+
+import CookiesAgreement from './CookiesAgreement.vue';
+
+<Meta title="CookiesAgreement" component={CookiesAgreement} decorators={[withA11y]} />
+
+# CookiesAgreement
+
+<br />
+
+## Props
+
+<Props of={CookiesAgreement} />
+
+## Default
+
+<Preview>
+    <Story name="Default" height="200px">
+        {{
+            components: { 'cookies-agreement': CookiesAgreement },
+            template: '<cookies-agreement :reveal-timeout="0"></cookies-agreement>',
+        }}
+    </Story>
+</Preview>

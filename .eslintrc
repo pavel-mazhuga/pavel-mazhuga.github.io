@@ -1,5 +1,12 @@
 {
-    "parser": "@typescript-eslint/parser",
+    "parser": "vue-eslint-parser",
+    "parserOptions": {
+        "parser": "@typescript-eslint/parser",
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
     "extends": ["airbnb-base", "plugin:@typescript-eslint/recommended", "plugin:react/recommended", "prettier"],
     "env": {
         "browser": true,
@@ -32,13 +39,15 @@
         "import/extensions": "off",
         "class-methods-use-this": "off",
         "react-hooks/rules-of-hooks": "error",
-        "react-hooks/exhaustive-deps": "warn"
-    },
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "sourceType": "module"
+        "react-hooks/exhaustive-deps": "warn",
+        "vue/html-indent": "off",
+        "vue/max-attributes-per-line": "off",
+        "vue/attributes-order": "off",
+        "vue/singleline-html-element-content-newline": "off",
+        "vue/html-self-closing": "off",
+        "vue/require-default-prop": "off",
+        "vue/html-closing-bracket-newline": "off",
+        "vue/multiline-html-element-content-newline": "off"
     },
     "settings": {
         "import/resolver": {

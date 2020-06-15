@@ -15,7 +15,7 @@ module.exports = {
     USE_SERVICE_WORKER: false,
     SENTRY_DSN: '',
     PUBLIC_PATH_DEFAULT: '/',
-    PUBLIC_PATH_BITRIX: '/local/templates/main/',
+    PUBLIC_PATH_BITRIX: '/local/templates/main/frontend/build/',
     PUBLIC_PATH_SANDBOX: `/${name}/`,
     SRC_PATH: path.resolve(__dirname, 'src'),
     BUILD_PATH: path.resolve(__dirname, 'build'),

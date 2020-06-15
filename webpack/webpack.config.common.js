@@ -192,7 +192,7 @@ const babelLoader = (supportsESModules = false) => ({
 const configureBabelLoader = (supportsESModules = false) => ({
     test: /\.(js|ts)x?$/i,
     resolve: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
     },
     exclude: {
         test: path.join(__dirname, '../node_modules'),
