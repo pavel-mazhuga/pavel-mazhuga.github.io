@@ -9,7 +9,7 @@
 ## find #PATH# -type f -exec chmod 664 {} \;
 ## где #PATH# - путь до проекта (ниже в конфиге $PROJECT_PATH)
 
-image: node:13-alpine
+image: alpine
 
 variables:
     # FRONTEND_PATH: './local/templates/main/frontend'
@@ -21,6 +21,7 @@ stages:
     # - pull
 
 build_frontend:
+    image: node:13-alpine
     stage: build
     only:
         refs:
@@ -66,10 +67,10 @@ deploy_frontend_dev:
         # Проверяем, есть ли rsync, если нет - устанавливаем
         - which rsync || ( apk update && apk add rsync )
         # Создаем временные папки
-        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_tmp && mkdir $PROJECT_PATH/_tmp"
-        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_old && mkdir $PROJECT_PATH/_old"
+        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_tmp && mkdir -m 775 $PROJECT_PATH/_tmp"
+        - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_old && mkdir -m 775 $PROJECT_PATH/_old"
         # Создаем папку build, если она не существует
-        - ssh -p22 $PROJECT_HOST "mkdir -p $PROJECT_PATH/$FRONTEND_PATH/build"
+        - ssh -p22 $PROJECT_HOST "mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/build"
         # Копируем билд фронтенда с сервера gitlab ci
         - rsync -zarvh $FRONTEND_PATH/build/* $PROJECT_HOST:$PROJECT_PATH/_tmp
         # Меняем старый и новый билды фронтенда местами
@@ -131,10 +132,10 @@ deploy_frontend_dev:
 #         # Проверяем, есть ли rsync, если нет - устанавливаем
 #         - which rsync || ( apk update && apk add rsync )
 #         # Создаем временные папки
-#         - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_tmp && mkdir $PROJECT_PATH/_tmp"
-#         - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_old && mkdir $PROJECT_PATH/_old"
+#         - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_tmp && mkdir -m 775 $PROJECT_PATH/_tmp"
+#         - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_old && mkdir -m 775 $PROJECT_PATH/_old"
 #         # Создаем папку build, если она не существует
-#         - ssh -p22 $PROJECT_HOST "mkdir -p $PROJECT_PATH/$FRONTEND_PATH/build"
+#         - ssh -p22 $PROJECT_HOST "mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/build"
 #         # Копируем билд фронтенда с сервера gitlab ci
 #         - rsync -zarvh $FRONTEND_PATH/build/* $PROJECT_HOST:$PROJECT_PATH/_tmp
 #         # Меняем старый и новый билды фронтенда местами
