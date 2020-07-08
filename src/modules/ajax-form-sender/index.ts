@@ -1,20 +1,43 @@
-import { triggerEvent, triggerCustomEvent } from '../../js/utils/trigger-event';
+import { triggerEvent, triggerCustomEvent } from '@chipsadesign/frontend-utils';
+
+import type { BaseResponse } from '../../js/types';
+
+type AjaxFormSenderOptions = {
+    onBeforeSend: () => void;
+    onSuccess: (response: BaseResponse) => any;
+    onError: (err: Error) => any;
+    onComplete: () => void;
+    data: Record<string, any>;
+    shouldClearInputs?: boolean;
+    inputSelector: string;
+    method: string;
+};
+
+type Send = (url?: string) => Promise<BaseResponse>;
+
+type AppendData = (...data: [string, string | Blob, string?]) => void;
+
+export type AjaxFormSender = {
+    send: Send;
+    appendData: AppendData;
+    clearInputs: () => void;
+};
 
 export const clearInputs = (inputs: HTMLInputElement[] = []) => {
     Array.from(inputs).forEach((input) => {
         if (input.type === 'checkbox') {
             input.checked = false;
-        } else {
+        } else if (input.type !== 'hidden') {
             input.value = '';
         }
         triggerEvent(input, 'blur');
     });
 };
 
-const defaultOptions = {
+const defaultOptions: AjaxFormSenderOptions = {
     onBeforeSend: () => {},
-    onSuccess: (response: Response) => {},
-    onError: (err: Error) => {},
+    onSuccess: () => {},
+    onError: () => {},
     onComplete: () => {},
     data: {},
     shouldClearInputs: true,
@@ -22,30 +45,35 @@ const defaultOptions = {
     method: 'get',
 };
 
-export default (form: HTMLFormElement, _options = defaultOptions) => {
-    const options = { ...defaultOptions, ..._options };
-    const { method } = options;
+export default (form: HTMLFormElement, _options: Partial<AjaxFormSenderOptions> = defaultOptions): AjaxFormSender => {
+    const options: AjaxFormSenderOptions = { ...defaultOptions, ..._options };
+    const method = (form.method || options.method).toLowerCase();
     const inputs = Array.from(form.querySelectorAll(options.inputSelector)) as HTMLInputElement[];
-    let data: any;
+    let data: FormData | null;
+    const preData: Record<string, any> = {};
 
-    if (['post', 'put', 'delete'].includes(method)) {
-        data = new FormData(form);
-        if (options.data) {
-            Object.entries(options.data).forEach((entry) => {
-                data.append(...entry);
-            });
-        }
-    }
-
-    const appendData = (..._data: [string, string | Blob, string | undefined]) => {
-        if (data instanceof FormData) {
-            data.append(..._data);
-        }
+    const appendData: AppendData = (..._data) => {
+        const [key, value] = _data;
+        preData[key] = value;
     };
 
-    const send = async (url = form.action) => {
+    const send: Send = async (url = form.action) => {
         if (!(url && typeof url === 'string')) {
             throw new Error('Form does not have "action" attibute and url has not been provided');
+        }
+
+        if (['post', 'put', 'delete'].includes(method)) {
+            data = new FormData(form);
+
+            if (options.data) {
+                Object.entries(options.data).forEach((entry) => {
+                    data!.append(...entry);
+                });
+            }
+
+            Object.entries(preData).forEach((entry) => {
+                data!.append(...entry);
+            });
         }
 
         form.classList.add('js-ajax-form--loading');
@@ -53,7 +81,7 @@ export default (form: HTMLFormElement, _options = defaultOptions) => {
         triggerCustomEvent(form, 'send');
 
         try {
-            let response: Response;
+            let response: BaseResponse;
 
             if (method === 'get') {
                 response = await fetch(url, { method }).then((res) => res.json());
@@ -85,20 +113,5 @@ export default (form: HTMLFormElement, _options = defaultOptions) => {
         }
     };
 
-    const onSubmit = (event: any) => {
-        event.preventDefault();
-        send();
-    };
-
-    const destroy = () => {
-        form.removeEventListener('submit', onSubmit);
-    };
-
-    /**
-     * Init
-     */
-
-    form.addEventListener('submit', onSubmit);
-
-    return { appendData, send, destroy };
+    return { appendData, send, clearInputs: () => clearInputs(inputs) };
 };
