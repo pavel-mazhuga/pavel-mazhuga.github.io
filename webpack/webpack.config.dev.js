@@ -1,4 +1,4 @@
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 
 const { USE_HTML } = require('../webpack.settings');
 const {

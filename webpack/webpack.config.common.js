@@ -4,7 +4,7 @@ const slash = require('slash');
 const md5File = require('md5-file');
 const glob = require('glob');
 const webpack = require('webpack');
-const merge = require('webpack-merge');
+const { customizeObject, mergeWithCustomize } = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
@@ -472,14 +472,16 @@ const modernConfig = {
 };
 
 module.exports = {
-    legacyConfig: merge.strategy({
-        module: 'prepend',
-        plugins: 'prepend',
+    legacyConfig: mergeWithCustomize({
+        customizeObject: customizeObject({
+            entry: 'prepend',
+        }),
     })(baseConfig, legacyConfig),
 
-    modernConfig: merge.strategy({
-        module: 'prepend',
-        plugins: 'prepend',
+    modernConfig: mergeWithCustomize({
+        customizeObject: customizeObject({
+            entry: 'prepend',
+        }),
     })(baseConfig, modernConfig),
 
     configureHtmlWebpackPlugin,
