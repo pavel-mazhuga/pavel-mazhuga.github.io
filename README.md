@@ -52,8 +52,9 @@
 -   `npm run build:sandbox` — сборка в production-режиме (publicPath === "/sand/{project-name}/" - для деплоя на sandbox-сервер Chipsa);
 -   `npm run build:bitrix` — сборка в production-режиме (publicPath === "[путь от корня до папки с фронтендом]");
 -   `npm test` — запуск тестов;
--   `npm run lint:js` — линтер js;
+-   `npm run lint:js` — запуск линтера js;
 -   `npm run lint` — запуск всех линтеров (для проверки корректности файлов перед тем, как отдать бэкендеру);
+-   `npm run ba` - анализ результирующего js-бандла. См. (webpack-bundle-analyzer)[https://github.com/webpack-contrib/webpack-bundle-analyzer].
 -   `npm run subsetting` — сабсеттинг шрифтов (удаляются неиспользуемые глифы, значительно уменьшается размер шрифта);
 -   `npx browserslist` — список поддерживаемых браузеров.
 
