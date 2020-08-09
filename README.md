@@ -45,13 +45,15 @@
 -   **SRC_PATH** - путь до исходников.
 -   **BUILD_PATH** - путь до билда.
 
-## Обзор комманд:
+## Обзор комманд
 
 -   `npm run watch` — watch в development-режиме;
 -   `npm run build` — сборка в production-режиме (publicPath === "/");
 -   `npm run build:sandbox` — сборка в production-режиме (publicPath === "/sand/{project-name}/" - для деплоя на sandbox-сервер Chipsa);
 -   `npm run build:bitrix` — сборка в production-режиме (publicPath === "[путь от корня до папки с фронтендом]");
 -   `npm test` — запуск тестов;
+-   `npm run storybook` — запуск storybook (dev);
+-   `npm run storybook:build` — build storybook;
 -   `npm run lint:js` — запуск линтера js;
 -   `npm run lint` — запуск всех линтеров (для проверки корректности файлов перед тем, как отдать бэкендеру);
 -   `npm run ba` - анализ результирующего js-бандла. См. (webpack-bundle-analyzer)[https://github.com/webpack-contrib/webpack-bundle-analyzer].
@@ -78,22 +80,27 @@
 -   **global.d.ts** - глобальные (модульные) типы.
 -   **types.ts** - типы.
 -   **polyfills.ts** - полифиллы.
--   **sentry.ts** - инициализация (Sentry)[https://sentry.io/] для проекта.
+-   **sentry.ts** - инициализация [Sentry](https://sentry.io/) для проекта.
 -   **sw.ts** - инициализация сервис-воркера для проекта.
 -   **webpack-imports.ts** - сюда подключается все, что не является непосредственно js-кодом приложения, но должно обработаться вебпаком.
 
 Поддиректории:
 
 -   **components** - здесь хранятся js-компоненты, например vue-компоненты, классы или фабричные функции (factory functions).
--   **service-worker** - код сервис-воркера. Используется (Workbox)[https://developers.google.com/web/tools/workbox].
+-   **service-worker** - код сервис-воркера. Используется [Workbox](https://developers.google.com/web/tools/workbox).
 -   **utils** - js-утилиты.
 -   **workers** - веб-воркеры. Файлы с именем `[name].worker.ts` (или `.js`) при их импорте куда-либо в приложение с помощью [comlink-loader](https://github.com/GoogleChromeLabs/comlink-loader) преобразуются вебпаком в веб-воркеры и будут запущены браузером в отдельном потоке.
+
+## UI kit
+
+Для ведения UI-kit проекта используется [Storybook](https://storybook.js.org/).
+Чтобы запустить storybook, введите в консоли `npm run storybook`.
 
 ## Тесты
 
 Work in progress
 
-## Полезные npm-пакеты:
+## Полезные npm-пакеты
 
 -   [Barba.js](https://barba.js.org/) - SPA-like PJAX navigation.
 -   [Preact](https://preactjs.com/) - 3kb альтернатива React с аналогичным API.

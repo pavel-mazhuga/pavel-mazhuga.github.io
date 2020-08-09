@@ -39,7 +39,9 @@
         "bundle-analyzer:legacy": "cd ./node_modules/.cache && open-cli bundle-analyzer-legacy-production.html",
         "bundle-analyzer:modern": "cd ./node_modules/.cache && open-cli bundle-analyzer-modern-production.html",
         "bundle-analyzer": "npm run bundle-analyzer:legacy && npm run bundle-analyzer:modern",
-        "ba": "npm run bundle-analyzer"
+        "ba": "npm run bundle-analyzer",
+        "storybook": "start-storybook -s ./build,./src -p 6006",
+        "storybook:build": "build-storybook -c .storybook -o build/storybook -s ./src"
     },
     "dependencies": {
         "@babel/cli": "^7.10.5",
@@ -49,6 +51,14 @@
         "@babel/runtime": "^7.10.5",
         "@gfx/zopfli": "latest",
         "@sentry/browser": "^5.19.2",
+        "@storybook/addon-a11y": "^5.3.19",
+        "@storybook/addon-actions": "^5.3.19",
+        "@storybook/addon-docs": "^5.3.19",
+        "@storybook/addon-knobs": "^5.3.19",
+        "@storybook/addon-links": "^5.3.19",
+        "@storybook/addon-viewport": "^5.3.19",
+        "@storybook/addons": "^5.3.19",
+        "@storybook/vue": "^5.3.19",
         "@testing-library/dom": "^7.20.2",
         "@testing-library/jest-dom": "latest",
         "@testing-library/preact": "^2.0.0",
