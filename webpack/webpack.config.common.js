@@ -24,11 +24,15 @@ const {
     THEME_COLOR,
     BACKGROUND_COLOR,
     SENTRY_DSN,
+    ROOT_PATH_DEFAULT,
+    ROOT_PATH_SANDBOX,
+    ROOT_PATH_BITRIX,
     PUBLIC_PATH_DEFAULT,
     PUBLIC_PATH_SANDBOX,
     PUBLIC_PATH_BITRIX,
     SRC_PATH,
     BUILD_PATH,
+    HTML_PATH_BITRIX,
     HTML_PRETTY,
     USE_HTML,
     USE_SERVICE_WORKER,
@@ -47,8 +51,9 @@ const configurePublicPath = () => {
 };
 
 const configureRootPath = () => {
-    if (SANDBOX) return PUBLIC_PATH_SANDBOX;
-    return '/';
+    if (SANDBOX) return ROOT_PATH_SANDBOX;
+    if (BITRIX) return ROOT_PATH_BITRIX;
+    return ROOT_PATH_DEFAULT;
 };
 
 const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
@@ -80,13 +85,15 @@ const configureHtmlWebpackPlugin = (useHtml) => {
             const basename = path.basename(template);
             const filename =
                 basename === 'index.html'
-                    ? path.join(BUILD_PATH, path.relative(SRC_PATH, template))
+                    ? path.join(BUILD_PATH, ...(BITRIX ? [HTML_PATH_BITRIX] : []), path.relative(SRC_PATH, template))
                     : path.join(
                           BUILD_PATH,
+                          ...(BITRIX ? [HTML_PATH_BITRIX] : []),
                           path.relative(SRC_PATH, path.dirname(template)),
                           path.basename(template, '.html'),
                           'index.html',
                       );
+
             return new HtmlWebpackPlugin({
                 filename,
                 template,

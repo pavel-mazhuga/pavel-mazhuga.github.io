@@ -29,6 +29,7 @@ build_frontend:
             # - master
         # changes:
         #     - local/templates/main/frontend/**/*
+        #     - .gitlab-ci.yml
     script:
         - cd $FRONTEND_PATH/
         - npm install
@@ -44,7 +45,7 @@ build_frontend:
 deploy_frontend_dev:
     stage: deploy
     variables:
-        PROJECT_HOST: 'root@91.230.210.213'
+        PROJECT_HOST: 'chipsa@91.230.210.213'
         PROJECT_PATH: '/var/www/chipsa/data/www/frontend.chipsa.ru/malinovka/'
         BRANCH_NAME: dev
     only:
@@ -52,6 +53,7 @@ deploy_frontend_dev:
             - dev
         # changes:
         #     - local/templates/main/frontend/**/*
+        #     - .gitlab-ci.yml
     artifacts:
         paths:
             - $FRONTEND_PATH/build/
@@ -61,8 +63,6 @@ deploy_frontend_dev:
         - echo "$STAGING_PRIVATE_KEY" | ssh-add -
         - mkdir -p ~/.ssh
         - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-        # Dangerous: vulnerable to MITM attacks
-        # - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
     script:
         # Проверяем, есть ли rsync, если нет - устанавливаем
         - which rsync || ( apk update && apk add rsync )
@@ -86,7 +86,7 @@ deploy_frontend_dev:
 # pull_dev:
 #     stage: pull
 #     variables:
-#         PROJECT_HOST: 'root@91.230.210.213'
+#         PROJECT_HOST: 'chipsa@91.230.210.213'
 #         PROJECT_PATH: '/var/www/chipsa/data/www/moremilk.chipsa.ru/'
 #         BRANCH_NAME: dev
 #     only:
@@ -98,8 +98,6 @@ deploy_frontend_dev:
 #         - echo "$STAGING_PRIVATE_KEY" | ssh-add -
 #         - mkdir -p ~/.ssh
 #         - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-#         # Dangerous: vulnerable to MITM attacks
-#         # - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
 #     script:
 #         # Пуллим изменения из репозитория
 #         - ssh -p22 $PROJECT_HOST "cd $PROJECT_PATH/ && git checkout $BRANCH_NAME && git pull origin $BRANCH_NAME --force"
@@ -109,7 +107,7 @@ deploy_frontend_dev:
 # deploy_frontend_prod:
 #     stage: deploy
 #     variables:
-#         PROJECT_HOST: 'root@91.230.211.236'
+#         PROJECT_HOST: 'chipsa@91.230.211.236'
 #         PROJECT_PATH: '/var/www/www-root/data/www/nadomarket.ru/'
 #         BRANCH_NAME: master
 #     only:
@@ -117,6 +115,7 @@ deploy_frontend_dev:
 #             - master
 #         changes:
 #             - local/templates/main/frontend/**/*
+#             - .gitlab-ci.yml
 #     artifacts:
 #         paths:
 #             - $FRONTEND_PATH/build/
@@ -126,8 +125,6 @@ deploy_frontend_dev:
 #         - echo "$PRODUCTION_PRIVATE_KEY" | ssh-add -
 #         - mkdir -p ~/.ssh
 #         - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-#         # Dangerous: vulnerable to MITM attacks
-#         # - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
 #     script:
 #         # Проверяем, есть ли rsync, если нет - устанавливаем
 #         - which rsync || ( apk update && apk add rsync )
@@ -151,7 +148,7 @@ deploy_frontend_dev:
 # pull_prod:
 #     stage: pull
 #     variables:
-#         PROJECT_HOST: 'root@91.230.211.236'
+#         PROJECT_HOST: 'chipsa@91.230.211.236'
 #         PROJECT_PATH: '/var/www/www-root/data/www/nadomarket.ru/'
 #         BRANCH_NAME: master
 #     only:
@@ -163,8 +160,6 @@ deploy_frontend_dev:
 #         - echo "$PRODUCTION_PRIVATE_KEY" | ssh-add -
 #         - mkdir -p ~/.ssh
 #         - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-#         # Dangerous: vulnerable to MITM attacks
-#         # - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
 #     script:
 #         # Пуллим изменения из репозитория
 #         - ssh -p22 $PROJECT_HOST "cd $PROJECT_PATH/ && git checkout $BRANCH_NAME && git pull origin $BRANCH_NAME --force"
