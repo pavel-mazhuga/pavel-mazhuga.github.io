@@ -35,8 +35,8 @@ class ModernBuildPlugin {
 
                 // Вставляем fallback-файлы с атрибутом nomodule
                 Object.keys(legacyManifest)
-                    .filter((key) => /\.js$/.test(key))
-                    .filter((key) => !/worker\.js$/.test(key))
+                    .filter((key) => /\.js$/.test(key)) // только js-файлы
+                    .filter((key) => key.includes('vendor.js') || key.includes('app.js')) // vendor и app
                     .reduce((arr, fileName) => {
                         const newArr = arr.slice();
                         // vendor build should come first
