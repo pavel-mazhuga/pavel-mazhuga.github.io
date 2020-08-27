@@ -1,3 +1,4 @@
+/* eslint-disablemax-lines */
 const path = require('path');
 const fs = require('fs');
 const slash = require('slash');
