@@ -305,7 +305,7 @@ const configureCopyPlugin = () =>
         patterns: [
             ...[
                 '**/.htaccess',
-                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp,exr}',
+                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp,exr,avif}',
                 'google*.html',
                 'yandex_*.html',
                 '*.txt',
