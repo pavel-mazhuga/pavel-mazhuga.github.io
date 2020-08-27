@@ -1,22 +1,9 @@
 import isEmail from 'validator/lib/isEmail';
 import equals from 'validator/lib/equals';
-// import { findParent } from '@chipsadesign/frontend-utils';
 
 import messages from './messages';
 
 export { isEmail, equals };
-
-// temp
-function findParent(selector: string, startingElement: Element) {
-    let parent = startingElement;
-
-    while (!parent.matches(selector)) {
-        if (!parent.parentElement) return false;
-        parent = parent.parentElement;
-    }
-
-    return parent;
-}
 
 function getLang() {
     switch (true) {
@@ -59,6 +46,12 @@ function isEmptyInput(input: HTMLInputElement) {
 }
 
 export function validateInput(input: HTMLInputElement): boolean {
+    // Кастомная валидация через регулярное выражение
+    if (input.classList.contains('js-validate--custom')) {
+        const regExp = input.getAttribute('data-custom-validation') || '.*';
+        return new RegExp(regExp, 'i').test(input.value);
+    }
+
     // Валидация электронной почты
     if (isEmailInput(input)) {
         return input.hasAttribute('required') || input.value.trim().length > 0 ? isEmail(input.value) : true;
@@ -96,12 +89,6 @@ export function validateInput(input: HTMLInputElement): boolean {
         return field ? equals(input.value, field.value) : false;
     }
 
-    // Кастомная валидация через регулярное выражение
-    if (input.classList.contains('js-validate--custom')) {
-        const regExp = input.getAttribute('data-custom-validation') || '.*';
-        return new RegExp(regExp, 'i').test(input.value);
-    }
-
     // Валидация заполненности поля
     if (input.hasAttribute('required') && isEmptyInput(input)) {
         return false;
@@ -120,6 +107,7 @@ const DEFAULT_OPTIONS = {
 };
 
 export default (form: HTMLFormElement, options = DEFAULT_OPTIONS) => {
+    form.setAttribute('novalidate', 'novalidate');
     const inputs = Array.from(form.querySelectorAll(options.inputSelector)) as HTMLInputElement[];
 
     function validate() {
@@ -129,7 +117,7 @@ export default (form: HTMLFormElement, options = DEFAULT_OPTIONS) => {
 
         inputs.forEach((input) => {
             const isValid = validateInput(input);
-            const choicesDiv = findParent('div.choices', input);
+            const choicesDiv = input.closest('div.choices');
             const messageElement = (choicesDiv || input).parentElement?.querySelector('.app-message');
 
             if (isValid) {
