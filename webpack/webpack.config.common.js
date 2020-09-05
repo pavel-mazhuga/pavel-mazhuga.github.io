@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 const path = require('path');
 const fs = require('fs');
 const slash = require('slash');
@@ -197,9 +198,9 @@ const babelLoader = (supportsESModules = false) => ({
 });
 
 const configureBabelLoader = (supportsESModules = false) => ({
-    test: /\.(js|ts)x?$/i,
+    test: /\.(js|mjs|jsx|ts|tsx)?$/i,
     resolve: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        extensions: ['.mjs', '.js', '.jsx', '.ts', '.tsx'],
     },
     exclude: {
         test: path.join(__dirname, '../node_modules'),
@@ -305,7 +306,7 @@ const configureCopyPlugin = () =>
         patterns: [
             ...[
                 '**/.htaccess',
-                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp,exr}',
+                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp,exr,avif}',
                 'google*.html',
                 'yandex_*.html',
                 '*.txt',
@@ -347,7 +348,7 @@ const configureWorkerLoader = (supportsESModules = false) => ({
         {
             loader: 'worker-loader',
             options: {
-                name: 'js/[name].js',
+                name: `js/${process.env.BUILD_TYPE === 'legacy' ? LEGACY_TYPE : MODERN_TYPE}/[name].js`,
             },
         },
         babelLoader(supportsESModules),
