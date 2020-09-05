@@ -24,13 +24,8 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
 import * as Cookies from 'js-cookie';
-
-type Data = {
-    visible: boolean;
-    timer: NodeJS.Timeout | null;
-};
 
 export default {
     props: {
@@ -40,7 +35,7 @@ export default {
         },
     },
 
-    data(): Data {
+    data() {
         return {
             visible: false,
             timer: null,
@@ -54,9 +49,7 @@ export default {
     },
 
     beforeDestroy() {
-        if (this.timer) {
-            clearTimeout(this.timer);
-        }
+        clearTimeout(this.timer);
     },
 
     methods: {
@@ -95,7 +88,6 @@ export default {
     transition: opacity 0.5s ease, visibility 0.5s ease;
     border-bottom-left-radius: 14px;
     border-bottom-right-radius: 14px;
-    /* contain: content; */
 
     &:not(.cookie-banner--visible) {
         opacity: 0;
@@ -136,7 +128,7 @@ export default {
         right: -5px;
     }
 
-    &:focus.focus-visible {
+    &:focus-visible {
         @include hover();
     }
 

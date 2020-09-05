@@ -7,13 +7,8 @@ const { browserslist } = require('../package.json');
 const INLINE_FILES = ['png', 'jpeg', 'jpg', 'gif', 'svg'];
 
 module.exports = {
-    stories: ['../src/**/*.stories.(js|ts|mdx)'],
-    addons: [
-        '@storybook/addon-knobs/register',
-        '@storybook/addon-docs',
-        '@storybook/addon-a11y/register',
-        '@storybook/addon-viewport/register',
-    ],
+    stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
+    addons: ['@storybook/addon-links', '@storybook/addon-essentials'],
     webpackFinal: async (config, { configType }) => {
         config.module.rules.push({
             test: /\.(css|scss)$/i,
@@ -28,11 +23,10 @@ module.exports = {
                             require('postcss-input-style')(),
                             require('postcss-responsive-type')(),
                             require('postcss-easings')(),
+                            require('postcss-focus-visible')(),
+                            require('postcss-focus-within')(),
                             ...(configType === 'PRODUCTION'
                                 ? [
-                                      require('postcss-focus')(),
-                                      require('postcss-focus-within')(),
-                                      require('postcss-focus-visible')(),
                                       require('postcss-image-set-polyfill')(),
                                       require('postcss-url')({
                                           filter(asset) {
@@ -76,30 +70,6 @@ module.exports = {
                 'sass-loader',
             ],
         });
-
-        config.module.rules.push({
-            test: /\.(ts|tsx)$/,
-            use: [
-                {
-                    loader: require.resolve('babel-loader'),
-                    options: {
-                        presets: [
-                            [
-                                '@babel/preset-typescript',
-                                {
-                                    jsxPragma: 'h',
-                                    pragmaFrag: 'Fragment',
-                                    isTSX: true,
-                                    allExtensions: true,
-                                },
-                            ],
-                        ],
-                    },
-                },
-            ],
-        });
-
-        config.resolve.extensions.push('.js', '.jsx', '.ts', '.tsx', '.vue');
 
         return config;
     },
