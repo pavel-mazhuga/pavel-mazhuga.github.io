@@ -30,12 +30,6 @@ glob(
             const basename = path.basename(target, extname);
             const dirname = slash(path.dirname(target));
 
-            logger.info(`${source} --> ${dirname}/${basename}.${ext}`);
-            childProcess.execSync(
-                `pyftsubset ${source} --output-file=${dirname}/${basename}.${ext} ${subsetsCommandSuffix}`,
-                { stdio: 'inherit' },
-            );
-
             logger.info(`${source} --> ${dirname}/${basename}.woff`);
             childProcess.execSync(
                 `pyftsubset ${source} --output-file=${dirname}/${basename}.woff --flavor=woff ${subsetsCommandSuffix}`,
