@@ -28,11 +28,16 @@
 
 ## Базовая конфигурация через app.config.js
 
+<!-- HTMLWebpackPlugin -->
+
 -   **LANGUAGE** - язык сайта, запишется в `<html>` lang-атрибут.
 -   **TITLE** - тайтл, запишется в тег `<title>` в `<head>`.
 -   **DESCRIPTION** - дескришпн, запишется в тег `<meta content="description">`, а также в соответствующие og-метатеги.
 -   **THEME_COLOR** - цвет темы сайта (нужно для Progressive Web App).
 -   **BACKGROUND_COLOR** - цвет фона сайта (нужно для Progressive Web App).
+
+<!-- /HTMLWebpackPlugin -->
+
 -   **USE_HTML** - нужно ли генерировать HTML. Если верстаем сразу в php, ставим этот флаг в "false".
 -   **HTML_PRETTY** - человекопонятное форматирование сгенерированного вебпаком HTML-файлов.
 -   **USE_FAVICONS** - нужно ли генерировать множество иконок для разных платформ (нужно для Progressive Web App).
@@ -48,9 +53,9 @@
 ## Обзор комманд
 
 -   `npm run watch` — watch в development-режиме;
--   `npm run build` — сборка в production-режиме (publicPath === "/");
--   `npm run build:sandbox` — сборка в production-режиме (publicPath === "/sand/{project-name}/" - для деплоя на sandbox-сервер Chipsa);
--   `npm run build:bitrix` — сборка в production-режиме (publicPath === "[путь от корня до папки с фронтендом]");
+-   `npm run build` — сборка в production-режиме;
+-   `npm run build:sandbox` — сборка в production-режиме (PUBLIC_PATH настраивается в `app.settings.js` -> PUBLIC_PATH_SANDBOX);
+-   `npm run build:bitrix` — сборка в production-режиме (PUBLIC_PATH настраивается в `app.settings.js` -> PUBLIC_PATH_BITRIX);
 -   `npm test` — запуск тестов;
 -   `npm run storybook` — запуск storybook (dev);
 -   `npm run storybook:build` — build storybook;
