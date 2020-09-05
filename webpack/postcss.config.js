@@ -14,10 +14,9 @@ module.exports = {
         require('postcss-input-style')(),
         require('postcss-responsive-type')(),
         require('postcss-easings')(),
+        require('postcss-focus-within')(),
+        require('postcss-focus-visible')(),
         ...(PROD ? [
-            require('postcss-focus')(),
-            require('postcss-focus-within')(),
-            require('postcss-focus-visible')(),
             require('postcss-image-set-polyfill')(),
             require('postcss-url')({
                 filter(asset) {
