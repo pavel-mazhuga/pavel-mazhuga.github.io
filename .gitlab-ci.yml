@@ -114,8 +114,8 @@ build_frontend:
             - dev
             # - master
         # changes:
-        #     - local/templates/main/frontend/**/*
         #     - .gitlab-ci.yml
+        #     - local/templates/main/frontend/**/*
     script:
         - cd $FRONTEND_PATH/
         - npm test
@@ -155,8 +155,8 @@ deploy_frontend_dev:
         refs:
             - dev
         # changes:
-        #     - local/templates/main/frontend/**/*
         #     - .gitlab-ci.yml
+        #     - local/templates/main/frontend/**/*
     before_script:
         - *before_script
     script:
@@ -175,9 +175,9 @@ deploy_storybook_dev:
     only:
         refs:
             - dev
-        changes:
-            - local/templates/main/frontend/**/*
-            - .gitlab-ci.yml
+        # changes:
+        #     - .gitlab-ci.yml
+        #     - local/templates/main/frontend/**/*
     before_script:
         - *before_script
     script:
