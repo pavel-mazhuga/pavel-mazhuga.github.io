@@ -20,7 +20,7 @@ variables: &global_variables
 
 # Глобальные переменные для дева
 variables: &global_variables_dev
-    PRIVATE_KEY: $STAGING_PRIVATE_KEY
+    ENV_PRIVATE_KEY: $STAGING_PRIVATE_KEY
     PROJECT_HOST: "chipsa@91.230.210.213"
     PROJECT_PATH: "/var/www/chipsa/data/www/pp.chipsa.ru/"
     BRANCH_NAME: dev
@@ -28,15 +28,15 @@ variables: &global_variables_dev
 
 # Глобальные переменные для продакшена
 variables: &global_variables_prod
-  PRIVATE_KEY: $PRODUCTION_PRIVATE_KEY
-  PROJECT_HOST: "<<[PROJECT_HOST_HERE]>>"
-  PROJECT_PATH: "<<[PROJECT_PATH_HERE]>>"
-  BRANCH_NAME: master
+    ENV_PRIVATE_KEY: $PRODUCTION_PRIVATE_KEY
+    PROJECT_HOST: "<<[PROJECT_HOST_HERE]>>"
+    PROJECT_PATH: "<<[PROJECT_PATH_HERE]>>"
+    BRANCH_NAME: master
 
 .before_script: &before_script
     - 'which ssh-agent || ( apk update && apk add openssh-client )'
     - eval $(ssh-agent -s)
-    - echo "$STAGING_PRIVATE_KEY" | ssh-add -
+    - echo "$ENV_PRIVATE_KEY" | ssh-add -
     - mkdir -p ~/.ssh
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
 
