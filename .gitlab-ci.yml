@@ -48,8 +48,8 @@ variables: &global_variables_prod
     # # Проверяем, есть ли rsync, если нет - устанавливаем
     # - which rsync || ( apk update && apk add rsync )
     # Создаем временные папки
-    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_tmp && mkdir -m 775 $PROJECT_PATH/_tmp"
-    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_old && mkdir -m 775 $PROJECT_PATH/_old"
+    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_tmp && mkdir -p -m 775 $PROJECT_PATH/_tmp"
+    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_old && mkdir -p -m 775 $PROJECT_PATH/_old"
     # Создаем папку build, если она не существует
     - ssh -p22 $PROJECT_HOST "mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/build"
     # Копируем билд фронтенда с сервера gitlab ci
