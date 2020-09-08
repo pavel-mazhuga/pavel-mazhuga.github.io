@@ -45,20 +45,18 @@ variables: &global_variables_prod
     - which rsync || ( apk update && apk add rsync )
 
 .deploy_frontend: &deploy_frontend
-    # # Проверяем, есть ли rsync, если нет - устанавливаем
-    # - which rsync || ( apk update && apk add rsync )
     # Создаем временные папки
-    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_tmp && mkdir -p -m 775 $PROJECT_PATH/_tmp"
-    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_old && mkdir -p -m 775 $PROJECT_PATH/_old"
+    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_tmp && mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/_tmp"
+    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_old && mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/_old"
     # Создаем папку build, если она не существует
     - ssh -p22 $PROJECT_HOST "mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/build"
     # Копируем билд фронтенда с сервера gitlab ci
-    - rsync -zarvh $FRONTEND_PATH/build/* $PROJECT_HOST:$PROJECT_PATH/_tmp
+    - rsync -zarvh $FRONTEND_PATH/build/* $PROJECT_HOST:$PROJECT_PATH/$FRONTEND_PATH/_tmp
     # Меняем старый и новый билды фронтенда местами
-    - ssh -p22 $PROJECT_HOST "( ( find $PROJECT_PATH/$FRONTEND_PATH/build -mindepth 1 | read ) && mv $PROJECT_PATH/$FRONTEND_PATH/build/* $PROJECT_PATH/_old ) && mv $PROJECT_PATH/_tmp/* $PROJECT_PATH/$FRONTEND_PATH/build"
+    - ssh -p22 $PROJECT_HOST "( ( find $PROJECT_PATH/$FRONTEND_PATH/build -mindepth 1 | read ) && mv $PROJECT_PATH/$FRONTEND_PATH/build/* $PROJECT_PATH/$FRONTEND_PATH/_old ) && mv $PROJECT_PATH/$FRONTEND_PATH/_tmp/* $PROJECT_PATH/$FRONTEND_PATH/build"
     # Удаляем временные папки
-    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_old"
-    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/_tmp"
+    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_old"
+    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_tmp"
 
 .deploy_storybook: &deploy_storybook
     - rsync -zarvh $FRONTEND_PATH/build/storybook $PROJECT_HOST:$PROJECT_PATH/$FRONTEND_PATH/build
