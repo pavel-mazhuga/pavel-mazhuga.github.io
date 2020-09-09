@@ -1,4 +1,4 @@
-/* eslint-disable max-lines */
+/* eslint-disable max-lines, global-require */
 const path = require('path');
 const fs = require('fs');
 const slash = require('slash');
@@ -264,7 +264,7 @@ const configureCssLoader = () => ({
             loader: 'postcss-loader',
             options: {
                 sourceMap: USE_SOURCE_MAP ? 'inline' : false,
-                config: { path: './webpack/postcss.config.js' },
+                postcssOptions: require('./postcss.config.js'),
             },
         },
         {

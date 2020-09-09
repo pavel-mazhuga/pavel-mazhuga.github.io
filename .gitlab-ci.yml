@@ -22,7 +22,7 @@ variables: &global_variables
 variables: &global_variables_dev
     ENV_PRIVATE_KEY: $STAGING_PRIVATE_KEY
     PROJECT_HOST: "chipsa@91.230.210.213"
-    PROJECT_PATH: "/var/www/chipsa/data/www/pp.chipsa.ru/"
+    PROJECT_PATH: "<<[PROJECT_PATH_HERE]>>"
     BRANCH_NAME: dev
 
 
