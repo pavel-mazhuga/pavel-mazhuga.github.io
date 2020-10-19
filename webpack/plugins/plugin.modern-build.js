@@ -13,7 +13,10 @@ class ModernBuildPlugin {
         const pluginName = 'modern-build-plugin';
 
         // Получаем информацию о Fallback Build
-        const legacyManifest = require(`${BUILD_PATH}/manifest-legacy.json`);
+        let legacyManifest;
+        try {
+            legacyManifest = require(`${BUILD_PATH}/manifest-legacy.json`);
+        } catch (err) {}
 
         compiler.hooks.compilation.tap(pluginName, (compilation) => {
             // Подписываемся на хук html-webpack-plugin,
@@ -26,38 +29,40 @@ class ModernBuildPlugin {
                     }
                 });
 
-                // Вставляем фикс для Safari
-                data.body.push({
-                    tagName: 'script',
-                    closeTag: true,
-                    innerHTML: safariFix,
-                });
+                if (legacyManifest) {
+                    // Вставляем фикс для Safari
+                    data.body.push({
+                        tagName: 'script',
+                        closeTag: true,
+                        innerHTML: safariFix,
+                    });
 
-                // Вставляем fallback-файлы с атрибутом nomodule
-                Object.keys(legacyManifest)
-                    .filter((key) => /\.js$/.test(key)) // только js-файлы
-                    .filter((key) => key.includes('vendor.js') || key.includes('app.js')) // vendor и app
-                    .reduce((arr, fileName) => {
-                        const newArr = arr.slice();
-                        // vendor build should come first
-                        if (/vendor/.test(fileName)) {
-                            newArr.unshift(fileName);
-                        } else {
-                            newArr.push(fileName);
-                        }
-                        return newArr;
-                    }, [])
-                    .forEach((fileName) =>
-                        data.body.push({
-                            tagName: 'script',
-                            closeTag: true,
-                            attributes: {
-                                src: legacyManifest[fileName],
-                                nomodule: true,
-                                defer: true,
-                            },
-                        }),
-                    );
+                    // Вставляем fallback-файлы с атрибутом nomodule
+                    Object.keys(legacyManifest)
+                        .filter((key) => /\.js$/.test(key)) // только js-файлы
+                        .filter((key) => key.includes('vendor.js') || key.includes('app.js')) // vendor и app
+                        .reduce((arr, fileName) => {
+                            const newArr = arr.slice();
+                            // vendor build should come first
+                            if (/vendor/.test(fileName)) {
+                                newArr.unshift(fileName);
+                            } else {
+                                newArr.push(fileName);
+                            }
+                            return newArr;
+                        }, [])
+                        .forEach((fileName) =>
+                            data.body.push({
+                                tagName: 'script',
+                                closeTag: true,
+                                attributes: {
+                                    src: legacyManifest[fileName],
+                                    nomodule: true,
+                                    defer: true,
+                                },
+                            }),
+                        );
+                }
 
                 callback();
             });
