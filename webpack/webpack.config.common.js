@@ -252,8 +252,40 @@ const configureFontLoader = () => ({
     },
 });
 
+const configureCustomElementsCssLoader = () => ({
+    test: /\.ce\.(css|scss)$/i,
+    loaders: (DEV_SERVER ? ['css-hot-loader'] : []).concat([
+        {
+            loader: 'raw-loader',
+        },
+        {
+            loader: 'extract-loader',
+        },
+        {
+            loader: 'css-loader',
+            options: { sourceMap: USE_SOURCE_MAP },
+        },
+        {
+            loader: 'postcss-loader',
+            options: {
+                sourceMap: USE_SOURCE_MAP ? 'inline' : false,
+                postcssOptions: require('./postcss.config.js'),
+            },
+        },
+        {
+            loader: 'sass-loader',
+            options: {
+                sourceMap: USE_SOURCE_MAP,
+            },
+        },
+    ]),
+});
+
 const configureCssLoader = () => ({
     test: /\.(css|scss)$/i,
+    exclude: {
+        test: /\.ce\.(css|scss)$/i,
+    },
     loaders: (DEV_SERVER ? ['css-hot-loader'] : []).concat([
         MiniCssExtractPlugin.loader,
         {
@@ -412,6 +444,7 @@ const baseConfig = {
             configureHtmlLoader(),
             configureFontLoader(),
             configureImageLoader(),
+            configureCustomElementsCssLoader(),
             configureCssLoader(),
             configureGlslLoader(),
             configureVueLoader(),
@@ -496,6 +529,7 @@ module.exports = {
     configureBrowsersync,
     configureCopyPlugin,
     configureCleanWebpackPlugin,
+    configureBabelLoader,
     SERVICE_WORKER_PATH,
     LEGACY_TYPE,
     MODERN_TYPE,

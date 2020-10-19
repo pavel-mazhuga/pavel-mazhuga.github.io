@@ -1,0 +1,21 @@
+import { Meta, Story, Preview } from '@storybook/addon-docs/blocks';
+
+<Meta title="CookiesAgreement" />
+
+# CookiesAgreement
+
+---
+
+<br />
+
+Попап с информацией об использовании файлов cookie на сайте.
+
+## Default
+
+<Preview style={{ transform: 'translate(0, 0)' }}>
+    <Story name="Default" height="300px">
+        {{
+            template: '<app-cookies-agreement reveal-timeout="0"></app-cookies-agreement>',
+        }}
+    </Story>
+</Preview>
