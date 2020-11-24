@@ -14,7 +14,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
+// const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 const BitrixInsertHashesPlugin = require('./plugins/plugin.bitrix-insert-hashes');
 const { resourceName } = require('./utils');
@@ -202,19 +202,19 @@ const configureBabelLoader = (supportsESModules = false) => ({
     resolve: {
         extensions: ['.mjs', '.js', '.jsx', '.ts', '.tsx'],
     },
-    exclude: {
-        test: path.join(__dirname, '../node_modules'),
-        // ...(supportsESModules
-        //     ? {}
-        //     : {
-        //           exclude: {
-        //               test: [
-        //                   path.resolve(__dirname, '../node_modules/idlize'),
-        //               ],
-        //           },
-        //       }),
-    },
-    loaders: [babelLoader(supportsESModules)],
+    // exclude: {
+    //     test: path.join(__dirname, '../node_modules'),
+    //     // ...(supportsESModules
+    //     //     ? {}
+    //     //     : {
+    //     //           exclude: {
+    //     //               test: [
+    //     //                   path.resolve(__dirname, '../node_modules/idlize'),
+    //     //               ],
+    //     //           },
+    //     //       }),
+    // },
+    use: [babelLoader(supportsESModules)],
 });
 
 const configureGlslLoader = () => ({
@@ -224,7 +224,6 @@ const configureGlslLoader = () => ({
 
 const configureImageLoader = () => ({
     test: /\.(jpe?g|png|gif|svg)$/i,
-    exclude: /(fonts|font)/i,
     oneOf: [
         {
             resourceQuery: /[&?]resize=.+/,
@@ -245,7 +244,6 @@ const configureImageLoader = () => ({
 
 const configureFontLoader = () => ({
     test: /\.(eot|woff|woff2|ttf|svg)(\?v=.+)?$/i,
-    exclude: /(img|images)/i,
     loader: 'file-loader',
     options: {
         name: resourceName('fonts', false),
@@ -254,7 +252,7 @@ const configureFontLoader = () => ({
 
 const configureCustomElementsCssLoader = () => ({
     test: /\.ce\.(css|scss)$/i,
-    loaders: (DEV_SERVER ? ['css-hot-loader'] : []).concat([
+    use: (DEV_SERVER ? ['css-hot-loader'] : []).concat([
         {
             loader: 'raw-loader',
         },
@@ -283,10 +281,8 @@ const configureCustomElementsCssLoader = () => ({
 
 const configureCssLoader = () => ({
     test: /\.(css|scss)$/i,
-    exclude: {
-        test: /\.ce\.(css|scss)$/i,
-    },
-    loaders: (DEV_SERVER ? ['css-hot-loader'] : []).concat([
+    exclude: /\.ce\.(css|scss)$/i,
+    use: (DEV_SERVER ? ['css-hot-loader'] : []).concat([
         MiniCssExtractPlugin.loader,
         {
             loader: 'css-loader',
@@ -454,10 +450,9 @@ const baseConfig = {
     plugins: [
         new MiniCssExtractPlugin({
             filename: configureCssFilename(PROD),
-            allChunks: true,
             chunkFilename: configureCssFilename(PROD),
         }),
-        new VueLoaderPlugin(),
+        // new VueLoaderPlugin(),
     ],
 
     resolve: {
