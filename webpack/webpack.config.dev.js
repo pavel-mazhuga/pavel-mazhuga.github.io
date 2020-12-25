@@ -1,9 +1,9 @@
 const { merge } = require('webpack-merge');
 
-const { USE_HTML } = require('../webpack.settings');
+// const { USE_HTML } = require('../webpack.settings');
 const {
-    configureHtmlWebpackPlugin,
-    configureCopyPlugin,
+    // configureHtmlWebpackPlugin,
+    // configureCopyPlugin,
     configureCleanWebpackPlugin,
     modernConfig,
     SERVICE_WORKER_PATH,
@@ -30,8 +30,8 @@ module.exports = [
 
         plugins: [
             configureCleanWebpackPlugin(),
-            ...configureHtmlWebpackPlugin(USE_HTML),
-            configureCopyPlugin(),
+            // ...configureHtmlWebpackPlugin(USE_HTML),
+            // configureCopyPlugin(),
             configureBrowsersync(),
         ],
 

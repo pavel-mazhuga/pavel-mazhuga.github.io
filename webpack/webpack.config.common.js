@@ -120,8 +120,8 @@ const configureHtmlWebpackPlugin = (useHtml) => {
 };
 
 const configureFaviconsWebpackPlugin = () =>
-    FaviconsWebpackPlugin({
-        logo: `${SRC_PATH}img/favicon/favicon.png`,
+    new FaviconsWebpackPlugin({
+        logo: `${SRC_PATH}/img/favicon/favicon.png`,
         cache: true,
         inject: USE_HTML,
     });
@@ -202,6 +202,7 @@ const configureBabelLoader = (supportsESModules = false) => ({
     resolve: {
         extensions: ['.mjs', '.js', '.jsx', '.ts', '.tsx'],
     },
+    exclude: path.join(__dirname, '../node_modules'),
     // exclude: {
     //     test: path.join(__dirname, '../node_modules'),
     //     // ...(supportsESModules
@@ -376,7 +377,7 @@ const configureWorkerLoader = (supportsESModules = false) => ({
         {
             loader: 'worker-loader',
             options: {
-                name: `js/${process.env.BUILD_TYPE === 'legacy' ? LEGACY_TYPE : MODERN_TYPE}/[name].js`,
+                name: `js/${process.env.BUILD_TYPE === LEGACY_TYPE ? LEGACY_TYPE : MODERN_TYPE}/[name].js`,
             },
         },
         babelLoader(supportsESModules),
@@ -492,9 +493,11 @@ const modernConfig = {
     },
 
     plugins: [
-        ...(USE_FAVICONS ? [configureFaviconsWebpackPlugin()] : []),
         new webpack.DefinePlugin(configureDefinePlugin(MODERN_TYPE)),
+        ...configureHtmlWebpackPlugin(USE_HTML),
+        ...(USE_FAVICONS ? [configureFaviconsWebpackPlugin()] : []),
         new WebpackManifestPlugin(configureManifest('manifest-modern.json')),
+        configureCopyPlugin(),
         ...configureServiceWorker(USE_SERVICE_WORKER),
         ...(BITRIX ? [configureBitrixInsertHashesPlugin()] : []),
     ],
@@ -522,7 +525,7 @@ module.exports = {
 
     configureHtmlWebpackPlugin,
     configureBrowsersync,
-    configureCopyPlugin,
+    // configureCopyPlugin,
     configureCleanWebpackPlugin,
     configureBabelLoader,
     SERVICE_WORKER_PATH,

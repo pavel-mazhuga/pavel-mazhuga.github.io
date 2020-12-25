@@ -12,8 +12,8 @@ const zopfli = require('@gfx/zopfli');
 const HtmlWebpackModernBuildPlugin = require('./plugins/plugin.modern-build');
 const { USE_COMPRESSION, USE_HTML, HTML_PRETTY } = require('../webpack.settings');
 const {
-    configureHtmlWebpackPlugin,
-    configureCopyPlugin,
+    // configureHtmlWebpackPlugin,
+    // configureCopyPlugin,
     configureCleanWebpackPlugin,
     legacyConfig,
     modernConfig,
@@ -73,14 +73,7 @@ const baseConfig = {
     devtool: 'source-map',
 
     optimization: {
-        minimizer: [
-            new TerserPlugin({
-                parallel: true,
-                sourceMap: true,
-                extractComments: true,
-                cache: true,
-            }),
-        ],
+        minimizer: [new TerserPlugin()],
     },
 
     performance: {
@@ -103,16 +96,16 @@ const baseConfig = {
 
 module.exports =
     BUILD_TYPE === MODERN_TYPE
-        ? merge(modernConfig, baseConfig, {
+        ? merge(baseConfig, modernConfig, {
               plugins: [
-                  ...configureHtmlWebpackPlugin(USE_HTML),
+                  //   ...configureHtmlWebpackPlugin(USE_HTML),
                   ...configureHtmlModernBuildPlugin(USE_HTML),
-                  ...configureHtmlBeautifyPlugin(USE_HTML, HTML_PRETTY),
-                  configureCopyPlugin(),
+                  //   ...configureHtmlBeautifyPlugin(USE_HTML, HTML_PRETTY),
+                  //   configureCopyPlugin(),
                   new BundleAnalyzerPlugin(configureBundleAnalyzerPlugin('modern')),
               ],
           })
-        : merge(legacyConfig, baseConfig, {
+        : merge(baseConfig, legacyConfig, {
               plugins: [
                   configureCleanWebpackPlugin(),
                   new BundleAnalyzerPlugin(configureBundleAnalyzerPlugin('legacy')),
