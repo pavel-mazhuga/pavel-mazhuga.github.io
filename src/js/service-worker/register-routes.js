@@ -58,18 +58,18 @@ export function registerRoutes() {
     });
 
     // Static assets
-    registerRoute(
-        new RegExp(`${PUBLIC_PATH}(css|js|wasm)/`),
-        new CacheFirst({
-            cacheName: 'static',
-            plugins: [
-                new ExpirationPlugin({
-                    maxEntries: 30,
-                    maxAgeSeconds: 60 * 60 * 24 * 30, // 30 Days
-                }),
-            ],
-        }),
-    );
+    // registerRoute(
+    //     new RegExp(`${PUBLIC_PATH}(css|js|wasm)/`),
+    //     new CacheFirst({
+    //         cacheName: 'static',
+    //         plugins: [
+    //             new ExpirationPlugin({
+    //                 maxEntries: 30,
+    //                 maxAgeSeconds: 60 * 60 * 24 * 30, // 30 Days
+    //             }),
+    //         ],
+    //     }),
+    // );
 
     // Fonts
     registerRoute(
