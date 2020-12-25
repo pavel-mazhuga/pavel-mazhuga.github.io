@@ -3,7 +3,7 @@ const frontMatter = require('front-matter');
 const path = require('path');
 const slash = require('slash');
 const loaderUtils = require('loader-utils');
-const validateOptions = require('schema-utils');
+const { validate } = require('schema-utils');
 const weblog = require('webpack-log');
 const deepMerge = require('lodash.merge');
 const posthtml = require('posthtml');
@@ -111,7 +111,7 @@ module.exports = function HtmlLoader() {
         // eslint-disable-next-line global-require, import/no-dynamic-require
         { context: require(appDataModule) },
     );
-    validateOptions(OPTIONS_SCHEMA, options, 'loader-html');
+    validate(OPTIONS_SCHEMA, options, { name: 'loader-html' });
 
     const nunjucksLoader = new nunjucks.FileSystemLoader(options.searchPath, { noCache: true });
     const nunjucksEnvironment = new nunjucks.Environment(nunjucksLoader, options.environment);

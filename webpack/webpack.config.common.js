@@ -7,7 +7,7 @@ const glob = require('glob');
 const webpack = require('webpack');
 const { customizeObject, mergeWithCustomize } = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -477,7 +477,7 @@ const legacyConfig = {
 
     plugins: [
         new webpack.DefinePlugin(configureDefinePlugin(LEGACY_TYPE)),
-        new ManifestPlugin(configureManifest('manifest-legacy.json')),
+        new WebpackManifestPlugin(configureManifest('manifest-legacy.json')),
     ],
 };
 
@@ -494,7 +494,7 @@ const modernConfig = {
     plugins: [
         ...(USE_FAVICONS ? [configureFaviconsWebpackPlugin()] : []),
         new webpack.DefinePlugin(configureDefinePlugin(MODERN_TYPE)),
-        new ManifestPlugin(configureManifest('manifest-modern.json')),
+        new WebpackManifestPlugin(configureManifest('manifest-modern.json')),
         ...configureServiceWorker(USE_SERVICE_WORKER),
         ...(BITRIX ? [configureBitrixInsertHashesPlugin()] : []),
     ],
