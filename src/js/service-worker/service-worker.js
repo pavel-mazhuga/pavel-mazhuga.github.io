@@ -1,7 +1,7 @@
-import { clientsClaim, skipWaiting } from 'workbox-core';
+import { clientsClaim } from 'workbox-core';
 
 import { registerRoutes } from './register-routes';
 
 clientsClaim();
-skipWaiting();
+global.skipWaiting();
 registerRoutes();
