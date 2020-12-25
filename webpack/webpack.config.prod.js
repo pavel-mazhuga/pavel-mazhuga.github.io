@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const HtmlBeautifyPlugin = require('html-beautify-webpack-plugin');
+const HtmlBeautifyPlugin = require('./plugins/plugin.html-beautify');
 const CompressionPlugin = require('compression-webpack-plugin');
 // const PreloadWebpackPlugin = require('preload-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -100,7 +100,7 @@ module.exports =
               plugins: [
                   ...configureHtmlWebpackPlugin(USE_HTML),
                   ...configureHtmlModernBuildPlugin(USE_HTML),
-                  //   ...configureHtmlBeautifyPlugin(USE_HTML, HTML_PRETTY),
+                  ...configureHtmlBeautifyPlugin(USE_HTML, HTML_PRETTY),
                   //   configureCopyPlugin(),
                   new BundleAnalyzerPlugin(configureBundleAnalyzerPlugin('modern')),
               ],
