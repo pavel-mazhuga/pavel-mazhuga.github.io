@@ -110,7 +110,7 @@ const configureHtmlWebpackPlugin = (useHtml) => {
                     minifyJS: !HTML_PRETTY,
                 },
                 hash: !PROD,
-                cache: true,
+                cache: false,
                 title: TITLE,
             });
         });

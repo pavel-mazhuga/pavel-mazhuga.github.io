@@ -9,7 +9,6 @@ import { registerCustomElements } from './custom-elements';
 document.addEventListener('DOMContentLoaded', () => {
     // Forces repaint, use when really needed.
     // document.documentElement.classList.add('js-ready');
-
     registerCustomElements();
 
     // Code here

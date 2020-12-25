@@ -5,26 +5,30 @@ import * as Cookies from 'js-cookie';
 import _styles from './CookiesAgreement.ce.scss';
 
 export interface CookiesAgreement {
-    isVisible: boolean;
     revealTimeout: number;
+    _isVisible: boolean;
     _timer: NodeJS.Timeout;
 }
 
 export class CookiesAgreement extends LitElement {
     constructor() {
         super();
+        this._acceptCookiesUsage = this._acceptCookiesUsage.bind(this);
+
         this.revealTimeout = this.getAttribute('reveal-timeout')
-            ? parseFloat(this.getAttribute('reveal-timeout')!)
+            ? parseFloat(this.getAttribute('reveal-timeout') as string)
             : 5000;
-        this.isVisible = false;
+        this._isVisible = false;
     }
 
     static get properties() {
         return {
             revealTimeout: {
                 type: Number,
+                attribute: 'reveal-timeout',
             },
-            isVisible: {
+            _isVisible: {
+                type: Boolean,
                 attribute: false,
             },
         };
@@ -39,7 +43,7 @@ export class CookiesAgreement extends LitElement {
     connectedCallback() {
         super.connectedCallback();
         this._timer = setTimeout(() => {
-            this.isVisible = true;
+            this._isVisible = true;
         }, this.revealTimeout);
     }
 
@@ -49,10 +53,10 @@ export class CookiesAgreement extends LitElement {
     }
 
     close() {
-        this.isVisible = false;
+        this._isVisible = false;
     }
 
-    acceptCookiesUsage() {
+    protected _acceptCookiesUsage() {
         Cookies.set('COOKIES_USAGE_ACCEPTED', 'true', {
             expires: 365, // days
         });
@@ -61,10 +65,10 @@ export class CookiesAgreement extends LitElement {
 
     render() {
         return html`
-            <div class="${classMap({ banner: true, 'banner--visible': this.isVisible })}">
+            <div class="${classMap({ banner: true, 'banner--visible': this._isVisible })}">
                 <button
                     class="banner__close"
-                    @click="${() => this.acceptCookiesUsage()}"
+                    @click="${this._acceptCookiesUsage}"
                     aria-label="Принять и закрыть"
                     title="Принять и закрыть"
                 >
@@ -85,5 +89,11 @@ export class CookiesAgreement extends LitElement {
                 </div>
             </div>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        'x-cookies-agreement': CookiesAgreement;
     }
 }
