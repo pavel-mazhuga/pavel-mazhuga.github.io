@@ -1,4 +1,5 @@
 /* eslint-disable */
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BUILD_PATH } = require('../../webpack.settings.js');
 
 // Safari 10.1 не поддерживает атрибут nomodule.
@@ -21,9 +22,9 @@ class ModernBuildPlugin {
         compiler.hooks.compilation.tap(pluginName, (compilation) => {
             // Подписываемся на хук html-webpack-plugin,
             // в котором можно менять данные HTML
-            compilation.hooks.htmlWebpackPluginAlterAssetTags.tapAsync(pluginName, (data, callback) => {
+            HtmlWebpackPlugin.getHooks(compilation).alterAssetTags.tapAsync(pluginName, (data, callback) => {
                 // Добавляем type="module" для modern-файлов
-                data.body.forEach((tag) => {
+                data.assetTags.scripts.forEach((tag) => {
                     if (tag.tagName === 'script' && tag.attributes) {
                         tag.attributes.type = 'module';
                     }
@@ -31,7 +32,7 @@ class ModernBuildPlugin {
 
                 if (legacyManifest) {
                     // Вставляем фикс для Safari
-                    data.body.push({
+                    data.assetTags.scripts.push({
                         tagName: 'script',
                         closeTag: true,
                         innerHTML: safariFix,
@@ -52,7 +53,7 @@ class ModernBuildPlugin {
                             return newArr;
                         }, [])
                         .forEach((fileName) =>
-                            data.body.push({
+                            data.assetTags.scripts.push({
                                 tagName: 'script',
                                 closeTag: true,
                                 attributes: {

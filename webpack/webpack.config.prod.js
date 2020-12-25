@@ -12,7 +12,7 @@ const zopfli = require('@gfx/zopfli');
 const HtmlWebpackModernBuildPlugin = require('./plugins/plugin.modern-build');
 const { USE_COMPRESSION, USE_HTML, HTML_PRETTY } = require('../webpack.settings');
 const {
-    // configureHtmlWebpackPlugin,
+    configureHtmlWebpackPlugin,
     // configureCopyPlugin,
     configureCleanWebpackPlugin,
     legacyConfig,
@@ -98,7 +98,7 @@ module.exports =
     BUILD_TYPE === MODERN_TYPE
         ? merge(baseConfig, modernConfig, {
               plugins: [
-                  //   ...configureHtmlWebpackPlugin(USE_HTML),
+                  ...configureHtmlWebpackPlugin(USE_HTML),
                   ...configureHtmlModernBuildPlugin(USE_HTML),
                   //   ...configureHtmlBeautifyPlugin(USE_HTML, HTML_PRETTY),
                   //   configureCopyPlugin(),

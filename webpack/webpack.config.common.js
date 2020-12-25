@@ -494,12 +494,11 @@ const modernConfig = {
 
     plugins: [
         new webpack.DefinePlugin(configureDefinePlugin(MODERN_TYPE)),
-        ...configureHtmlWebpackPlugin(USE_HTML),
-        ...(USE_FAVICONS ? [configureFaviconsWebpackPlugin()] : []),
         new WebpackManifestPlugin(configureManifest('manifest-modern.json')),
         configureCopyPlugin(),
         ...configureServiceWorker(USE_SERVICE_WORKER),
         ...(BITRIX ? [configureBitrixInsertHashesPlugin()] : []),
+        ...(USE_FAVICONS ? [configureFaviconsWebpackPlugin()] : []),
     ],
 
     resolve: {
