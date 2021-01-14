@@ -182,6 +182,7 @@ const babelLoader = (supportsESModules = false) => ({
                     targets: {
                         ...(supportsESModules ? { esmodules: true } : { browsers: browserslist }),
                     },
+                    exclude: supportsESModules ? ['es.promise'] : [],
                 },
             ],
             [

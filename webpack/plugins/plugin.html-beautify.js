@@ -26,20 +26,21 @@ function HtmlBeautifyPlugin({ config = {}, replace } = { config: {}, replace: []
 
 function htmlPluginDataFunction(htmlPluginData, callback, _this) {
     htmlPluginData.html = beautify(
-        _.reduce(
-            _this.options.replace,
-            (res, item) => {
-                if (typeof item === 'string' || item instanceof RegExp)
-                    return res.replace(item instanceof RegExp ? item : new RegExp(item, 'gi'), '');
-                else
-                    return res.replace(
-                        item.test instanceof RegExp ? item.test : new RegExp(item.test, 'gi'),
-                        item.with || '',
-                    );
-            },
-            htmlPluginData.html,
-        ),
-        _this.options.config,
+        // _.reduce(
+        //     _this.options.replace,
+        //     (res, item) => {
+        //         if (typeof item === 'string' || item instanceof RegExp)
+        //             return res.replace(item instanceof RegExp ? item : new RegExp(item, 'gi'), '');
+        //         else
+        //             return res.replace(
+        //                 item.test instanceof RegExp ? item.test : new RegExp(item.test, 'gi'),
+        //                 item.with || '',
+        //             );
+        //     },
+        //     htmlPluginData.html,
+        // ),
+        htmlPluginData.html,
+        // _this.options.config,
     );
 
     callback(null, htmlPluginData);
