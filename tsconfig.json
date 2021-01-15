@@ -15,6 +15,6 @@
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true
     },
-    "include": ["./src", "src/js/global.d.ts", "next-env.d.ts", "**/*.js", "**/*.ts", "**/*.tsx"],
+    "include": ["./src/**/*", "next-env.d.ts", "**/*.ts", "**/*.tsx"],
     "exclude": ["node_modules"]
 }

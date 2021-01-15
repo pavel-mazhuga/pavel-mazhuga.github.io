@@ -5,10 +5,9 @@ const sortCSSmq = require('sort-css-media-queries');
 
 const { browserslist } = require('../package.json');
 
-const PROD = (process.env.NODE_ENV === 'production');
 const INLINE_FILES = ['png', 'jpeg', 'jpg', 'gif', 'svg'];
 
-module.exports = {
+module.exports = (isProd = false) => ({
     plugins: [
         require('postcss-devtools')({ precise: true }),
         require('postcss-input-style')(),
@@ -16,7 +15,7 @@ module.exports = {
         require('postcss-easings')(),
         require('postcss-focus-within')(),
         require('postcss-focus-visible')(),
-        ...(PROD ? [
+        ...(isProd ? [
             require('postcss-image-set-polyfill')(),
             require('postcss-url')({
                 filter(asset) {
@@ -51,4 +50,4 @@ module.exports = {
         require('postcss-browser-reporter')(),
         require('postcss-reporter')(),
     ],
-};
+});

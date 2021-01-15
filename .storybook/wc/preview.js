@@ -1,7 +1,7 @@
-import '../src/css/app.scss';
+import '../../src/css/app.scss';
 import 'focus-visible';
 
-import { registerCustomElements } from '../src/js/custom-elements';
+import { registerCustomElements } from '../../src/js/custom-elements';
 
 registerCustomElements();
 

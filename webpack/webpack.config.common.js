@@ -14,10 +14,11 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
-// const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 const BitrixInsertHashesPlugin = require('./plugins/plugin.bitrix-insert-hashes');
 const { resourceName } = require('./utils');
+const configurePostCSS = require('./postcss.config.js');
 const {
     LANGUAGE,
     TITLE,
@@ -269,7 +270,7 @@ const configureCustomElementsCssLoader = () => ({
             loader: 'postcss-loader',
             options: {
                 sourceMap: USE_SOURCE_MAP ? 'inline' : false,
-                postcssOptions: require('./postcss.config.js'),
+                postcssOptions: configurePostCSS(PROD),
             },
         },
         {
@@ -294,7 +295,7 @@ const configureCssLoader = () => ({
             loader: 'postcss-loader',
             options: {
                 sourceMap: USE_SOURCE_MAP ? 'inline' : false,
-                postcssOptions: require('./postcss.config.js'),
+                postcssOptions: configurePostCSS(PROD),
             },
         },
         {
@@ -336,7 +337,7 @@ const configureCopyPlugin = () =>
         patterns: [
             ...[
                 '**/.htaccess',
-                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp,exr,avif}',
+                'img/**/*.{png,svg,ico,gif,xml,jpeg,jpg,json,webp,exr,avif,ktx,ktx2}',
                 'google*.html',
                 'yandex_*.html',
                 '*.txt',
@@ -454,7 +455,7 @@ const baseConfig = {
             filename: configureCssFilename(PROD),
             chunkFilename: configureCssFilename(PROD),
         }),
-        // new VueLoaderPlugin(),
+        new VueLoaderPlugin(),
     ],
 
     resolve: {
