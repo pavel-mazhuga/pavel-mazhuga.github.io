@@ -22,12 +22,12 @@ const {
 
 const { BUILD_TYPE } = process.env;
 
-const configureCompression = (useCompression, buildType) => {
+const configureCompression = (useCompression) => {
     if (useCompression) {
         return [
             new CompressionPlugin({
-                test: buildType === MODERN_TYPE ? /\.(css|js|html|json)(\?.*)?$/i : /\.(js)(\?.*)?$/i,
-                filename: '[path].br[query]',
+                test: /\.(css|js|svg|json)(\?.*)?$/i,
+                filename: '[path][base].br[query]',
                 compressionOptions: {
                     level: 11,
                 },
@@ -35,8 +35,8 @@ const configureCompression = (useCompression, buildType) => {
                 cache: path.join(__dirname, 'node_modules', '.cache', `compression-webpack-plugin-br`),
             }),
             new CompressionPlugin({
-                test: buildType === MODERN_TYPE ? /\.(css|js|html|json)(\?.*)?$/i : /\.(js)(\?.*)?$/i,
-                filename: '[path].gz[query]',
+                test: /\.(css|js|svg|json)(\?.*)?$/i,
+                filename: '[path][base].gz[query]',
                 compressionOptions: {
                     numiterations: 15,
                 },

@@ -1,2 +1,46 @@
 Allow from all
 Options -Indexes -Includes -MultiViews +FollowSymLinks
+
+<IfModule mod_headers.c>
+    # Enable rewrite
+    RewriteEngine On
+
+    # Serve brotli compressed html files if they exist and the client accepts gzip.
+    RewriteCond %{HTTP:Accept-encoding} br
+    RewriteCond %{REQUEST_FILENAME}\.br -s
+    RewriteRule ^(.*)\.html $1\.html\.br [QSA]
+
+    # Serve gzip compressed html files if they exist and the client accepts gzip.
+    RewriteCond %{HTTP:Accept-encoding} gzip
+    RewriteCond %{REQUEST_FILENAME}\.gz -s
+    RewriteRule ^(.*)\.html $1\.html\.gz [QSA]
+
+    # Serve correct content types, and prevent mod_deflate double gzip.
+    RewriteRule \.html\.gz$ - [T=text/javascript,E=no-gzip:1]
+    RewriteRule \.html\.br$ - [T=text/javascript,E=no-gzip:1]
+
+    <Files *.html.gz>
+        # fix content type
+        AddType "text/javascript" .gz
+        AddEncoding gzip .gz
+        RemoveLanguage .gz
+    </Files>
+    <Files *.html.br>
+        # fix content type
+        AddType "text/javascript" .br
+        AddEncoding br .br
+        RemoveLanguage .br
+    </Files>
+    <FilesMatch "(\.html\.gz)$">
+        # Serve correct encoding type.
+        Header set Content-Encoding gzip
+        # Force proxies to cache gzipped & non-gzipped html files separately.
+        Header append Vary Accept-Encoding
+    </FilesMatch>
+    <FilesMatch "(\.html\.br)$">
+        # Serve correct encoding type.
+        Header set Content-Encoding br
+        # Force proxies to cache gzipped & non-gzipped html files separately.
+        Header append Vary Accept-Encoding
+    </FilesMatch>
+</IfModule>
