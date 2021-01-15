@@ -96,6 +96,46 @@
 -   **utils** - js-утилиты.
 -   **workers** - веб-воркеры. Файлы с именем `[name].worker.ts` (или `.js`) при их импорте куда-либо в приложение с помощью [comlink-loader](https://github.com/GoogleChromeLabs/comlink-loader) преобразуются вебпаком в веб-воркеры и будут запущены браузером в отдельном потоке.
 
+### Responsive Images
+
+Через html-шаблоны можно генерировать адаптивные изображения. Под капотом работает [sharp.js](https://sharp.pixelplumbing.com/).
+
+Для того чтобы sharp сработал, нужно вызвать команду `require` из шаблона. Например, `require('./img/space.jpg?resize=500x&format=webp')`.
+
+Возможные параметры:
+
+-   resize - обязателен, значение указывается в формате `[width]x[height]` (width обязателен, height - нет).
+-   format - результирующий формат изображения: jpg, png, webp, avif и т.д.
+
+Пример кода:
+
+```html
+<picture>
+    // на экранах с шириной не более 767px применится сгенерированное изображение формата webp и шириной 500px
+    <source
+        media="(max-width: 767px)"
+        srcset="{{ require('./img/space.jpg?resize=500x&format=webp') }}"
+        type="image/webp"
+    />
+    // (иначе) на экранах с шириной не более 1024px применится сгенерированное изображение формата webp и шириной 900px
+    <source
+        media="(max-width: 1024px)"
+        srcset="{{ require('./img/space.jpg?resize=900x&format=webp') }}"
+        type="image/webp"
+    />
+    // (иначе) применится сгенерированное изображение формата webp и шириной 1600px
+    <source srcset="{{ require('./img/space.jpg?resize=1600x&format=webp') }}" type="image/webp" />
+    // (иначе) на экранах с шириной не более 767px применится сгенерированное изображение текущего формата (jpg) и
+    шириной 500px
+    <source media="(max-width: 767px)" srcset="{{ require('./img/space.jpg?resize=500x') }}" />
+    // (иначе) на экранах с шириной не более 767px применится сгенерированное изображение текущего формата (jpg) и
+    шириной 1200px
+    <source media="(max-width: 1024px)" srcset="{{ require('./img/space.jpg?resize=1200x') }}" />
+    // (иначе) применится сгенерированное изображение текущего формата (jpg) и шириной 1920px
+    <img src="{{ require('./img/space.jpg?resize=1920x') }}" class="img-fluid" alt="" />
+</picture>
+```
+
 ## UI kit
 
 Для ведения UI-kit проекта используется [Storybook](https://storybook.js.org/).

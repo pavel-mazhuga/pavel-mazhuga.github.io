@@ -17,12 +17,13 @@ module.exports = function ResizeLoader(content) {
     const loaderContext = this;
     if (loaderContext.cacheable) loaderContext.cacheable();
     const loaderCallback = this.async();
-
     const query = loaderContext.resourceQuery ? loaderUtils.parseQuery(loaderContext.resourceQuery) : {};
     const nextLoader = query.inline === 'inline' ? urlLoader : fileLoader;
+
     if (!('resize' in query)) {
         return loaderCallback(null, nextLoader.call(loaderContext, content));
     }
+
     if ('inline' in query) {
         delete query.inline;
     }
@@ -48,7 +49,7 @@ module.exports = function ResizeLoader(content) {
     }
 
     const sourceFormat = resourceInfo.ext.substr(1).toLowerCase();
-    const format = query.format.toLowerCase() || sourceFormat;
+    const format = query.format?.toLowerCase() || sourceFormat;
     const name =
         (query.name ||
             `${resourceInfo.name}@resize-${resizeWidth || ''}x${resizeHeight || ''}${resizeFlagNames[resizeFlag]}`) +
@@ -60,7 +61,7 @@ module.exports = function ResizeLoader(content) {
         loaderContext.resourcePath = path.join(resourceInfo.dir, `${name}.${format}`);
         loaderCallback(null, nextLoader.call(loaderContext, Buffer.from(cacheData.data)));
     } else {
-        const quality = query.quality ? parseInt(query.quality, 10) : 85;
+        const quality = query.quality ? parseInt(query.quality, 10) : 90;
         sharp(content)
             .resize({
                 width: resizeWidth,

@@ -226,7 +226,7 @@ const configureGlslLoader = () => ({
 });
 
 const configureImageLoader = () => ({
-    test: /\.(jpe?g|png|gif|svg)$/i,
+    test: /\.(jpe?g|png|gif)$/i,
     oneOf: [
         {
             resourceQuery: /[&?]resize=.+/,
