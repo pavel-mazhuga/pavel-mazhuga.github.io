@@ -9,10 +9,10 @@ module.exports = {
     THEME_COLOR: '#fff',
     BACKGROUND_COLOR: '#fff',
     USE_HTML: true,
-    USE_FAVICONS: false,
-    USE_COMPRESSION: false,
-    USE_SERVICE_WORKER: false,
     HTML_PRETTY: true,
+    USE_FAVICONS: false,
+    USE_COMPRESSION: true,
+    USE_SERVICE_WORKER: false,
     SENTRY_DSN: '',
     // куда положить собранный вебпаком html
     HTML_PATH_BITRIX: '../../../../../html/',
