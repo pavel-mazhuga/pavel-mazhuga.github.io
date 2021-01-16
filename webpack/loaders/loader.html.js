@@ -9,6 +9,7 @@ const deepMerge = require('lodash.merge');
 const posthtml = require('posthtml');
 
 const helpers = require('../../src/helpers');
+const IncludeWithExtension = require('../plugins/plugin.nunjucks-include-with');
 
 const appDataModule = require.resolve('../../src/app.data.js');
 const logger = weblog({ name: 'loader-html' });
@@ -115,6 +116,8 @@ module.exports = function HtmlLoader() {
 
     const nunjucksLoader = new nunjucks.FileSystemLoader(options.searchPath, { noCache: true });
     const nunjucksEnvironment = new nunjucks.Environment(nunjucksLoader, options.environment);
+
+    nunjucksEnvironment.addExtension('includeWith', new IncludeWithExtension({ nunjucksEnv: nunjucksEnvironment }));
 
     options.requireIdent = (url) => {
         let ident;
