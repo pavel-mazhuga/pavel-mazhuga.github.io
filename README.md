@@ -141,6 +141,7 @@
 ```
 {{ responsive_img(
     url='./img/pic.jpg', // относительный url исходного изображения
+    lazy=false, // Возможные значения: false (default), true (с работы с js-плагином), 'native' (нативный lazy loading)
     img_attrs={ class: "img-fluid" }, // атрибуты для тега <img>
     formats=['webp'], // форматы изображения, например '['avif', 'webp']'
     sources={
