@@ -8,6 +8,20 @@
     clip: rect(0 0 0 0);
 }
 
+@mixin responsive-font-size($min-font-size, $max-font-size, $min-viewport-width, $max-viewport-width) {
+    $min-font-size: $min-font-size / 1px;
+    $max-font-size: $max-font-size / 1px;
+    $min-viewport-width: $min-viewport-width / 1px;
+    $max-viewport-width: $max-viewport-width / 1px;
+    $slope: ($max-font-size - $min-font-size) / ($max-viewport-width - $min-viewport-width);
+    $y-axis-intersection: -$min-viewport-width * $slope + $min-font-size;
+    font-size: clamp(
+        $min-font-size * 1px,
+        calc(#{$y-axis-intersection * 1px} + #{$slope * 100vw}),
+        $max-font-size * 1px
+    );
+}
+
 @mixin clickable($position: relative, $min-size: 42px) {
     position: $position;
 
