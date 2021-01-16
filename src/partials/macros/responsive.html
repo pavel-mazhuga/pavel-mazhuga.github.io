@@ -11,6 +11,7 @@
             <source media="{{ media }}" srcset="{{ require(url + '?resize=' + img_width + '&quality=' + quality) }}">
         {% endfor %}
         <img 
+            alt=""
             {% for k, v in img_attrs %} {{ k }}="{{ v }}"{% endfor %}
             src="{{ require(url + '?resize=&quality=' + quality) }}"
             width="{{ dimensions.width }}"

@@ -136,6 +136,30 @@
 </picture>
 ```
 
+Также добавил nunjucks macro для генерации html-разметки:
+
+```
+{{ responsive_img(
+    url='./img/pic.jpg', // относительный url исходного изображения
+    img_attrs={ class: "img-fluid" }, // атрибуты для тега <img>
+    formats=['webp'], // форматы изображения, например '['avif', 'webp']'
+    sources={
+        '(max-width: 1440px)': 1100
+    } // объект типа { [media_query]: [img_width] }
+) }}
+```
+
+Данный макрос сгенерирует следующую разметку:
+
+```html
+<picture>
+    <source media="(max-width: 1440px)" srcset="/img/pic@resize-1100x.webp" type="image/webp" />
+    <source srcset="/img/pic@resize-x.webp" type="image/webp" />
+    <source media="(max-width: 1440px)" srcset="/img/pic@resize-1100x.jpg" />
+    <img alt="" class="img-fluid" src="/img/pic@resize-x.jpg" width="1920" height="1080" />
+</picture>
+```
+
 ## UI kit
 
 Для ведения UI-kit проекта используется [Storybook](https://storybook.js.org/).
