@@ -22,9 +22,9 @@ const {
 
 const { BUILD_TYPE } = process.env;
 
-const configureCompression = (useCompression, buildType) => {
+const configureCompression = (useCompression) => {
     if (useCompression) {
-        const regex = buildType === MODERN_TYPE ? /\.(css|js|svg|wasm|json)(\?.*)?$/i : /\.(js)(\?.*)?$/i;
+        const regex = /\.(css|js|svg|wasm|json)(\?.*)?$/i;
 
         return [
             new CompressionPlugin({
