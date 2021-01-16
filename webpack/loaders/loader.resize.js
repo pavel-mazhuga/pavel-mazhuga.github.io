@@ -24,9 +24,9 @@ module.exports = function ResizeLoader(content) {
     const options = deepMerge({}, loaderUtils.getOptions(loaderContext));
     const context = options.context || loaderContext.rootContext;
 
-    if (!('resize' in query)) {
-        return loaderCallback(null, nextLoader.call(loaderContext, content));
-    }
+    // if (!('resize' in query)) {
+    //     return loaderCallback(null, nextLoader.call(loaderContext, content));
+    // }
 
     if ('inline' in query) {
         delete query.inline;
@@ -77,7 +77,7 @@ module.exports = function ResizeLoader(content) {
         const quality = query.quality ? parseInt(query.quality, 10) : 90;
         sharp(content)
             .resize({
-                width: resizeWidth,
+                ...[resizeWidth && { width: resizeWidth }],
                 ...[resizeHeight && { height: resizeHeight }],
             })
             .toFormat(format, { quality })

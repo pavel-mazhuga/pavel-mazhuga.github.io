@@ -1,0 +1,20 @@
+{% macro responsive_img (url, attrs={}, img_attrs={}, formats=[], sources={}, quality=90) %}
+    <picture{% for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>
+        {% set dimensions = image_size(url) %}
+        {% for format in formats %}
+            {% for media, img_width in sources %}
+                <source media="{{ media }}" srcset="{{ require(url + '?resize=' + img_width + '&quality=' + quality + '&format=' + format) }}" type="image/{{ format }}">
+            {% endfor %}
+            <source srcset="{{ require(url + '?resize=&quality=' + quality + '&format=' + format) }}" type="image/{{ format }}">
+        {% endfor %}
+        {% for media, img_width in sources %}
+            <source media="{{ media }}" srcset="{{ require(url + '?resize=' + img_width + '&quality=' + quality) }}">
+        {% endfor %}
+        <img 
+            {% for k, v in img_attrs %} {{ k }}="{{ v }}"{% endfor %}
+            src="{{ require(url + '?resize=&quality=' + quality) }}"
+            width="{{ dimensions.width }}"
+            height="{{ dimensions.height }}" 
+        >
+    </picture>
+{% endmacro %}
