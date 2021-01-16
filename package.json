@@ -114,6 +114,7 @@
         "open-cli": "^6.0.1",
         "postcss": "^8.2.4",
         "postcss-browser-reporter": "^0.6.0",
+        "postcss-clamp": "^2.0.0",
         "postcss-custom-properties": "^11.0.0",
         "postcss-devtools": "^1.1.1",
         "postcss-easings": "^3.0.1",
