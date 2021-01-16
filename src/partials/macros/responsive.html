@@ -1,21 +1,47 @@
-{% macro responsive_img (url, attrs={}, img_attrs={}, formats=[], sources={}, quality=90) %}
+{% macro responsive_img (
+    url,
+    attrs={},
+    img_attrs={},
+    formats=[],
+    sources={},
+    quality=90,
+    lazy=false
+) %}
     <picture{% for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>
         {% set dimensions = image_size(url) %}
+
+        {% set src_attr %}
+            {% if lazy === true %}
+                data-src
+            {% else %}
+                src
+            {% endif %}
+        {% endset %}
+
+        {% set srcset_attr %}
+            {% if lazy === true %}
+                data-srcset
+            {% else %}
+                srcset
+            {% endif %}
+        {% endset %}
+
         {% for format in formats %}
             {% for media, img_width in sources %}
-                <source media="{{ media }}" srcset="{{ require(url + '?resize=' + img_width + '&quality=' + quality + '&format=' + format) }}" type="image/{{ format }}">
+                <source media="{{ media }}" {{ srcset_attr }}="{{ require(url + '?resize=' + img_width + '&quality=' + quality + '&format=' + format) }}" type="image/{{ format }}">
             {% endfor %}
-            <source srcset="{{ require(url + '?resize=&quality=' + quality + '&format=' + format) }}" type="image/{{ format }}">
+            <source {{ srcset_attr }}="{{ require(url + '?resize=&quality=' + quality + '&format=' + format) }}" type="image/{{ format }}">
         {% endfor %}
         {% for media, img_width in sources %}
-            <source media="{{ media }}" srcset="{{ require(url + '?resize=' + img_width + '&quality=' + quality) }}">
+            <source media="{{ media }}" {{ srcset_attr }}="{{ require(url + '?resize=' + img_width + '&quality=' + quality) }}">
         {% endfor %}
         <img 
             alt=""
             {% for k, v in img_attrs %} {{ k }}="{{ v }}"{% endfor %}
-            src="{{ require(url + '?resize=&quality=' + quality) }}"
+            {{ src_attr }}="{{ require(url + '?resize=&quality=' + quality) }}"
             width="{{ dimensions.width }}"
-            height="{{ dimensions.height }}" 
+            height="{{ dimensions.height }}"
+            {% if lazy === 'native' %}loading="lazy"{% endif %}
         >
     </picture>
 {% endmacro %}
