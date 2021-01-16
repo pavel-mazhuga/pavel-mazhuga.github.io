@@ -8,7 +8,7 @@ const weblog = require('webpack-log');
 const deepMerge = require('lodash.merge');
 const posthtml = require('posthtml');
 
-const helpers = require('../../src/helpers');
+const helpers = require('../helpers');
 const IncludeWithExtension = require('../plugins/plugin.nunjucks-include-with');
 
 const appDataModule = require.resolve('../../src/app.data.js');
