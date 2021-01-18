@@ -231,12 +231,12 @@ const configureImageLoader = () => ({
         {
             resourceQuery: /[&?]resize=.+/,
             loader: './webpack/loaders/loader.resize.js',
-            options: { name: resourceName('img'), limit: 32 * 1024 },
+            options: { name: resourceName('img'), limit: 32 * 1024, esModule: false },
         },
         {
             resourceQuery: /[&?]inline=inline/,
             loader: 'url-loader',
-            options: { name: resourceName('img'), limit: 32 * 1024 },
+            options: { name: resourceName('img'), limit: 32 * 1024, esModule: false },
         },
         {
             loader: 'file-loader',

@@ -6,6 +6,7 @@ const loaderUtils = require('loader-utils');
 const urlLoader = require('url-loader');
 const fileLoader = require('file-loader');
 const weblog = require('webpack-log');
+const deepMerge = require('lodash.merge');
 
 const logger = weblog({ name: 'loader-resize' });
 
@@ -20,9 +21,12 @@ module.exports = function ResizeLoader(content) {
     const query = loaderContext.resourceQuery ? loaderUtils.parseQuery(loaderContext.resourceQuery) : {};
     const nextLoader = query.inline === 'inline' ? urlLoader : fileLoader;
 
-    if (!('resize' in query)) {
-        return loaderCallback(null, nextLoader.call(loaderContext, content));
-    }
+    const options = deepMerge({}, loaderUtils.getOptions(loaderContext));
+    const context = options.context || loaderContext.rootContext;
+
+    // if (!('resize' in query)) {
+    //     return loaderCallback(null, nextLoader.call(loaderContext, content));
+    // }
 
     if ('inline' in query) {
         delete query.inline;
@@ -50,8 +54,17 @@ module.exports = function ResizeLoader(content) {
 
     const sourceFormat = resourceInfo.ext.substr(1).toLowerCase();
     const format = query.format?.toLowerCase() || sourceFormat;
+    // const name =
+    //     (query.name ||
+    //         `${resourceInfo.name}@resize-${resizeWidth || ''}x${resizeHeight || ''}${resizeFlagNames[resizeFlag]}`) +
+    //     (query.suffix ? `-${query.suffix}` : '');
     const name =
-        (query.name ||
+        ((query.name
+            ? loaderUtils.interpolateName(loaderContext, query.name, {
+                  context,
+                  content,
+              })
+            : null) ||
             `${resourceInfo.name}@resize-${resizeWidth || ''}x${resizeHeight || ''}${resizeFlagNames[resizeFlag]}`) +
         (query.suffix ? `-${query.suffix}` : '');
 
@@ -64,7 +77,7 @@ module.exports = function ResizeLoader(content) {
         const quality = query.quality ? parseInt(query.quality, 10) : 90;
         sharp(content)
             .resize({
-                width: resizeWidth,
+                ...[resizeWidth && { width: resizeWidth }],
                 ...[resizeHeight && { height: resizeHeight }],
             })
             .toFormat(format, { quality })

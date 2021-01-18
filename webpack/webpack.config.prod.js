@@ -24,9 +24,11 @@ const { BUILD_TYPE } = process.env;
 
 const configureCompression = (useCompression) => {
     if (useCompression) {
+        const regex = /\.(css|js|svg|wasm|json)(\?.*)?$/i;
+
         return [
             new CompressionPlugin({
-                test: /\.(css|js|svg|json)(\?.*)?$/i,
+                test: regex,
                 filename: '[path][base].br[query]',
                 compressionOptions: {
                     level: 11,
@@ -35,7 +37,7 @@ const configureCompression = (useCompression) => {
                 cache: path.join(__dirname, 'node_modules', '.cache', `compression-webpack-plugin-br`),
             }),
             new CompressionPlugin({
-                test: /\.(css|js|svg|json)(\?.*)?$/i,
+                test: regex,
                 filename: '[path][base].gz[query]',
                 compressionOptions: {
                     numiterations: 15,

@@ -16,6 +16,7 @@ module.exports = (isProd = false) => ({
         require('postcss-focus-within')(),
         require('postcss-focus-visible')(),
         ...(isProd ? [
+            require('postcss-clamp')(),
             require('postcss-image-set-polyfill')(),
             require('postcss-url')({
                 filter(asset) {
