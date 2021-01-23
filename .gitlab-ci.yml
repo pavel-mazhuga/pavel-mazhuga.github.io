@@ -14,9 +14,10 @@ image: alpine
 # Глобальные переменные
 variables: &global_variables
     GIT_DEPTH: 5
-    IMAGE_FRONTEND: node:13-alpine
-    # FRONTEND_PATH: './local/templates/main/frontend'
+    IMAGE_FRONTEND: node:14-alpine
     FRONTEND_PATH: '.'
+    # FRONTEND_PATH: './local/templates/main/frontend'
+    SSH_PORT: 22
 
 # Глобальные переменные для дева
 variables: &global_variables_dev
@@ -24,6 +25,7 @@ variables: &global_variables_dev
     PROJECT_HOST: "chipsa@91.230.210.213"
     PROJECT_PATH: "<<[PROJECT_PATH_HERE]>>"
     BRANCH_NAME: dev
+    SSH_PORT: 33022
 
 
 # Глобальные переменные для продакшена
@@ -46,28 +48,38 @@ variables: &global_variables_prod
 
 .deploy_frontend: &deploy_frontend
     # Создаем временные папки
-    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_tmp && mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/_tmp"
-    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_old && mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/_old"
+    - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_tmp && mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/_tmp"
+    - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_old && mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/_old"
+    - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_html_tmp && mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/_html_tmp"
+    - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_html_old && mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/_html_old"
     # Создаем папку build, если она не существует
-    - ssh -p22 $PROJECT_HOST "mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/build"
+    - ssh -p $SSH_PORT $PROJECT_HOST "mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/build"
+    # Создаем папку html, если она не существует
+    - ssh -p $SSH_PORT $PROJECT_HOST "mkdir -p -m 775 $PROJECT_PATH/html"
     # Копируем билд фронтенда с сервера gitlab ci
-    - rsync -zarvh $FRONTEND_PATH/build/* $PROJECT_HOST:$PROJECT_PATH/$FRONTEND_PATH/_tmp
+    - rsync -zarvh -av -e "ssh -p $SSH_PORT" $FRONTEND_PATH/build $PROJECT_HOST:$PROJECT_PATH/$FRONTEND_PATH/_tmp
+    # Копируем html с сервера gitlab ci
+    - rsync -zarvh -av -e "ssh -p $SSH_PORT" html $PROJECT_HOST:$PROJECT_PATH/$FRONTEND_PATH/_html_tmp
     # Меняем старый и новый билды фронтенда местами
-    - ssh -p22 $PROJECT_HOST "( ( find $PROJECT_PATH/$FRONTEND_PATH/build -mindepth 1 | read ) && mv $PROJECT_PATH/$FRONTEND_PATH/build/* $PROJECT_PATH/$FRONTEND_PATH/_old ) && mv $PROJECT_PATH/$FRONTEND_PATH/_tmp/* $PROJECT_PATH/$FRONTEND_PATH/build"
+    - ssh -p $SSH_PORT $PROJECT_HOST "( ( find $PROJECT_PATH/$FRONTEND_PATH/build -mindepth 1 | read ) && mv $PROJECT_PATH/$FRONTEND_PATH/build $PROJECT_PATH/$FRONTEND_PATH/_old ) && mv $PROJECT_PATH/$FRONTEND_PATH/_tmp/build $PROJECT_PATH/$FRONTEND_PATH"
+    # Меняем старый и новый html местами
+    - ssh -p $SSH_PORT $PROJECT_HOST "( ( find $PROJECT_PATH/html -mindepth 1 | read ) && mv $PROJECT_PATH/html $PROJECT_PATH/$FRONTEND_PATH/_html_old ) && mv $PROJECT_PATH/$FRONTEND_PATH/_html_tmp/html $PROJECT_PATH"
     # Удаляем временные папки
-    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_old"
-    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_tmp"
+    - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_old"
+    - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_tmp"
+    - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_html_old"
+    - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_html_tmp"
 
 .deploy_storybook: &deploy_storybook
-    - rsync -zarvh $FRONTEND_PATH/build/storybook $PROJECT_HOST:$PROJECT_PATH/$FRONTEND_PATH/build
+    - rsync -zarvh -av -e "ssh -p $SSH_PORT" $FRONTEND_PATH/build/storybook $PROJECT_HOST:$PROJECT_PATH/$FRONTEND_PATH/build
 
 .pull_repo: &pull_repo
     # Пуллим изменения из репозитория
-    - ssh -p22 $PROJECT_HOST "cd $PROJECT_PATH/ && git checkout $BRANCH_NAME && git pull --force origin $BRANCH_NAME"
+    - ssh -p $SSH_PORT $PROJECT_HOST "cd $PROJECT_PATH/ && git checkout $BRANCH_NAME && git pull --force origin $BRANCH_NAME"
 
 .drop_bitrix_cache: &drop_bitrix_cache
     # Ощичаем кэш битрикса
-    - ssh -p22 $PROJECT_HOST "rm -rf $PROJECT_PATH/bitrix/cache/*"
+    - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/bitrix/cache/*"
 
 stages:
     - install_dependencies
