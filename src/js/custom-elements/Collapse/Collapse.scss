@@ -1,0 +1,59 @@
+@import '../../../css/base/variables';
+@import '../../../css/utils/mixins';
+
+x-collapse {
+    --collapse-duration: 0.3s;
+    --collapse-easing: ease;
+    --min-visible-height: 0px;
+    display: block;
+    contain: content;
+
+    html.js &:not(:defined)[collapsed] {
+        position: relative;
+
+        .collapse__content {
+            transition: none;
+            position: absolute;
+            width: 100%;
+        }
+    }
+}
+
+[data-collapse-content] {
+    transition: height var(--collapse-duration) var(--collapse-easing);
+    overflow: hidden;
+}
+
+.truncate-collapse-content {
+    --gradient-color: #fff;
+
+    &:not(.truncate-collapse-content--no-gradient) {
+        position: relative;
+
+        &::after {
+            content: '';
+            position: absolute;
+            z-index: 1;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background-image: linear-gradient(rgba(#fff, 0), var(--gradient-color));
+            background-size: 100% 100%;
+            transition: opacity var(--collapse-duration) ease;
+            pointer-events: none;
+        }
+    }
+
+    x-collapse:not([collapsed]) & {
+        &::after {
+            opacity: 0;
+        }
+    }
+
+    html.js & x-collapse:not(:defined)[collapsed] & {
+        &::after {
+            display: none;
+        }
+    }
+}
