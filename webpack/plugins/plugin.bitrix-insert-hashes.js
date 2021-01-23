@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const validateOptions = require('schema-utils');
+const { validate } = require('schema-utils');
 
 const pluginName = 'insert-hashes-plugin';
 
@@ -63,7 +63,7 @@ const schema = {
 
 class BitrixInsertHashesPlugin {
     constructor(options = {}) {
-        validateOptions(schema, options, pluginName);
+        validate(schema, options, { name: pluginName });
         this.options = options;
     }
 
