@@ -436,6 +436,7 @@ const baseConfig = {
             chunks: 'initial',
             name: 'vendor',
         },
+        runtimeChunk: true,
     },
 
     module: {

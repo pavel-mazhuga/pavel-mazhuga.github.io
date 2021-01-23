@@ -1,2 +1,3 @@
 Deny from all
+# RedirectMatch 403 "/src/(.*)"
 RedirectMatch 403 /src/
