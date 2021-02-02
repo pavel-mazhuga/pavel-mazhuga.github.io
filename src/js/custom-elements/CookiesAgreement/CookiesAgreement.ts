@@ -75,17 +75,7 @@ export class CookiesAgreement extends LitElement {
                     ОК
                 </button>
                 <div class="banner__text">
-                    Продолжая пользоваться сайтом, вы даёте
-                    <a
-                        href="#"
-                        class="link-underline"
-                        target="_blank"
-                        rel="noopener"
-                        aria-label="Согласие на автоматический сбор и анализ ваших данных"
-                        >Согласие</a
-                    >
-                    на автоматический сбор и анализ ваших данных, необходимых для работы сайта и его улучшения,
-                    использование файлов cookie.
+                    <slot></slot>
                 </div>
             </div>
         `;

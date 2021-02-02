@@ -27,6 +27,18 @@
 
         {% include 'partials/footer.html' %}
 
-        <x-cookies-agreement reveal-timeout="3000"></x-cookies-agreement>
+        <x-cookies-agreement reveal-timeout="3000">
+            Продолжая пользоваться сайтом, вы даёте
+            <a
+                href="#"
+                class="link-underline"
+                target="_blank"
+                rel="noopener"
+                aria-label="Согласие на автоматический сбор и анализ ваших данных"
+                >Согласие</a
+            >
+            на автоматический сбор и анализ ваших данных, необходимых для работы сайта и его улучшения,
+            использование файлов cookie.
+        </x-cookies-agreement>
     </body>
 </html>

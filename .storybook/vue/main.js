@@ -9,23 +9,25 @@ module.exports = {
     addons: ['@storybook/addon-links', '@storybook/addon-essentials'],
     webpackFinal: async (config, { configType }) => {
         config.module.rules.push(configureBabelLoader(true));
-        // config.module.rules.push({
-        //     test: /\.ce\.(css|scss)$/i,
-        //     use: [
-        //         { loader: 'raw-loader' },
-        //         { loader: 'extract-loader' },
-        //         { loader: 'css-loader' },
-        //         {
-        //             loader: 'postcss-loader',
-        //             options: {
-        //                 postcssOptions: configurePostCSS(configType === 'PRODUCTION'),
-        //             },
-        //         },
-        //         {
-        //             loader: 'sass-loader',
-        //         },
-        //     ],
-        // });
+
+        config.module.rules.push({
+            test: /\.ce\.(css|scss)$/i,
+            use: [
+                { loader: 'raw-loader' },
+                { loader: 'extract-loader' },
+                { loader: 'css-loader' },
+                {
+                    loader: 'postcss-loader',
+                    options: {
+                        postcssOptions: configurePostCSS(configType === 'PRODUCTION'),
+                    },
+                },
+                {
+                    loader: 'sass-loader',
+                },
+            ],
+        });
+
         config.module.rules.push({
             test: /\.(css|scss)$/i,
             exclude: {
