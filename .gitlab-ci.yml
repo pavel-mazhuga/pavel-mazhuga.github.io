@@ -3,7 +3,8 @@
 # 2. Копировать приватный ключ, положить в переменную PRODUCTION_PRIVATE_KEY в gitlab
 # 3. Копировать публичный ключ (~/.ssh/<KEY_NAME>.pub), добавить в ~/.ssh/authorized_keys на сервере
 # 4. Добавить в переменную SSH_KNOWN_HOSTS в gitlab (ssh-keyscan -H <SERVER IP>)
-# 5. Настроить права на сервере:
+# 5. Клонировать репозиторий проекта на удаленный сервер (этот путь будет $PROJECT_PATH)
+# 6. Настроить права на сервере:
 ## chown -R chipsa:chipsa #PATH#
 ## find #PATH# -type d -exec chmod 775 {} \;
 ## find #PATH# -type f -exec chmod 664 {} \;
