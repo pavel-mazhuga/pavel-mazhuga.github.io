@@ -61,9 +61,9 @@ variables: &global_variables_prod
     # Копируем html с сервера gitlab ci
     - rsync -zarvh -av -e "ssh -p $SSH_PORT" html $PROJECT_HOST:$PROJECT_PATH/$FRONTEND_PATH/_html_tmp
     # Меняем старый и новый билды фронтенда местами
-    - ssh -p $SSH_PORT $PROJECT_HOST "( ( find $PROJECT_PATH/$FRONTEND_PATH/build -mindepth 1 | read ) && mv $PROJECT_PATH/$FRONTEND_PATH/build $PROJECT_PATH/$FRONTEND_PATH/_old ) && mv $PROJECT_PATH/$FRONTEND_PATH/_tmp/build $PROJECT_PATH/$FRONTEND_PATH"
+    - ssh -p $SSH_PORT $PROJECT_HOST "mv $PROJECT_PATH/$FRONTEND_PATH/build $PROJECT_PATH/$FRONTEND_PATH/_old && mv $PROJECT_PATH/$FRONTEND_PATH/_tmp/build $PROJECT_PATH/$FRONTEND_PATH"
     # Меняем старый и новый html местами
-    - ssh -p $SSH_PORT $PROJECT_HOST "( ( find $PROJECT_PATH/html -mindepth 1 | read ) && mv $PROJECT_PATH/html $PROJECT_PATH/$FRONTEND_PATH/_html_old ) && mv $PROJECT_PATH/$FRONTEND_PATH/_html_tmp/html $PROJECT_PATH"
+    - ssh -p $SSH_PORT $PROJECT_HOST "mv $PROJECT_PATH/html $PROJECT_PATH/$FRONTEND_PATH/_html_old && mv $PROJECT_PATH/$FRONTEND_PATH/_html_tmp/html $PROJECT_PATH"
     # Удаляем временные папки
     - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_old"
     - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_tmp"
