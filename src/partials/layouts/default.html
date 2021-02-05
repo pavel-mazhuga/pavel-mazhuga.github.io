@@ -41,4 +41,10 @@
             использование файлов cookie.
         </x-cookies-agreement>
     </body>
+
+    {% if APP.NODE_ENV === "development" %}
+        <script id="browser-sync-script">
+            document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.js'><\/script>".replace("HOST", location.hostname));
+        </script>
+    {% endif %}
 </html>

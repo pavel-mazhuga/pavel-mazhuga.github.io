@@ -53,7 +53,7 @@ module.exports = function ResizeLoader(content) {
     }
 
     const sourceFormat = resourceInfo.ext.substr(1).toLowerCase();
-    const format = query.format?.toLowerCase() || sourceFormat;
+    const format = query.format ? query.format.toLowerCase() : sourceFormat;
     // const name =
     //     (query.name ||
     //         `${resourceInfo.name}@resize-${resizeWidth || ''}x${resizeHeight || ''}${resizeFlagNames[resizeFlag]}`) +

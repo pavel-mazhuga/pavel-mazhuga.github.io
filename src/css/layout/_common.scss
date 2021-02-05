@@ -6,6 +6,12 @@ body {
     flex-direction: column;
 }
 
+x-cookies-agreement {
+    &:not(:defined) {
+        display: none;
+    }
+}
+
 .js-focus-visible :focus:not(.focus-visible) {
     outline: none;
 }

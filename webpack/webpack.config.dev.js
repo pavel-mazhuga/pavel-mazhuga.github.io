@@ -3,10 +3,9 @@ const { merge } = require('webpack-merge');
 const { USE_HTML } = require('../webpack.settings');
 const {
     configureHtmlWebpackPlugin,
-    // configureCopyPlugin,
     configureCleanWebpackPlugin,
     modernConfig,
-    SERVICE_WORKER_PATH,
+    // SERVICE_WORKER_PATH,
     configureBrowsersync,
 } = require('./webpack.config.common');
 
@@ -20,20 +19,28 @@ module.exports = [
 
         devServer: {
             compress: false,
-            open: true,
-            inline: true,
+            // bonjour: true,
+            disableHostCheck: true,
+            hot: true,
+            writeToDisk: true,
+            // quiet: true,
+            host: 'localhost',
+            port: 8080,
             overlay: { warnings: false, errors: true },
-            before(app) {
-                app.get('/service-worker.js', (request, response) => response.sendFile(SERVICE_WORKER_PATH));
+            before(app, server) {
+                // app.get('/service-worker.js', (request, response) => response.sendFile(SERVICE_WORKER_PATH));
             },
+            proxy: process.env.HOST
+                ? {
+                      '*': {
+                          target: process.env.HOST,
+                          changeOrigin: true,
+                      },
+                  }
+                : {},
         },
 
-        plugins: [
-            configureCleanWebpackPlugin(),
-            ...configureHtmlWebpackPlugin(USE_HTML),
-            // configureCopyPlugin(),
-            configureBrowsersync(),
-        ],
+        plugins: [configureCleanWebpackPlugin(), ...configureHtmlWebpackPlugin(USE_HTML), configureBrowsersync()],
 
         performance: false,
 

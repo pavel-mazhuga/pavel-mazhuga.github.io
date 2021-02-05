@@ -1,4 +1,5 @@
 /* eslint-disable max-lines, global-require */
+require('dotenv').config({ path: '../' });
 const path = require('path');
 const fs = require('fs');
 const slash = require('slash');
@@ -76,10 +77,11 @@ const SERVICE_WORKER_PATH = path.join(BUILD_PATH, SERVICE_WORKER_BASE, '/service
 const SERVICE_WORKER_HASH = () => (fs.existsSync(SERVICE_WORKER_PATH) ? md5File.sync(SERVICE_WORKER_PATH) : '');
 const LEGACY_TYPE = 'legacy';
 const MODERN_TYPE = 'modern';
+const hash = !PROD ? 'hash' : 'contenthash';
 
-const configureCssFilename = (isProd) => (isProd ? 'css/[name].[contenthash:8].css' : 'css/[name].css?[contenthash:8]');
+const configureCssFilename = (isProd) => (isProd ? `css/[name].[${hash}:8].css` : `css/[name].css?[${hash}:8]`);
 const configureJsFilename = (buildType, isProd) =>
-    isProd ? `js/${buildType}/[name].[contenthash:8].js` : `js/${buildType}/[name].js?[contenthash:8]`;
+    isProd ? `js/${buildType}/[name].[${hash}:8].js` : `js/${buildType}/[name].js?[${hash}:8]`;
 
 const configureHtmlWebpackPlugin = (useHtml) => {
     if (useHtml) {
@@ -412,12 +414,19 @@ const configureBitrixInsertHashesPlugin = () =>
     });
 
 const configureBrowsersync = () =>
-    new BrowserSyncPlugin({
-        host: 'localhost',
-        port: 3000,
-        server: { baseDir: ['build'] },
-        open: false,
-    });
+    new BrowserSyncPlugin(
+        {
+            host: 'localhost',
+            port: 3000,
+            open: false,
+            proxy: 'http://localhost:8080/',
+        },
+        {
+            // prevent BrowserSync from reloading the page
+            // and let Webpack Dev Server take care of this
+            reload: false,
+        },
+    );
 
 const baseConfig = {
     name: PACKAGE_NAME,
@@ -527,9 +536,11 @@ module.exports = {
 
     configureHtmlWebpackPlugin,
     configureBrowsersync,
-    // configureCopyPlugin,
     configureCleanWebpackPlugin,
     configureBabelLoader,
+    SRC_PATH,
+    BUILD_PATH,
+    PUBLIC_PATH,
     SERVICE_WORKER_PATH,
     LEGACY_TYPE,
     MODERN_TYPE,
