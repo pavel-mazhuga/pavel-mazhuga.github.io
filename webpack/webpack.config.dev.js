@@ -1,4 +1,5 @@
 const { merge } = require('webpack-merge');
+const path = require('path');
 
 const { USE_HTML } = require('../webpack.settings');
 const {
@@ -19,16 +20,22 @@ module.exports = [
 
         devServer: {
             compress: false,
-            // bonjour: true,
             disableHostCheck: true,
             hot: true,
             writeToDisk: true,
-            // quiet: true,
             host: 'localhost',
             port: 8080,
             overlay: { warnings: false, errors: true },
-            before(app, server) {
-                // app.get('/service-worker.js', (request, response) => response.sendFile(SERVICE_WORKER_PATH));
+            before(app, server, compiler) {
+                const watchFiles = ['.html', '.hbs', '.njk'];
+
+                compiler.plugin('done', () => {
+                    const changedFiles = Object.keys(compiler.watchFileSystem.watcher.mtimes);
+
+                    if (this.hot && changedFiles.some((filePath) => watchFiles.includes(path.parse(filePath).ext))) {
+                        server.sockWrite(server.sockets, 'content-changed');
+                    }
+                });
             },
             proxy: process.env.HOST
                 ? {

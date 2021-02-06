@@ -59,9 +59,9 @@ const configureRootPath = () => {
     return ROOT_PATH_DEFAULT;
 };
 
-const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
+const SITEMAP = glob.sync(`${slash(SRC_PATH)}/templates/**/*.html`, {
     ignore: [
-        `${slash(SRC_PATH)}/partials/**/*.html`,
+        `${slash(SRC_PATH)}/templates/partials/**/*.html`,
         `${slash(SRC_PATH)}/google*.html`,
         `${slash(SRC_PATH)}/yandex_*.html`,
     ],
@@ -89,11 +89,15 @@ const configureHtmlWebpackPlugin = (useHtml) => {
             const basename = path.basename(template);
             const filename =
                 basename === 'index.html'
-                    ? path.join(BUILD_PATH, ...(BITRIX ? [HTML_PATH_BITRIX] : []), path.relative(SRC_PATH, template))
+                    ? path.join(
+                          BUILD_PATH,
+                          ...(BITRIX ? [HTML_PATH_BITRIX] : []),
+                          path.relative(SRC_PATH, template.replace('/templates', '')),
+                      )
                     : path.join(
                           BUILD_PATH,
                           ...(BITRIX ? [HTML_PATH_BITRIX] : []),
-                          path.relative(SRC_PATH, path.dirname(template)),
+                          path.relative(SRC_PATH, path.dirname(template).replace('/templates', '')),
                           path.basename(template, '.html'),
                           'index.html',
                       );
@@ -144,7 +148,6 @@ const configureHtmlLoader = () => ({
             PUBLIC_PATH,
             NODE_ENV,
         },
-        searchPath: SRC_PATH,
     },
 });
 

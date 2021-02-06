@@ -8,6 +8,7 @@ const weblog = require('webpack-log');
 const deepMerge = require('lodash.merge');
 const posthtml = require('posthtml');
 
+const { SRC_PATH } = require('../webpack.config.common');
 const helpers = require('../helpers');
 const IncludeWithExtension = require('../plugins/plugin.nunjucks-include-with');
 
@@ -29,7 +30,7 @@ const DEFAULT_OPTIONS = {
     },
     requireIgnore: /^(\w+[:]|\/\/)/i,
     requireReplace: {},
-    searchPath: './src',
+    searchPath: `${SRC_PATH}/templates`,
 };
 
 const SRC_SEPARATOR = /\s+/;
@@ -99,6 +100,7 @@ function processHtml(html, options, loaderCallback) {
 }
 
 module.exports = function HtmlLoader() {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const loaderContext = this;
     const loaderCallback = loaderContext.async();
 
@@ -114,7 +116,8 @@ module.exports = function HtmlLoader() {
     );
     validate(OPTIONS_SCHEMA, options, { name: 'loader-html' });
 
-    const nunjucksLoader = new nunjucks.FileSystemLoader(options.searchPath, { noCache: true });
+    // const nunjucksLoader = new nunjucks.FileSystemLoader(options.searchPath, { noCache: true });
+    const nunjucksLoader = new nunjucks.FileSystemLoader(options.searchPath);
     const nunjucksEnvironment = new nunjucks.Environment(nunjucksLoader, options.environment);
 
     nunjucksEnvironment.addExtension('includeWith', new IncludeWithExtension({ nunjucksEnv: nunjucksEnvironment }));
