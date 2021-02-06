@@ -20,6 +20,10 @@
     border: 1px solid $black;
     contain: content;
 
+    @media screen and (max-width: 767px) {
+        width: auto;
+    }
+
     &:not(.banner--visible) {
         opacity: 0;
         visibility: hidden;
