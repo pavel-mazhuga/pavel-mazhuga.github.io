@@ -1,5 +1,4 @@
 /* eslint-disable max-lines, global-require */
-require('dotenv').config({ path: '../' });
 const path = require('path');
 const fs = require('fs');
 const slash = require('slash');
@@ -420,7 +419,7 @@ const configureBrowsersync = () =>
     new BrowserSyncPlugin(
         {
             host: 'localhost',
-            port: 3000,
+            port: 4000,
             open: false,
             proxy: 'http://localhost:8080/',
         },

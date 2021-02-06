@@ -83,7 +83,6 @@
         "cssnano": "^4.1.10",
         "deasync": "^0.1.21",
         "document-register-element": "^1.14.10",
-        "dotenv": "^8.2.0",
         "element-matches-polyfill": "^1.0.0",
         "eslint": "^7.19.0",
         "eslint-config-airbnb-base": "^14.2.1",
