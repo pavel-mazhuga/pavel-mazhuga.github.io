@@ -51,20 +51,20 @@ variables: &global_variables_prod
     # Создаем временные папки
     - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_tmp && mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/_tmp"
     - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_old && mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/_old"
-    - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_html_tmp && mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/_html_tmp"
-    - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_html_old && mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/_html_old"
+    # - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_html_tmp && mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/_html_tmp"
+    # - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_html_old && mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/_html_old"
     # Создаем папку build, если она не существует
     - ssh -p $SSH_PORT $PROJECT_HOST "mkdir -p -m 775 $PROJECT_PATH/$FRONTEND_PATH/build"
     # Создаем папку html, если она не существует
-    - ssh -p $SSH_PORT $PROJECT_HOST "mkdir -p -m 775 $PROJECT_PATH/html"
+    # - ssh -p $SSH_PORT $PROJECT_HOST "mkdir -p -m 775 $PROJECT_PATH/html"
     # Копируем билд фронтенда с сервера gitlab ci
     - rsync -zarvh -av -e "ssh -p $SSH_PORT" $FRONTEND_PATH/build $PROJECT_HOST:$PROJECT_PATH/$FRONTEND_PATH/_tmp
     # Копируем html с сервера gitlab ci
-    - rsync -zarvh -av -e "ssh -p $SSH_PORT" html $PROJECT_HOST:$PROJECT_PATH/$FRONTEND_PATH/_html_tmp
+    # - rsync -zarvh -av -e "ssh -p $SSH_PORT" html $PROJECT_HOST:$PROJECT_PATH/$FRONTEND_PATH/_html_tmp
     # Меняем старый и новый билды фронтенда местами
     - ssh -p $SSH_PORT $PROJECT_HOST "mv $PROJECT_PATH/$FRONTEND_PATH/build $PROJECT_PATH/$FRONTEND_PATH/_old && mv $PROJECT_PATH/$FRONTEND_PATH/_tmp/build $PROJECT_PATH/$FRONTEND_PATH"
     # Меняем старый и новый html местами
-    - ssh -p $SSH_PORT $PROJECT_HOST "mv $PROJECT_PATH/html $PROJECT_PATH/$FRONTEND_PATH/_html_old && mv $PROJECT_PATH/$FRONTEND_PATH/_html_tmp/html $PROJECT_PATH"
+    # - ssh -p $SSH_PORT $PROJECT_HOST "mv $PROJECT_PATH/html $PROJECT_PATH/$FRONTEND_PATH/_html_old && mv $PROJECT_PATH/$FRONTEND_PATH/_html_tmp/html $PROJECT_PATH"
     # Удаляем временные папки
     - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_old"
     - ssh -p $SSH_PORT $PROJECT_HOST "rm -rf $PROJECT_PATH/$FRONTEND_PATH/_tmp"
@@ -141,9 +141,9 @@ build_storybook:
         refs:
             - dev
             # - master
-        changes:
-            - local/templates/main/frontend/**/*
-            - .gitlab-ci.yml
+        # changes:
+        #     - .gitlab-ci.yml
+        #     - local/templates/main/frontend/**/*
     cache: 
         key: $CI_COMMIT_REF_SLUG-$CI_PROJECT_DIR
         paths:
