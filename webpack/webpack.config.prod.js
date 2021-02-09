@@ -34,7 +34,7 @@ const configureCompression = (useCompression) => {
                     level: 11,
                 },
                 algorithm: 'brotliCompress',
-                cache: path.join(__dirname, 'node_modules', '.cache', `compression-webpack-plugin-br`),
+                cache: path.join(__dirname, '../', 'node_modules', '.cache', `compression-webpack-plugin-br`),
             }),
             new CompressionPlugin({
                 test: regex,
@@ -45,7 +45,7 @@ const configureCompression = (useCompression) => {
                 algorithm(input, compressionOptions, callback) {
                     return zopfli.gzip(input, compressionOptions, callback);
                 },
-                cache: path.join(__dirname, 'node_modules', '.cache', `compression-webpack-plugin-gz`),
+                cache: path.join(__dirname, '../', 'node_modules', '.cache', `compression-webpack-plugin-gz`),
             }),
         ];
     }

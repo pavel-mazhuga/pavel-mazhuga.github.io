@@ -14,6 +14,11 @@ module.exports = {
     USE_COMPRESSION: true,
     USE_SERVICE_WORKER: false,
     SENTRY_DSN: '',
+    // путь до корня всего проекта (нужен для HMR)
+    PROJECT_ROOT_PATH_DEFAULT: '',
+    PROJECT_ROOT_PATH_SANDBOX: '',
+    // PROJECT_ROOT_PATH_SANDBOX: '../../../../../',
+    PROJECT_ROOT_PATH_BITRIX: '../../../../../',
     // куда положить собранный вебпаком html
     HTML_PATH_DEFAULT: '',
     HTML_PATH_SANDBOX: '',

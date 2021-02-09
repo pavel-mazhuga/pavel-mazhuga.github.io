@@ -26,6 +26,9 @@ const {
     THEME_COLOR,
     BACKGROUND_COLOR,
     SENTRY_DSN,
+    PROJECT_ROOT_PATH_DEFAULT,
+    PROJECT_ROOT_PATH_SANDBOX,
+    PROJECT_ROOT_PATH_BITRIX,
     ROOT_PATH_DEFAULT,
     ROOT_PATH_SANDBOX,
     ROOT_PATH_BITRIX,
@@ -48,6 +51,12 @@ const { ENV, NODE_ENV } = process.env;
 const SANDBOX = ENV === 'sandbox';
 const BITRIX = ENV === 'bitrix';
 
+const configureProjectRootPath = () => {
+    if (SANDBOX) return PROJECT_ROOT_PATH_SANDBOX;
+    if (BITRIX) return PROJECT_ROOT_PATH_BITRIX;
+    return PROJECT_ROOT_PATH_DEFAULT;
+};
+
 const configurePublicPath = () => {
     if (SANDBOX) return PUBLIC_PATH_SANDBOX;
     if (BITRIX) return PUBLIC_PATH_BITRIX;
@@ -66,14 +75,15 @@ const configureHtmlPath = () => {
     return HTML_PATH_DEFAULT;
 };
 
-const SITEMAP = glob.sync(`${slash(SRC_PATH)}/templates/**/*.html`, {
+const SITEMAP = glob.sync(`${slash(SRC_PATH)}/html_templates/**/*.html`, {
     ignore: [
-        `${slash(SRC_PATH)}/templates/partials/**/*.html`,
+        `${slash(SRC_PATH)}/html_templates/partials/**/*.html`,
         `${slash(SRC_PATH)}/google*.html`,
         `${slash(SRC_PATH)}/yandex_*.html`,
     ],
 });
 
+const PROJECT_ROOT_PATH = configureProjectRootPath();
 const PUBLIC_PATH = configurePublicPath();
 const ROOT_PATH = configureRootPath();
 const HTML_PATH = configureHtmlPath();
@@ -97,15 +107,14 @@ const configureHtmlWebpackPlugin = (useHtml) => {
             const basename = path.basename(template);
             const filename =
                 basename === 'index.html'
-                    ? path.join(BUILD_PATH, HTML_PATH, path.relative(SRC_PATH, template.replace('/templates', '')))
+                    ? path.join(BUILD_PATH, HTML_PATH, path.relative(SRC_PATH, template).replace(/html_templates/, ''))
                     : path.join(
                           BUILD_PATH,
                           HTML_PATH,
-                          path.relative(SRC_PATH, path.dirname(template).replace('/templates', '')),
+                          path.relative(SRC_PATH, path.dirname(template)).replace(/html_templates/, ''),
                           path.basename(template, '.html'),
                           'index.html',
                       );
-
             return new HtmlWebpackPlugin({
                 filename,
                 template,
@@ -121,7 +130,7 @@ const configureHtmlWebpackPlugin = (useHtml) => {
                     minifyJS: !HTML_PRETTY,
                 },
                 hash: !PROD,
-                cache: false,
+                cache: true,
                 title: TITLE,
             });
         });
@@ -426,7 +435,7 @@ const configureBrowsersync = () =>
             host: 'localhost',
             port: 4000,
             open: false,
-            proxy: 'http://localhost:9080/',
+            proxy: 'http://localhost:8081/',
         },
         {
             // prevent BrowserSync from reloading the page
@@ -548,6 +557,7 @@ module.exports = {
     SRC_PATH,
     BUILD_PATH,
     PUBLIC_PATH,
+    PROJECT_ROOT_PATH,
     SERVICE_WORKER_PATH,
     LEGACY_TYPE,
     MODERN_TYPE,

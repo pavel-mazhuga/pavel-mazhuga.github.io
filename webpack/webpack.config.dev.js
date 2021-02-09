@@ -2,13 +2,13 @@ const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const path = require('path');
 
-const { USE_HTML } = require('../webpack.settings');
+const { USE_HTML, BUILD_PATH } = require('../webpack.settings');
 const {
     configureHtmlWebpackPlugin,
     configureCleanWebpackPlugin,
     modernConfig,
-    // SERVICE_WORKER_PATH,
     configureBrowsersync,
+    PROJECT_ROOT_PATH,
 } = require('./webpack.config.common');
 
 module.exports = [
@@ -25,7 +25,8 @@ module.exports = [
             hot: true,
             writeToDisk: true,
             host: 'localhost',
-            port: 9080,
+            port: 8081,
+            contentBase: path.resolve(__dirname, BUILD_PATH, PROJECT_ROOT_PATH),
             overlay: { warnings: false, errors: true },
             before(app, server, compiler) {
                 const watchFiles = ['.html', '.hbs', '.njk'];
@@ -38,14 +39,6 @@ module.exports = [
                     }
                 });
             },
-            proxy: process.env.HOST
-                ? {
-                      '*': {
-                          target: process.env.HOST,
-                          changeOrigin: true,
-                      },
-                  }
-                : {},
         },
 
         plugins: [
