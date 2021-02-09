@@ -20,3 +20,7 @@ if (USE_SERVICE_WORKER) {
 } else {
     sw.unregister();
 }
+
+if (module.hot) {
+    module.hot.accept();
+}

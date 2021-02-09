@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const path = require('path');
 
@@ -47,7 +48,12 @@ module.exports = [
                 : {},
         },
 
-        plugins: [configureCleanWebpackPlugin(), ...configureHtmlWebpackPlugin(USE_HTML), configureBrowsersync()],
+        plugins: [
+            new webpack.HotModuleReplacementPlugin(),
+            configureCleanWebpackPlugin(),
+            ...configureHtmlWebpackPlugin(USE_HTML),
+            configureBrowsersync(),
+        ],
 
         performance: false,
 
