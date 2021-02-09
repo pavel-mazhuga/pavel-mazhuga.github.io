@@ -25,7 +25,7 @@ module.exports = [
             hot: true,
             writeToDisk: true,
             host: 'localhost',
-            port: 8080,
+            port: 9080,
             overlay: { warnings: false, errors: true },
             before(app, server, compiler) {
                 const watchFiles = ['.html', '.hbs', '.njk'];

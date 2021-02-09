@@ -421,7 +421,7 @@ const configureBrowsersync = () =>
             host: 'localhost',
             port: 4000,
             open: false,
-            proxy: 'http://localhost:8080/',
+            proxy: 'http://localhost:9080/',
         },
         {
             // prevent BrowserSync from reloading the page

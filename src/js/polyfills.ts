@@ -6,8 +6,6 @@ import 'focus-visible';
 if (BUILD_TYPE === 'legacy') {
     require('core-js/es/symbol');
     require('core-js/es/promise/finally');
-    // require('core-js/es/map');
-    // require('core-js/es/set');
     require('document-register-element/build/document-register-element');
     // require('element-matches-polyfill');
     require('whatwg-fetch');
