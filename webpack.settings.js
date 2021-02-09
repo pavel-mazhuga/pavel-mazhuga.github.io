@@ -15,6 +15,9 @@ module.exports = {
     USE_SERVICE_WORKER: false,
     SENTRY_DSN: '',
     // куда положить собранный вебпаком html
+    HTML_PATH_DEFAULT: '',
+    HTML_PATH_SANDBOX: '',
+    // HTML_PATH_SANDBOX: '../../../../../html/',
     HTML_PATH_BITRIX: '../../../../../html/',
     ROOT_PATH_DEFAULT: '/',
     ROOT_PATH_SANDBOX: `/${name}/html/`,

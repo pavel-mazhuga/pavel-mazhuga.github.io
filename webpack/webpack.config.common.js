@@ -34,6 +34,8 @@ const {
     PUBLIC_PATH_BITRIX,
     SRC_PATH,
     BUILD_PATH,
+    HTML_PATH_DEFAULT,
+    HTML_PATH_SANDBOX,
     HTML_PATH_BITRIX,
     HTML_PRETTY,
     USE_HTML,
@@ -58,6 +60,12 @@ const configureRootPath = () => {
     return ROOT_PATH_DEFAULT;
 };
 
+const configureHtmlPath = () => {
+    if (SANDBOX) return HTML_PATH_SANDBOX;
+    if (BITRIX) return HTML_PATH_BITRIX;
+    return HTML_PATH_DEFAULT;
+};
+
 const SITEMAP = glob.sync(`${slash(SRC_PATH)}/templates/**/*.html`, {
     ignore: [
         `${slash(SRC_PATH)}/templates/partials/**/*.html`,
@@ -68,6 +76,7 @@ const SITEMAP = glob.sync(`${slash(SRC_PATH)}/templates/**/*.html`, {
 
 const PUBLIC_PATH = configurePublicPath();
 const ROOT_PATH = configureRootPath();
+const HTML_PATH = configureHtmlPath();
 const PROD = NODE_ENV === 'production';
 const DEV_SERVER = path.basename(require.main.filename, '.js') === 'webpack-dev-server';
 const USE_SOURCE_MAP = DEV_SERVER;
@@ -88,14 +97,10 @@ const configureHtmlWebpackPlugin = (useHtml) => {
             const basename = path.basename(template);
             const filename =
                 basename === 'index.html'
-                    ? path.join(
-                          BUILD_PATH,
-                          ...(BITRIX ? [HTML_PATH_BITRIX] : []),
-                          path.relative(SRC_PATH, template.replace('/templates', '')),
-                      )
+                    ? path.join(BUILD_PATH, HTML_PATH, path.relative(SRC_PATH, template.replace('/templates', '')))
                     : path.join(
                           BUILD_PATH,
-                          ...(BITRIX ? [HTML_PATH_BITRIX] : []),
+                          HTML_PATH,
                           path.relative(SRC_PATH, path.dirname(template).replace('/templates', '')),
                           path.basename(template, '.html'),
                           'index.html',
