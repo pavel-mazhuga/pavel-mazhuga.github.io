@@ -28,6 +28,9 @@ module.exports = [
             port: 8081,
             contentBase: path.resolve(__dirname, BUILD_PATH, PROJECT_ROOT_PATH),
             overlay: { warnings: false, errors: true },
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+            },
             before(app, server, compiler) {
                 const watchFiles = ['.html', '.hbs', '.njk'];
 
