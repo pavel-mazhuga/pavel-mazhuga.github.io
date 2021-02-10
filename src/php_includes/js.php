@@ -1,5 +1,6 @@
-<script type="module" src="%js_modern_vendor_path%"></script>
-<script type="module" src="%js_modern_app_path%"></script>
+<script type="module" src="<?= $webpack_mode === 'development' ? 'http://localhost:8081' : '' ?>%js_modern_runtime%"></script>
+<script type="module" src="<?= $webpack_mode === 'development' ? 'http://localhost:8081' : '' ?>%js_modern_vendor_path%"></script>
+<script type="module" src="<?= $webpack_mode === 'development' ? 'http://localhost:8081' : '' ?>%js_modern_app_path%"></script>
 
 <script>
     (function() {
@@ -23,5 +24,6 @@
     }());
 </script>
 
-<script nomodule src="%js_legacy_vendor_path%"></script>
-<script nomodule src="%js_legacy_app_path%"></script>
+<script nomodule src="<?= $webpack_mode === 'development' ? 'http://localhost:8081' : '' ?>%js_legacy_runtime%"></script>
+<script nomodule src="<?= $webpack_mode === 'development' ? 'http://localhost:8081' : '' ?>%js_legacy_vendor_path%"></script>
+<script nomodule src="<?= $webpack_mode === 'development' ? 'http://localhost:8081' : '' ?>%js_legacy_app_path%"></script>

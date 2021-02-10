@@ -1,2 +1,2 @@
-<link href="%css_vendor_path%" rel="stylesheet">
-<link href="%css_app_path%" rel="stylesheet">
+<link href="<?= $webpack_mode === 'development' ? 'http://localhost:8081' : '' ?>%css_vendor_path%" rel="stylesheet">
+<link href="<?= $webpack_mode === 'development' ? 'http://localhost:8081' : '' ?>%css_app_path%" rel="stylesheet">

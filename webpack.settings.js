@@ -29,8 +29,8 @@ module.exports = {
     ROOT_PATH_BITRIX: '/html/',
     // куда положить собранные вебпаком ассеты
     PUBLIC_PATH_DEFAULT: '/',
-    PUBLIC_PATH_BITRIX: '/local/templates/main/frontend/build/',
     PUBLIC_PATH_SANDBOX: `/${name}/local/templates/main/frontend/build/`,
+    PUBLIC_PATH_BITRIX: '/local/templates/main/frontend/build/',
     SRC_PATH: path.resolve(__dirname, 'src'),
     BUILD_PATH: path.resolve(__dirname, 'build'),
 };
