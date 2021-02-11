@@ -5,14 +5,11 @@ import './polyfills';
 
 import sw from './sw';
 import { registerCustomElements } from './custom-elements';
+import { createParticlesBasic } from './experiments/particles/particles-basic';
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Forces repaint, use when really needed.
-    // document.documentElement.classList.add('js-ready');
-    registerCustomElements();
+registerCustomElements();
 
-    // Code here
-});
+createParticlesBasic();
 
 // Service Worker
 if (USE_SERVICE_WORKER) {
@@ -21,6 +18,4 @@ if (USE_SERVICE_WORKER) {
     sw.unregister();
 }
 
-if (module.hot) {
-    module.hot.accept();
-}
+module.hot?.accept();

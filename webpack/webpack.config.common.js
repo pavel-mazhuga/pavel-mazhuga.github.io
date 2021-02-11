@@ -332,6 +332,7 @@ const configureServiceWorker = (useServiceWorker) => {
         return [
             new WorkboxPlugin.InjectManifest({
                 swSrc: path.resolve(SRC_PATH, 'js/service-worker/service-worker.js'),
+                exclude: [/\.htaccess/],
             }),
         ];
     }

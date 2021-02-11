@@ -12,7 +12,7 @@ module.exports = {
     HTML_PRETTY: true,
     USE_FAVICONS: false,
     USE_COMPRESSION: true,
-    USE_SERVICE_WORKER: false,
+    USE_SERVICE_WORKER: true,
     SENTRY_DSN: '',
     // путь до корня всего проекта (нужен для HMR)
     PROJECT_ROOT_PATH_DEFAULT: '',

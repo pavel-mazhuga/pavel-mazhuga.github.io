@@ -2,7 +2,7 @@
 /* eslint-disable no-restricted-globals */
 import { registerRoute /* , setCatchHandler */ } from 'workbox-routing';
 import { ExpirationPlugin } from 'workbox-expiration';
-import { CacheFirst, StaleWhileRevalidate, NetworkFirst } from 'workbox-strategies';
+import { CacheFirst, NetworkFirst } from 'workbox-strategies';
 import * as navigationPreload from 'workbox-navigation-preload';
 import { precacheAndRoute } from 'workbox-precaching';
 
@@ -25,7 +25,7 @@ export function registerRoutes() {
     // Non-content Images
     registerRoute(
         /\.(?:png|gif|svg|ico)$/,
-        new StaleWhileRevalidate({
+        new CacheFirst({
             cacheName: 'non-content-images',
             plugins: [
                 new ExpirationPlugin({
@@ -38,7 +38,7 @@ export function registerRoutes() {
 
     // Content images
     registerRoute(/\.(jpg|jpeg|webp)$/, async (params) => {
-        const staleWhileRevalidate = new StaleWhileRevalidate({
+        const staleWhileRevalidate = new CacheFirst({
             cacheName: 'content-images',
             plugins: [
                 new ExpirationPlugin({
@@ -64,8 +64,8 @@ export function registerRoutes() {
     //         cacheName: 'static',
     //         plugins: [
     //             new ExpirationPlugin({
-    //                 maxEntries: 30,
-    //                 maxAgeSeconds: 60 * 60 * 24 * 30, // 30 Days
+    //                 maxEntries: 50,
+    //                 maxAgeSeconds: 60 * 60 * 24 * 60, // 60 Days
     //             }),
     //         ],
     //     }),
