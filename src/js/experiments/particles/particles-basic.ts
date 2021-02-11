@@ -1,5 +1,7 @@
 import * as THREE from 'three';
+import Stats from 'three/examples/jsm/libs/stats.module';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import * as dat from 'three/examples/jsm/libs/dat.gui.module';
 
 export function createParticlesBasic() {
     const canvas = document.querySelector<HTMLCanvasElement>('.js-canvas[data-experiment="particles-basic"]');
@@ -23,18 +25,44 @@ export function createParticlesBasic() {
     camera.position.z = 3;
 
     const scene = new THREE.Scene();
+    const textureLoader = new THREE.TextureLoader();
+
+    const particleTexture = textureLoader.load(`${PUBLIC_PATH}img/particles/8.png`);
+
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 20000;
+    const positions = new Float32Array(particlesCount * 3);
+
+    for (let i = 0; i < particlesCount * 3; i++) {
+        positions[i] = (Math.random() - 0.5) * 4;
+    }
+
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
     const sphere = new THREE.Points(
-        new THREE.SphereBufferGeometry(1, 64, 64),
-        new THREE.PointsMaterial({ color: 0xffffff, size: 0.02, sizeAttenuation: true }),
+        particlesGeometry,
+        new THREE.PointsMaterial({
+            color: 0xffffff,
+            map: particleTexture,
+            size: 0.05,
+            sizeAttenuation: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending,
+        }),
     );
     scene.add(sphere);
 
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
 
+    const stats = new Stats();
+    document.body.appendChild(stats.domElement);
+
+    const gui = new dat.GUI();
+
     function render() {
         controls.update();
+        stats.update();
         renderer.render(scene, camera);
     }
 
