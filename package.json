@@ -69,6 +69,7 @@
         "browser-sync": "^2.26.14",
         "browser-sync-webpack-plugin": "^2.3.0",
         "browserslist": "^4.16.3",
+        "cannon-es": "^0.16.0",
         "case-sensitive-paths-webpack-plugin": "^2.3.0",
         "chalk": "^4.1.0",
         "clean-webpack-plugin": "^3.0.0",
