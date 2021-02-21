@@ -239,8 +239,8 @@ const configureBabelLoader = (supportsESModules = false) => ({
 });
 
 const configureGlslLoader = () => ({
-    test: /\.glsl$/i,
-    loader: 'webpack-glsl-loader',
+    test: /\.(glsl|frag|vert|vs|fs)$/i,
+    use: ['raw-loader', 'glslify-loader'],
 });
 
 const configureImageLoader = () => ({

@@ -1,23 +1,11 @@
 import * as THREE from 'three';
-import Stats from 'three/examples/jsm/libs/stats.module';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import * as dat from 'three/examples/jsm/libs/dat.gui.module';
+import { baseExperiment } from '../base';
 
-export function createParticlesBasic() {
-    const canvas = document.querySelector<HTMLCanvasElement>('.js-canvas[data-experiment="particles-basic"]');
+export const createParticlesBasic = baseExperiment('particles-basic', ({ canvas, sizes, onRender, gui }) => {
     let rAF: number;
-
-    if (!canvas) return;
-
-    let canvasRect = canvas.getBoundingClientRect();
-
-    const sizes = {
-        width: canvasRect.width,
-        height: canvasRect.height,
-    };
-
     const renderer = new THREE.WebGLRenderer({ canvas });
-    // renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
     renderer.setSize(sizes.width, sizes.height);
 
@@ -55,14 +43,9 @@ export function createParticlesBasic() {
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
 
-    const stats = new Stats();
-    document.body.appendChild(stats.domElement);
-
-    const gui = new dat.GUI();
-
     function render() {
+        onRender();
         controls.update();
-        stats.update();
         renderer.render(scene, camera);
     }
 
@@ -71,19 +54,19 @@ export function createParticlesBasic() {
         rAF = requestAnimationFrame(animate);
     }
 
+    function destroy() {
+        cancelAnimationFrame(rAF);
+        renderer.dispose();
+    }
+
     animate();
 
     window.addEventListener('resize', () => {
-        canvasRect = canvas.getBoundingClientRect();
-        sizes.width = canvasRect.width;
-        sizes.height = canvasRect.height;
         camera.aspect = sizes.width / sizes.height;
         camera.updateProjectionMatrix();
         renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
         renderer.setSize(sizes.width, sizes.height);
     });
 
-    module.hot?.addDisposeHandler(() => {
-        cancelAnimationFrame(rAF);
-    });
-}
+    module.hot?.addDisposeHandler(destroy);
+});

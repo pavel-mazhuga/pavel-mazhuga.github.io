@@ -21,6 +21,8 @@ export function createPhysicsWorker() {
     gui.addFolder('');
 
     const renderer = new THREE.WebGLRenderer({ canvas });
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
     renderer.setSize(sizes.width, sizes.height);
 
@@ -28,6 +30,7 @@ export function createPhysicsWorker() {
     camera.position.set(-5, 7, 12);
     const scene = new THREE.Scene();
 
+    const objects: any[] = [];
     const world = new CANNON.World();
     world.gravity.set(0, -9.82, 0);
 
@@ -40,28 +43,25 @@ export function createPhysicsWorker() {
     world.addContactMaterial(defaultContactMaterial);
     world.defaultContactMaterial = defaultContactMaterial;
 
-    const plane = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry(25, 25, 25),
-        new THREE.MeshStandardMaterial({
-            side: THREE.DoubleSide,
-        }),
-    );
-    plane.rotation.x = Math.PI / 2;
+    const plane = new THREE.Mesh(new THREE.PlaneBufferGeometry(25, 25, 25), new THREE.MeshStandardMaterial());
+    plane.receiveShadow = true;
+    // plane.rotation.x = -Math.PI / 2;
     scene.add(plane);
 
     const floorShape = new CANNON.Plane();
     const floorBody = new CANNON.Body({ material: defaultMaterial });
     floorBody.mass = 0;
     floorBody.addShape(floorShape);
-    floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5);
+    // floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5);
     world.addBody(floorBody);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.35);
     scene.add(ambientLight);
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    directionalLight.position.set(1, 1, 5);
+    directionalLight.position.set(0.3, 0.5, 0.5);
     directionalLight.target = plane;
+    directionalLight.castShadow = true;
     scene.add(directionalLight);
     gui.add(directionalLight.position, 'x').min(-10).max(10).step(0.001);
     gui.add(directionalLight.position, 'y').min(-10).max(10).step(0.001);
@@ -75,23 +75,23 @@ export function createPhysicsWorker() {
 
     function createBox(size = 1, position: { x: number; y: number; z: number }) {
         const mesh = new THREE.Mesh(boxGeometry, boxMaterial);
-        mesh.scale.set(size, size, size);
         mesh.castShadow = true;
+        mesh.scale.set(size, size, size);
         mesh.position.x = position.x;
         mesh.position.y = position.y;
         mesh.position.z = position.z;
-
         scene.add(mesh);
 
-        const boxShape = new CANNON.Box(new CANNON.Vec3(position.x, position.y, position.z));
-
-        const boxBody = new CANNON.Body({
+        const shape = new CANNON.Box(new CANNON.Vec3(position.x, position.y, position.z));
+        const body = new CANNON.Body({
             mass: 1,
             position: new CANNON.Vec3(position.x, position.y, position.z),
-            shape: boxShape,
+            shape,
         });
 
-        world.addBody(boxBody);
+        world.addBody(body);
+        objects.push({ mesh, body });
+        // body.applyLocalForce(new CANNON.Vec3(150, 0, 0), new CANNON.Vec3(0, 0, 0));
     }
 
     createBox(1, { x: 0, y: 3, z: 0 });
@@ -110,8 +110,12 @@ export function createPhysicsWorker() {
         const deltaTime = elapsedTime - oldElapsedTime;
         oldElapsedTime = elapsedTime;
 
-        // Update physics
+        // Update physics world
         world.step(1 / 60, deltaTime, 3);
+
+        for (let i = 0; i < objects.length; i++) {
+            objects[i].mesh.position.copy(objects[i].body.position);
+        }
 
         controls.update();
         stats.update();

@@ -5,4 +5,5 @@ declare const BUILD_TYPE: string;
 declare const USE_SERVICE_WORKER: string;
 declare const SENTRY_DSN: string;
 
+declare module '*.glsl';
 declare module '*.scss';
