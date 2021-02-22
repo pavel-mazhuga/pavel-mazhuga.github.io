@@ -10,7 +10,7 @@ void main() {
     color.rgb = min(vec3(10.), color.rgb);
     color.rgb *= uColor * 100.;
     color *= vOpacity;
-    color.a = min(1., color.a) * 10.;
+    color.a = min(1., color.a);
 
     gl_FragColor = vec4(color.rgb, 1.);
 }
