@@ -27,6 +27,7 @@ export function baseExperiment(name: string, fn: Experiment) {
         document.body.appendChild(stats.domElement);
 
         const gui = new dat.GUI();
+        gui.addFolder();
 
         function onRender() {
             stats.update();

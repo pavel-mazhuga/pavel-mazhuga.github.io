@@ -19,7 +19,7 @@ export const createParticlesPathTrailing = baseExperiment(
         camera.position.z = 10;
 
         const scene = new THREE.Scene();
-        const clock = new THREE.Clock();
+        // const clock = new THREE.Clock();
 
         const svg = document.querySelector<SVGElement>('svg.js-russia-svg');
 
@@ -31,9 +31,16 @@ export const createParticlesPathTrailing = baseExperiment(
         svg.style.display = 'none';
         const svgTexture = new THREE.TextureLoader().load(texture);
 
+        const params = {
+            mapColor: 0x040a14,
+            particlesColor: 0x040a14,
+            pointsAmountFactor: 0.4,
+            pointsToRenderFactor: 0.5,
+        };
+
         const pathsData = Array.from(svg.querySelectorAll<SVGPathElement>('.land')).map((path) => {
             const pathLength = path.getTotalLength();
-            const pointsAmount = Math.floor(pathLength * 0.4);
+            const pointsAmount = Math.floor(pathLength * params.pointsAmountFactor);
             const points: THREE.Vector3[] = [];
 
             for (let i = 0; i < pointsAmount; i++) {
@@ -50,8 +57,7 @@ export const createParticlesPathTrailing = baseExperiment(
             return {
                 length: pathLength,
                 points,
-                pointsToRender: Math.max(10, Math.floor(pointsAmount * 0.5)),
-                // pointsToRender: Math.max(10, Math.floor(pointsAmount * 0.9)),
+                pointsToRender: Math.floor(pointsAmount * params.pointsToRenderFactor),
                 currentPosition: 0,
                 speed: 1,
             };
@@ -78,12 +84,16 @@ export const createParticlesPathTrailing = baseExperiment(
         const particlesMaterial = new THREE.ShaderMaterial({
             uniforms: {
                 uTime: { value: 0 },
+                uColor: { value: new THREE.Color(params.particlesColor) },
             },
             vertexShader,
             fragmentShader,
             transparent: true,
             depthWrite: false,
             blending: THREE.AdditiveBlending,
+        });
+        gui?.addColor(params, 'particlesColor').onChange(() => {
+            particlesMaterial.uniforms.uColor.value = new THREE.Color(params.particlesColor);
         });
 
         const particles = new THREE.Points(particlesGeometry, particlesMaterial);
@@ -93,11 +103,14 @@ export const createParticlesPathTrailing = baseExperiment(
         const plane = new THREE.Mesh(
             new THREE.PlaneBufferGeometry(svgBBox.width * 0.01, svgBBox.height * 0.01, 1, 1),
             new THREE.MeshBasicMaterial({
-                color: 0x0004f,
+                color: params.mapColor,
                 map: svgTexture,
             }),
         );
         scene.add(plane);
+        gui?.addColor(params, 'mapColor').onChange(() => {
+            plane.material.color = new THREE.Color(params.mapColor);
+        });
 
         const dummyMat4 = new THREE.Matrix4();
 
@@ -138,10 +151,15 @@ export const createParticlesPathTrailing = baseExperiment(
         }
 
         function destroy() {
+            if (svg) {
+                svg.style.display = 'block';
+            }
+
             cancelAnimationFrame(rAF);
             scene.remove(particles);
             disposeMesh(particles);
             renderer.dispose();
+            gui.destroy();
         }
 
         animate();
@@ -153,7 +171,11 @@ export const createParticlesPathTrailing = baseExperiment(
             renderer.setSize(sizes.width, sizes.height);
         });
 
-        window.dispatchEvent(new Event('resize'));
+        gui?.add(params, 'pointsToRenderFactor').min(0).max(2).step(0.001);
+        // .onFinishChange(() => {
+        //     destroy();
+        //     init();
+        // });
 
         module.hot?.addDisposeHandler(destroy);
     },
