@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { baseExperiment } from '../../base';
 import vertexShader from './shaders/vertex.glsl';
 import fragmentShader from './shaders/fragment.glsl';
+import { disposeMesh } from '../../../utils';
 import texture from './russia.png';
 
 export const createParticlesPathTrailing = baseExperiment(
@@ -14,7 +15,7 @@ export const createParticlesPathTrailing = baseExperiment(
         renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
         renderer.setSize(sizes.width, sizes.height);
 
-        const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 100);
         camera.position.z = 10;
 
         const scene = new THREE.Scene();
@@ -26,8 +27,9 @@ export const createParticlesPathTrailing = baseExperiment(
             throw new Error('svg not found');
         }
 
+        const svgBBox = svg.getBBox();
+        svg.style.display = 'none';
         const svgTexture = new THREE.TextureLoader().load(texture);
-        // svgTexture.flipY = false;
 
         const pathsData = Array.from(svg.querySelectorAll<SVGPathElement>('.land')).map((path) => {
             const pathLength = path.getTotalLength();
@@ -38,8 +40,8 @@ export const createParticlesPathTrailing = baseExperiment(
                 const pointAt = (pathLength / pointsAmount) * i;
                 const point = path.getPointAtLength(pointAt);
                 const normalizedPoint = {
-                    x: (point.x - 500) * 0.01 + Math.random() * 0.03,
-                    y: (point.y - 400) * 0.01 + Math.random() * 0.03,
+                    x: (point.x - svgBBox.width / 2) * 0.01 + Math.random() * 0.02,
+                    y: (point.y - svgBBox.height / 2) * 0.01 + Math.random() * 0.02,
                     z: 0,
                 };
                 points.push(new THREE.Vector3(normalizedPoint.x, normalizedPoint.y, normalizedPoint.z));
@@ -48,7 +50,8 @@ export const createParticlesPathTrailing = baseExperiment(
             return {
                 length: pathLength,
                 points,
-                pointsToRender: Math.max(10, Math.floor(pointsAmount * 0.25)),
+                pointsToRender: Math.max(10, Math.floor(pointsAmount * 0.5)),
+                // pointsToRender: Math.max(10, Math.floor(pointsAmount * 0.9)),
                 currentPosition: 0,
                 speed: 1,
             };
@@ -84,16 +87,19 @@ export const createParticlesPathTrailing = baseExperiment(
         });
 
         const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+        particles.position.y = 0.33;
         scene.add(particles);
 
         const plane = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry(10, 8, 1, 1),
+            new THREE.PlaneBufferGeometry(svgBBox.width * 0.01, svgBBox.height * 0.01, 1, 1),
             new THREE.MeshBasicMaterial({
-                color: 0x0000ff,
+                color: 0x0004f,
                 map: svgTexture,
             }),
         );
         scene.add(plane);
+
+        const dummyMat4 = new THREE.Matrix4();
 
         const controls = new OrbitControls(camera, canvas);
         controls.enableDamping = true;
@@ -117,6 +123,7 @@ export const createParticlesPathTrailing = baseExperiment(
             }
 
             particlesGeometry.attributes.position.array = positions;
+            particlesGeometry.applyMatrix4(dummyMat4.makeScale(1, -1, 1));
             particlesGeometry.attributes.opacity.array = opacity;
             particlesGeometry.attributes.position.needsUpdate = true;
             particlesGeometry.attributes.opacity.needsUpdate = true;
@@ -132,6 +139,8 @@ export const createParticlesPathTrailing = baseExperiment(
 
         function destroy() {
             cancelAnimationFrame(rAF);
+            scene.remove(particles);
+            disposeMesh(particles);
             renderer.dispose();
         }
 
@@ -143,6 +152,8 @@ export const createParticlesPathTrailing = baseExperiment(
             renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
             renderer.setSize(sizes.width, sizes.height);
         });
+
+        window.dispatchEvent(new Event('resize'));
 
         module.hot?.addDisposeHandler(destroy);
     },
