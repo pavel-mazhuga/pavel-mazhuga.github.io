@@ -18,7 +18,7 @@ variables: &global_variables
     IMAGE_FRONTEND: node:14-alpine
     FRONTEND_PATH: '.'
     # FRONTEND_PATH: './local/templates/main/frontend'
-    SSH_PORT: 22
+    SSH_PORT: 33022
 
 # Глобальные переменные для дева
 variables: &global_variables_dev
@@ -32,7 +32,7 @@ variables: &global_variables_dev
 # Глобальные переменные для продакшена
 variables: &global_variables_prod
     ENV_PRIVATE_KEY: $PRODUCTION_PRIVATE_KEY
-    PROJECT_HOST: "<<[PROJECT_HOST_HERE]>>"
+    PROJECT_HOST: "chipsa@91.230.210.213"
     PROJECT_PATH: "<<[PROJECT_PATH_HERE]>>"
     BRANCH_NAME: master
 
