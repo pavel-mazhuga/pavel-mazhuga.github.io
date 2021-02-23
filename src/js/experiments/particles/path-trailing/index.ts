@@ -30,7 +30,7 @@ export const createParticlesPathTrailing = baseExperiment(
         const svgBBox = svg.getBBox();
         svg.style.display = 'none';
         const svgTexture = new THREE.TextureLoader().load(texture);
-        //
+
         const params = {
             mapColor: 0x7071a,
             // particlesColor: 0x040a14,
