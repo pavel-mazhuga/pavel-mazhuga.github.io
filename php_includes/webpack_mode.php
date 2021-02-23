@@ -1,0 +1,1 @@
+<? $webpack_mode = "%webpack_mode%" ?>
