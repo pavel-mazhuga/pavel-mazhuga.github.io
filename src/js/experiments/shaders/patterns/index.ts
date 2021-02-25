@@ -16,7 +16,7 @@ export const createShadersPatterns = baseExperiment('shaders-patterns', ({ canva
     camera.position.z = 10;
 
     const scene = new THREE.Scene();
-    // const clock = new THREE.Clock();
+    const clock = new THREE.Clock();
 
     // const params = {
     //     mapColor: 0x7071a,
@@ -35,7 +35,7 @@ export const createShadersPatterns = baseExperiment('shaders-patterns', ({ canva
     //     particleSize: 20,
     // };
 
-    const geometry = new THREE.PlaneBufferGeometry(6, 6, 1, 1);
+    const geometry = new THREE.PlaneBufferGeometry(6, 6, 256, 256);
 
     const material = new THREE.ShaderMaterial({
         defines: {
@@ -57,7 +57,10 @@ export const createShadersPatterns = baseExperiment('shaders-patterns', ({ canva
     controls.enableDamping = true;
 
     function render() {
+        const elapsedTime = clock.getElapsedTime();
+
         onRender();
+        material.uniforms.uTime.value = elapsedTime;
 
         controls.update();
         renderer.render(scene, camera);
