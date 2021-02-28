@@ -3,12 +3,15 @@
 uniform float uTime;
 
 varying vec2 vUv;
+varying float vElevation;
 
 void main() {
     vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-    modelPosition.z += cnoise3(modelPosition.xyz * abs(sin(uTime))) * 0.7;
+    modelPosition.z += cnoise3(modelPosition.xyz * sin(uTime)) * 0.7;
+    float elevation = modelPosition.z;
 
     vUv = uv;
+    vElevation = elevation;
 
     gl_Position = projectionMatrix * viewMatrix * modelPosition;
 }
