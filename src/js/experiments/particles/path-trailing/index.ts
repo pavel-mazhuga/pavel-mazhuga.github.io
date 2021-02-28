@@ -108,7 +108,7 @@ export const createParticlesPathTrailing = baseExperiment(
 
         const particlesMaterial = new THREE.ShaderMaterial({
             uniforms: {
-                uParticleSize: { value: params.particleSize },
+                uParticleSize: { value: params.particleSize * renderer.getPixelRatio() },
                 uTime: { value: 0 },
                 uColor: { value: new THREE.Color(params.particlesColor) },
             },
