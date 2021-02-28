@@ -1,0 +1,23 @@
+.fader {
+    height: 50vw;
+    position: relative;
+    overflow: hidden;
+}
+
+.fader__slide {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    opacity: 0;
+
+    img {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        object-fit: cover;
+        opacity: 0;
+    }
+}

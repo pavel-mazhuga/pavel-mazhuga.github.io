@@ -105,6 +105,7 @@
         "intersection-observer": "^0.12.0",
         "js-beautify": "^1.13.5",
         "js-cookie": "^2.2.1",
+        "keen-slider": "^5.4.0",
         "lit-element": "^2.4.0",
         "lit-html": "^1.3.0",
         "loader-utils": "^2.0.0",
