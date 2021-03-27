@@ -1,23 +1,15 @@
-.fader {
-    height: 50vw;
-    position: relative;
-    overflow: hidden;
+.carousel {
+    width: 100%;
 }
 
-.fader__slide {
+.cell {
+    width: 60%;
+    margin: 0 20px;
+    height: 70vh;
+}
+
+.cell img {
     width: 100%;
     height: 100%;
-    position: absolute;
-    top: 0;
-    opacity: 0;
-
-    img {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        object-fit: cover;
-        opacity: 0;
-    }
+    object-fit: cover;
 }

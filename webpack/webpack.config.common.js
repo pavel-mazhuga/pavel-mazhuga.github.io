@@ -75,9 +75,9 @@ const configureHtmlPath = () => {
     return HTML_PATH_DEFAULT;
 };
 
-const SITEMAP = glob.sync(`${slash(SRC_PATH)}/html_templates/**/*.html`, {
+const SITEMAP = glob.sync(`${slash(SRC_PATH)}/**/*.html`, {
     ignore: [
-        `${slash(SRC_PATH)}/html_templates/partials/**/*.html`,
+        `${slash(SRC_PATH)}/partials/**/*.html`,
         `${slash(SRC_PATH)}/google*.html`,
         `${slash(SRC_PATH)}/yandex_*.html`,
     ],
@@ -107,11 +107,11 @@ const configureHtmlWebpackPlugin = (useHtml) => {
             const basename = path.basename(template);
             const filename =
                 basename === 'index.html'
-                    ? path.join(BUILD_PATH, HTML_PATH, path.relative(SRC_PATH, template).replace(/html_templates/, ''))
+                    ? path.join(BUILD_PATH, HTML_PATH, path.relative(SRC_PATH, template))
                     : path.join(
                           BUILD_PATH,
                           HTML_PATH,
-                          path.relative(SRC_PATH, path.dirname(template)).replace(/html_templates/, ''),
+                          path.relative(SRC_PATH, path.dirname(template)),
                           path.basename(template, '.html'),
                           'index.html',
                       );

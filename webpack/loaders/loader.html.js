@@ -30,7 +30,7 @@ const DEFAULT_OPTIONS = {
     },
     requireIgnore: /^(\w+[:]|\/\/)/i,
     requireReplace: {},
-    searchPath: `${SRC_PATH}/html_templates`,
+    searchPath: `${SRC_PATH}`,
 };
 
 const SRC_SEPARATOR = /\s+/;

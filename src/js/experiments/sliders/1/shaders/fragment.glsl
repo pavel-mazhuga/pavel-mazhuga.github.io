@@ -1,40 +1,23 @@
-uniform sampler2D uTexture;
-uniform vec2 uMeshSize;
-uniform vec2 uImageSize;
-uniform float uVelo;
-uniform float uScale;
+precision highp float;
+
+uniform vec2 size;
+uniform vec2 sizeImage;
+uniform sampler2D image;
 
 varying vec2 vUv;
 
-vec2 backgroundCoverUv(vec2 screenSize, vec2 imageSize, vec2 uv) {
-  float screenRatio = screenSize.x / screenSize.y;
-  float imageRatio = imageSize.x / imageSize.y;
+vec4 coverTexture(sampler2D tex, vec2 imgSize, vec2 ouv) {
+  vec2 s = size;
+  vec2 i = imgSize;
+  float rs = s.x / s.y;
+  float ri = i.x / i.y;
+  vec2 new = rs < ri ? vec2(i.x * s.y / i.y, s.y) : vec2(s.x, i.y * s.x / i.x);
+  vec2 offset = (rs < ri ? vec2((new.x - s.x) / 2.0, 0.0) : vec2(0.0, (new.y - s.y) / 2.0)) / new;
+  vec2 uv = ouv * s / new + offset;
 
-  vec2 newSize = screenRatio < imageRatio 
-      ? vec2(imageSize.x * screenSize.y / imageSize.y, screenSize.y)
-      : vec2(screenSize.x, imageSize.y * screenSize.x / imageSize.x);
-
-  vec2 newOffset = (screenRatio < imageRatio 
-      ? vec2((newSize.x - screenSize.x) / 2.0, 0.0) 
-      : vec2(0.0, (newSize.y - screenSize.y) / 2.0)) / newSize;
-
-  return uv * screenSize / newSize + newOffset;
+  return texture2D(tex, uv);
 }
 
 void main() {
-  vec2 uv = vUv;
-
-  vec2 texCenter = vec2(0.5);
-  vec2 texUv = backgroundCoverUv(uMeshSize, uImageSize, uv);
-  vec2 texScale = (texUv - texCenter) * uScale + texCenter;
-  vec4 texture = texture2D(uTexture, texScale);
-
-  texScale.x += 0.15 * uVelo;
-//   if (uv.x < 1.) texture.g = texture2D(uTexture, texScale).g;
-
-  texScale.x += 0.1 * uVelo;
-//   if (uv.x < 1.) texture.b = texture2D(uTexture, texScale).b;
-
-//   gl_FragColor = texture;
-  gl_FragColor = texture;
+  gl_FragColor = coverTexture(image, sizeImage, vUv);
 }

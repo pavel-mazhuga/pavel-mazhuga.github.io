@@ -1,85 +1,76 @@
 import './styles.scss';
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import KeenSlider from 'keen-slider';
+import Flickity from 'flickity';
+import Aladino from 'aladino';
+import lerp from 'lerp';
 import { baseExperiment } from '../../base';
 import vertexShader from './shaders/vertex.glsl';
 import fragmentShader from './shaders/fragment.glsl';
-import { disposeMesh } from '../../../utils';
-import { Plane } from './plane';
+import postprocessingShader from './shaders/postprocessing.glsl';
 
 export const createSliders1 = baseExperiment('sliders-1', ({ canvas, sizes, onRender, gui }) => {
     let rAF: number;
-    const renderer = new THREE.WebGLRenderer({ canvas });
-    renderer.outputEncoding = THREE.sRGBEncoding;
-    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
-    renderer.setSize(sizes.width, sizes.height);
-    renderer.setClearColor(0xffffff, 0);
-
-    const camera = new THREE.OrthographicCamera(
-        sizes.width / -2,
-        sizes.width / 2,
-        sizes.height / 2,
-        sizes.height / -2,
-        1,
-        10,
-    );
-    camera.position.z = 1;
-
-    const scene = new THREE.Scene();
-    const clock = new THREE.Clock();
-
-    const geometry = new THREE.PlaneBufferGeometry(1, 1, 1, 1);
-
-    const material = new THREE.ShaderMaterial({
-        defines: {
-            PI: Math.PI,
+    const sliderAladino = new Aladino({
+        density: 16,
+        dpr: Math.min(devicePixelRatio, 2),
+        canvas,
+        post: {
+            fragment: postprocessingShader,
+            uniforms: {
+                speed: 0.0,
+            },
         },
+    });
+
+    const material = sliderAladino.material({
+        vertex: vertexShader,
+        fragment: fragmentShader,
         uniforms: {
-            uScale: { value: 0.75 },
-            uVelo: { value: 0 },
-        },
-        vertexShader,
-        fragmentShader,
-        transparent: true,
-    });
-
-    const controls = new OrbitControls(camera, canvas);
-    controls.enableDamping = true;
-
-    const elements = document.querySelectorAll('.fader__slide');
-    const planes = [];
-
-    const slider = new KeenSlider('#my-keen-slider', {
-        slides: elements.length,
-        loop: true,
-        duration: 3000,
-        move: (s) => {
-            console.log(s.details());
-            // const opacities = s.details().positions.map((slide) => slide.portion);
-            elements.forEach((element, idx) => {
-                // element.style.opacity = opacities[idx];
-                planes[idx]?.updateX(s.details().position);
-            });
+            speed: 0,
+            speed2: 0,
         },
     });
-
-    elements.forEach((el) => {
-        const plane = new Plane();
-        planes.push(plane);
-        plane.init(el, sizes, { geometry, material, scene });
+    
+    const cells = [...document.querySelectorAll('.slider-el')];
+    const carpets = [];
+    cells.forEach((cell) => {
+        const carpet = sliderAladino.carpet(cell, {
+            material,
+            uniforms: {
+                image: sliderAladino.texture(cell.currentSrc),
+            },
+        });
+    
+        carpets.push(carpet);
+    });
+    
+    let oldProgress = 0;
+    let speed = 0;
+    
+    const slider = new Flickity(document.querySelector('.carousel'), {
+        freeScroll: true,
+        dragThreshold: 0,
+        freeScrollFriction: 0.07,
+        prevNextButtons: false,
+        pageDots: false,
+    });
+    
+    slider.on('scroll', (progress) => {
+        // The way flickity works doesn't allow an easy use of the position,
+        // So it can be optimised, as here we're recalculating dom boundingbox each time
+        carpets.forEach((carpet) => {
+            carpet.resize();
+        });
+    
+        speed = oldProgress - progress;
+        oldProgress = progress;
     });
 
     function render() {
-        const elapsedTime = clock.getElapsedTime();
-
-        onRender();
-        material.uniforms.uTime.value = elapsedTime;
-
-        controls.update();
-        renderer.render(scene, camera);
+        material.uniforms.speed = lerp(material.uniforms.speed, speed, 0.6);
+        material.uniforms.speed2 = lerp(material.uniforms.speed2, speed, 0.1);
+        sliderAladino.post.uniforms.speed = lerp(sliderAladino.post.uniforms.speed, speed, 0.1);
     }
-
+    
     function animate() {
         render();
         rAF = requestAnimationFrame(animate);
@@ -87,19 +78,20 @@ export const createSliders1 = baseExperiment('sliders-1', ({ canvas, sizes, onRe
 
     function destroy() {
         cancelAnimationFrame(rAF);
-        // scene.remove(mesh);
-        // disposeMesh(mesh);
-        renderer.dispose();
+        carpets.forEach((carpet) => {
+            carpet.destroy();
+        });
+        carpets = [];
+        slider.destroy();
         gui.destroy();
     }
 
     animate();
 
     window.addEventListener('resize', () => {
-        // camera.aspect = sizes.width / sizes.height;
-        camera.updateProjectionMatrix();
-        renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
-        renderer.setSize(sizes.width, sizes.height);
+        carpets.forEach((carpet) => {
+            carpet.resize();
+        });
     });
 
     module.hot?.addDisposeHandler(destroy);
