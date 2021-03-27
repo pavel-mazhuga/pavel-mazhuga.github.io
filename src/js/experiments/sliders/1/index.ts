@@ -29,7 +29,7 @@ export const createSliders1 = baseExperiment('sliders-1', ({ canvas, sizes, onRe
             speed2: 0,
         },
     });
-    
+
     const cells = [...document.querySelectorAll('.slider-el')];
     const carpets = [];
     cells.forEach((cell) => {
@@ -39,28 +39,32 @@ export const createSliders1 = baseExperiment('sliders-1', ({ canvas, sizes, onRe
                 image: sliderAladino.texture(cell.currentSrc),
             },
         });
-    
+
         carpets.push(carpet);
     });
-    
+
     let oldProgress = 0;
     let speed = 0;
-    
-    const slider = new Flickity(document.querySelector('.carousel'), {
-        freeScroll: true,
-        dragThreshold: 0,
+    const freeScroll = true;
+
+    const slider = new Flickity(document.querySelector('.carousel')!, {
+        accessibility: true,
+        freeScroll,
+        dragThreshold: freeScroll ? 0 : 30,
+        // dragThreshold: 30,
         freeScrollFriction: 0.07,
         prevNextButtons: false,
         pageDots: false,
+        // wrapAround: true,
     });
-    
+
     slider.on('scroll', (progress) => {
         // The way flickity works doesn't allow an easy use of the position,
         // So it can be optimised, as here we're recalculating dom boundingbox each time
         carpets.forEach((carpet) => {
             carpet.resize();
         });
-    
+
         speed = oldProgress - progress;
         oldProgress = progress;
     });
@@ -70,7 +74,7 @@ export const createSliders1 = baseExperiment('sliders-1', ({ canvas, sizes, onRe
         material.uniforms.speed2 = lerp(material.uniforms.speed2, speed, 0.1);
         sliderAladino.post.uniforms.speed = lerp(sliderAladino.post.uniforms.speed, speed, 0.1);
     }
-    
+
     function animate() {
         render();
         rAF = requestAnimationFrame(animate);
@@ -82,6 +86,7 @@ export const createSliders1 = baseExperiment('sliders-1', ({ canvas, sizes, onRe
             carpet.destroy();
         });
         carpets = [];
+        sliderAladino.destroy();
         slider.destroy();
         gui.destroy();
     }

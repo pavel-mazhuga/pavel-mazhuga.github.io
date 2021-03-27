@@ -1,5 +1,13 @@
+body {
+    background-color: #111;
+}
+
 .carousel {
     width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(0, -50%);
 }
 
 .cell {
