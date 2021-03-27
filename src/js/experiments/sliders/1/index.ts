@@ -58,6 +58,19 @@ export const createSliders1 = baseExperiment('sliders-1', ({ canvas, sizes, onRe
         // wrapAround: true,
     });
 
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            const exactCarpet = carpets.find((carpet) => entry.target === carpet.dom);
+            if (exactCarpet) {
+                exactCarpet.active = entry.isIntersecting;
+            }
+        });
+    });
+
+    cells.forEach((cell) => {
+        observer.observe(cell);
+    });
+
     slider.on('scroll', (progress) => {
         // The way flickity works doesn't allow an easy use of the position,
         // So it can be optimised, as here we're recalculating dom boundingbox each time
