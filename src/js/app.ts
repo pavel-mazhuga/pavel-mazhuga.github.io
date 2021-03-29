@@ -12,6 +12,7 @@ import { createParticlesPathTrailing } from './experiments/particles/path-traili
 import { createPhysicsWorker } from './experiments/physics/physics-worker';
 
 import { createShadersPatterns } from './experiments/shaders/patterns';
+import { createShadersPixelated } from './experiments/shaders/pixelated';
 
 import { createSliders1 } from './experiments/sliders/1';
 
@@ -21,6 +22,7 @@ createParticlesBasic();
 createParticlesPathTrailing();
 createPhysicsWorker();
 createShadersPatterns();
+createShadersPixelated();
 createSliders1();
 
 // Service Worker

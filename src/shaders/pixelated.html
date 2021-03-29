@@ -1,0 +1,23 @@
+---
+title: Shader pixelated
+description:
+og_image:
+---
+
+{% extends "partials/layouts/default.html" %}
+
+{% block content %}
+
+<canvas class="canvas js-canvas" data-experiment="shaders-pixelated"></canvas>
+
+{{ responsive_img(
+    url='/img/sliders/1/sliders-1-1.jpg',
+    img_attrs={ class: "img-fluid" },
+    formats=['webp'],
+    generate_defaults=false,
+    sources={
+        '(min-width: 1px)': 500
+    }
+) }}
+
+{% endblock %}
