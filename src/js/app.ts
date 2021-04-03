@@ -17,6 +17,8 @@ import { createShadersPixelated } from './experiments/shaders/pixelated';
 import { createSliders1 } from './experiments/sliders/1';
 import { createSlidersFullscreen } from './experiments/sliders/fullscreen';
 
+import './experiments/distortions/1';
+
 registerCustomElements();
 
 createParticlesBasic();
