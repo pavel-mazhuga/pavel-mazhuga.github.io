@@ -15,15 +15,19 @@ import { createShadersPatterns } from './experiments/shaders/patterns';
 import { createShadersPixelated } from './experiments/shaders/pixelated';
 
 import { createSliders1 } from './experiments/sliders/1';
+import { createSlidersFullscreen } from './experiments/sliders/fullscreen';
 
 registerCustomElements();
 
 createParticlesBasic();
 createParticlesPathTrailing();
+
 createPhysicsWorker();
+
 createShadersPatterns();
 createShadersPixelated();
 createSliders1();
+createSlidersFullscreen();
 
 // Service Worker
 if (USE_SERVICE_WORKER) {
