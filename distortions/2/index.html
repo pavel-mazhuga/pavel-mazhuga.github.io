@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Offline — [YOUR_SITE_NAME]</title>
+    <title>Distortion 2 — [YOUR_SITE_NAME]</title>
     <meta name="description" content="[DESCRIPTION]">
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
@@ -27,12 +27,12 @@
 
     <meta property="og:locale" content="ru">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="[YOUR_SITE_NAME] — Offline">
+    <meta property="og:title" content="[YOUR_SITE_NAME] — Distortion 2">
     <meta property="og:description" content="[DESCRIPTION]">
     <meta property="og:image" content="/img/og-image.jpg">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:image" content="/img/og-image.jpg">
-    <meta name="twitter:title" content="[YOUR_SITE_NAME] — Offline">
+    <meta name="twitter:title" content="[YOUR_SITE_NAME] — Distortion 2">
     <meta name="twitter:description" content="[DESCRIPTION]">
 <link href="/css/app.5b8caaba.css" rel="stylesheet"></head>
 
@@ -40,9 +40,43 @@
     <header class="header"></header>
     <main class="main">
 
-        <div class="wrapper">
-            <h1>Offline page</h1>
-        </div>
+        <h1 class="visually-hidden">Distortion 2</h1>
+
+        <picture>
+
+
+
+            <source media="(min-width: 1px)" srcset="/img/sliders/1/sliders-1-5@resize-500x.webp" type="image/webp">
+            <source media="(min-width: 1px)" srcset="/img/sliders/1/sliders-1-5@resize-500x.jpg">
+            <img alt="" src="/img/sliders/1/sliders-1-5@resize-x.jpg" class="img-fluid distortions-img distort" width="5616" height="3744">
+        </picture>
+
+
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="position:absolute;pointer-events:none;">
+            <defs>
+                <filter id="squiggly-0">
+                    <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="0"></feTurbulence>
+                    <feDisplacementMap id="displacement" in="SourceGraphic" in2="noise" scale="6"></feDisplacementMap>
+                </filter>
+                <filter id="squiggly-1">
+                    <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="1"></feTurbulence>
+                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="8"></feDisplacementMap>
+                </filter>
+                <filter id="squiggly-2">
+                    <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="2"></feTurbulence>
+                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="6"></feDisplacementMap>
+                </filter>
+                <filter id="squiggly-3">
+                    <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="3"></feTurbulence>
+                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="8"></feDisplacementMap>
+                </filter>
+                <filter id="squiggly-4">
+                    <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="4"></feTurbulence>
+                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="6"></feDisplacementMap>
+                </filter>
+            </defs>
+        </svg>
+
 
     </main>
 
