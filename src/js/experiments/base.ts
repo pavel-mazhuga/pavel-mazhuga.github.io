@@ -40,5 +40,11 @@ export function baseExperiment(name: string, fn: Experiment) {
             sizes.width = canvasRect.width;
             sizes.height = canvasRect.height;
         });
+
+        function destroy() {
+            gui?.destroy();
+        }
+
+        module.hot?.addDisposeHandler(destroy);
     };
 }

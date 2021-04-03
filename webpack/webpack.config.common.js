@@ -361,6 +361,7 @@ const configureCopyPlugin = () =>
                 'yandex_*.html',
                 '*.txt',
                 'fonts/**/*',
+                'bmfonts/**/*',
                 'audio/**/*',
                 'video/**/*',
                 'upload/**/*',

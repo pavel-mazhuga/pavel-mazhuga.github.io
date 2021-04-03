@@ -17,6 +17,8 @@ import { createShadersPixelated } from './experiments/shaders/pixelated';
 import { createSliders1 } from './experiments/sliders/1';
 import { createSlidersFullscreen } from './experiments/sliders/fullscreen';
 
+import { createTextBasic } from './experiments/text/text-basic';
+
 import './experiments/distortions/1';
 
 registerCustomElements();
@@ -30,6 +32,8 @@ createShadersPatterns();
 createShadersPixelated();
 createSliders1();
 createSlidersFullscreen();
+
+createTextBasic();
 
 // Service Worker
 if (USE_SERVICE_WORKER) {
