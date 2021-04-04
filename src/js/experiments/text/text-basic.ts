@@ -121,6 +121,8 @@ export const createTextBasic = baseExperiment('text-basic', async ({ canvas, siz
     });
 
     Array.from(document.querySelectorAll<HTMLElement>('.js-gl-text')).forEach((textEl) => {
+        const styles = getComputedStyle(textEl);
+
         const material = aladino.material({
             vertex: vertexShader,
             fragment: fragmentShader,
@@ -132,7 +134,7 @@ export const createTextBasic = baseExperiment('text-basic', async ({ canvas, siz
         textEl.addEventListener('mouseenter', () => {
             gsap.to(material.uniforms, {
                 duration: 0.6,
-                pixelSize: 60,
+                pixelSize: parseFloat(styles.fontSize) * 0.75,
                 ease: 'steps(10)',
             });
         });
