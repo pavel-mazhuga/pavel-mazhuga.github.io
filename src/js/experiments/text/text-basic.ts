@@ -106,7 +106,7 @@ function createTextCanvas(el: HTMLElement) {
     //     ctx.fillText(textArr[i], textX, textY);
     //     // ctx.fillText(textArr[i], textX, textY + fontSize * 0.14);
     // }
-    ctx.fillText(text, canvas.width / 2, canvas.height / 2 + fontSize * 0.14);
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2 + fontSize * (0.12 / dpr));
 
     return canvas;
 }
