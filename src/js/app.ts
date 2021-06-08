@@ -2,7 +2,6 @@
 import './webpack-imports';
 import './sentry';
 import './polyfills';
-
 import sw from './sw';
 import { registerCustomElements } from './custom-elements';
 
@@ -18,6 +17,8 @@ import { createSliders1 } from './experiments/sliders/1';
 import { createSlidersFullscreen } from './experiments/sliders/fullscreen';
 
 import { createTextBasic } from './experiments/text/text-basic';
+
+import { createInstancingGltf } from './experiments/instancing/gltf';
 
 import './experiments/distortions/1';
 
@@ -35,6 +36,8 @@ createSlidersFullscreen();
 
 createTextBasic();
 
+createInstancingGltf();
+
 // Service Worker
 if (USE_SERVICE_WORKER) {
     window.addEventListener('load', () => sw.register());
@@ -42,4 +45,4 @@ if (USE_SERVICE_WORKER) {
     sw.unregister();
 }
 
-module.hot?.accept();
+// module.hot?.accept();
