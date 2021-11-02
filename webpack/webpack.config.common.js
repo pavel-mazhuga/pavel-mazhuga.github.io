@@ -366,6 +366,7 @@ const configureCopyPlugin = () =>
                 'video/**/*',
                 'upload/**/*',
                 'gltf/**/*',
+                'draco/**/*',
                 'php/**/*.php',
                 'php_includes/*.php',
             ].map((from) => ({
