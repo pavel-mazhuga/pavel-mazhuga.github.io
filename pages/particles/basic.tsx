@@ -3,8 +3,8 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useMemo, useRef } from 'react';
-import DefaultLayout from '../../components/layout/DefaultLayout';
-import useMousePosition from '../../hooks/useMousePosition';
+import DefaultLayout from 'components/layout/DefaultLayout';
+import useMousePosition from 'hooks/useMousePosition';
 
 function Particles({ count, mouse }: { count: number; mouse: [number, number] }) {
     const mesh = useRef<THREE.InstancedMesh>(null!);
