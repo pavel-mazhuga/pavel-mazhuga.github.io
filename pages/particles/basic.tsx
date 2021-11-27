@@ -89,7 +89,6 @@ const ParticlesBasicPage: NextPage = () => {
                     <Particles count={10000} mouse={mouse} />
                 </Canvas>
             )}
-            )
         </DefaultLayout>
     );
 };
