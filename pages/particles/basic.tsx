@@ -74,10 +74,7 @@ const ParticlesBasicPage: NextPage = () => {
     const mouse = useMousePosition(true);
 
     return (
-        <DefaultLayout>
-            <Head>
-                <title>Basic - Particles - WebGL Sandbox</title>
-            </Head>
+        <DefaultLayout documentTitle="Basic Particles">
             {process.browser && (
                 <Canvas
                     dpr={[1, 2]}

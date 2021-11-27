@@ -1,10 +1,15 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 
-const DefaultLayout: NextPage = ({ children }) => {
+type Props = {
+    documentTitle?: string;
+};
+
+const DefaultLayout: NextPage<Props> = ({ children, documentTitle }) => {
     return (
         <>
             <Head>
+                <title>{documentTitle ? `${documentTitle} - ` : ''}WebGL Sandbox</title>
                 <meta name="description" content="WebGL sandbox" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>

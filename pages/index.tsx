@@ -1,22 +1,37 @@
 import type { NextPage } from 'next';
 import Link from 'next/link';
-import Head from 'next/head';
 import DefaultLayout from 'components/layout/DefaultLayout';
+
+const sitemap = [
+    {
+        title: 'Particles',
+        pages: [
+            {
+                title: 'Basic',
+                url: '/particles/basic',
+            },
+        ],
+    },
+];
 
 const HomePage: NextPage = () => {
     return (
         <DefaultLayout>
-            <Head>
-                <title>WebGL Sandbox</title>
-            </Head>
-            <div>
-                <div>Particles</div>
-                <ul>
-                    <li>
-                        <Link href="/particles/basic">Basic</Link>
+            <h1>WebGL Sandbox</h1>
+            <ul>
+                {sitemap.map((section) => (
+                    <li key={section.title}>
+                        <div>Particles</div>
+                        <ul>
+                            {section.pages.map((page) => (
+                                <li key={page.url}>
+                                    <Link href={page.url}>{page.title}</Link>
+                                </li>
+                            ))}
+                        </ul>
                     </li>
-                </ul>
-            </div>
+                ))}
+            </ul>
         </DefaultLayout>
     );
 };
