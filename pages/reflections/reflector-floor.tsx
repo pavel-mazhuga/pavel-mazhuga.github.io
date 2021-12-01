@@ -70,7 +70,7 @@ export default function ReflectorFloorPage() {
                         <Triangle color="white" scale={0.009} position={[0, 2, -10]} rotation={[0, 0, Math.PI / 3]} />
                         <Ground
                             mirror={1}
-                            mixBlur={30}
+                            mixBlur={3}
                             mixStrength={1}
                             rotation={[-Math.PI / 2, 0, Math.PI / 2]}
                             position-y={-0.8}
@@ -78,7 +78,7 @@ export default function ReflectorFloorPage() {
                     </Rig>
                     <EffectComposer multisampling={8}>
                         <Bloom kernelSize={3} luminanceThreshold={0} luminanceSmoothing={0.4} intensity={0.6} />
-                        {/* <Bloom kernelSize={3} luminanceThreshold={0} luminanceSmoothing={0} intensity={0.5} /> */}
+                        <Bloom kernelSize={5} luminanceThreshold={0} luminanceSmoothing={0} intensity={0.4} />
                     </EffectComposer>
                 </Suspense>
                 <CameraShake yawFrequency={0.2} pitchFrequency={0.2} rollFrequency={0.2} />
