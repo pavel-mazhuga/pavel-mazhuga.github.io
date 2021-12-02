@@ -26,11 +26,13 @@ function Rig({ children }) {
     const ref = useRef();
     const vec = new THREE.Vector3();
     const { camera, mouse } = useThree();
+
     useFrame(() => {
         camera.position.lerp(vec.set(mouse.x * 2, 0, 3.5), 0.05);
-        ref.current.position.lerp(vec.set(mouse.x * 1, mouse.y * 0.1, 0), 0.1);
+        ref.current.position.lerp(vec.set(mouse.x, mouse.y * 0.1, 0), 0.1);
         ref.current.rotation.y = THREE.MathUtils.lerp(ref.current.rotation.y, (-mouse.x * Math.PI) / 20, 0.1);
     });
+
     return <group ref={ref}>{children}</group>;
 }
 
@@ -61,7 +63,7 @@ export default function ReflectorFloorPage() {
             <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 15] }}>
                 <color attach="background" args={['black']} />
                 <ambientLight />
-                <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
+                {/* <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} /> */}
                 <Suspense fallback={null}>
                     <Rig>
                         <Triangle color="#ff2060" scale={0.009} rotation={[0, 0, Math.PI / 3]} />
@@ -77,8 +79,8 @@ export default function ReflectorFloorPage() {
                         />
                     </Rig>
                     <EffectComposer multisampling={8}>
-                        <Bloom kernelSize={3} luminanceThreshold={0} luminanceSmoothing={0.4} intensity={0.6} />
-                        <Bloom kernelSize={5} luminanceThreshold={0} luminanceSmoothing={0} intensity={0.4} />
+                        <Bloom kernelSize={5} luminanceThreshold={0} luminanceSmoothing={0.4} intensity={0.6} />
+                        {/* <Bloom kernelSize={5} luminanceThreshold={0} luminanceSmoothing={0} intensity={0.4} /> */}
                     </EffectComposer>
                 </Suspense>
                 <CameraShake yawFrequency={0.2} pitchFrequency={0.2} rollFrequency={0.2} />
