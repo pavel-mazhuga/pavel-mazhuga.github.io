@@ -1,33 +1,3 @@
-# name: Deploy
-
-# on:
-#     push:
-#         branches:
-#             - master
-
-# jobs:
-#     deploy:
-#         runs-on: ubuntu-latest
-#         strategy:
-#             matrix:
-#                 node-version: [14.x]
-#         steps:
-#             - uses: actions/checkout@v2
-#             - uses: actions/setup-node@v1
-#                 with: node-version: ${{ matrix.node-version }}
-#             - run: |
-#                 # Setup key
-#                 set -eu
-#                 mkdir "$HOME/.ssh"
-#                 echo "${{ secrets.key }}" > "$HOME/.ssh/key"
-#                 chmod 600 "$HOME/.ssh/key"
-#                 # Build
-#                 npm ci
-#                 #   npm run test
-#                 npm run build
-#                 # Deploy
-#                 cd build && rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete . pavel-mazhuga@pavelmazhuga.github.io:/
-
 name: Build and Deploy
 on:
     push:
@@ -49,4 +19,4 @@ jobs:
               uses: JamesIves/github-pages-deploy-action@4.0.0
               with:
                   branch: gh-pages # The branch the action should deploy to.
-                  folder: build # The folder the action should deploy.
+                  folder: out # The folder the action should deploy.
