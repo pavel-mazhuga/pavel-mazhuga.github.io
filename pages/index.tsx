@@ -19,10 +19,10 @@ const sitemap = [
                 title: 'Reflector floor',
                 url: '/reflections/reflector-floor',
             },
-            {
-                title: 'Mirrors',
-                url: '/reflections/mirrors',
-            },
+            // {
+            //     title: 'Mirrors',
+            //     url: '/reflections/mirrors',
+            // },
         ],
     },
 ];
