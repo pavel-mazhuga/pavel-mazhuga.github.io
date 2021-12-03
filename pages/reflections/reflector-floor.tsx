@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { useRef, Suspense, useMemo, MutableRefObject, useEffect } from 'react';
+import { useRef, Suspense, useMemo, MutableRefObject, useEffect, forwardRef } from 'react';
 import { Canvas, useThree, useFrame, useLoader } from '@react-three/fiber';
 import { Reflector, CameraShake, OrbitControls, useTexture } from '@react-three/drei';
 import { EffectComposer, SMAA, SelectiveBloom, Bloom } from '@react-three/postprocessing';
@@ -7,17 +7,30 @@ import { BlurPass, Resizer, KernelSize } from 'postprocessing';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 import DefaultLayout from 'components/layout/DefaultLayout';
 
-function ChipsaLogo({ color, ...props }) {
+const ChipsaLogo = forwardRef<THREE.Mesh>(({ color, ...props }, ref) => {
     const { paths: [path] } = useLoader(SVGLoader, '/chipsa-logo.svg') // prettier-ignore
     const geom = useMemo(() => SVGLoader.pointsToStroke(path.subPaths[0].getPoints(), path.userData.style), []);
+
     return (
-        <group>
-            <mesh geometry={geom} {...props}>
-                <meshBasicMaterial color={color} toneMapped={false} />
-            </mesh>
-        </group>
+        <mesh ref={ref} geometry={geom} {...props}>
+            <meshStandardMaterial color={color} />
+        </mesh>
     );
-}
+});
+ChipsaLogo.displayName = 'ChipsaLogo';
+
+// function ChipsaLogo({ color, ...props }) {
+//     const { paths: [path] } = useLoader(SVGLoader, '/chipsa-logo.svg') // prettier-ignore
+//     const geom = useMemo(() => SVGLoader.pointsToStroke(path.subPaths[0].getPoints(), path.userData.style), []);
+
+//     return forwardRef((props, ref) => (
+//         <group>
+//             <mesh ref={ref} geometry={geom} {...props}>
+//                 <meshBasicMaterial color={color} toneMapped={false} />
+//             </mesh>
+//         </group>
+//     ));
+// }
 
 function Rig({ children }) {
     const ref = useRef();
@@ -83,7 +96,7 @@ function AnimatedBloom({
     useFrame((_) => {
         const value = Math.abs(Math.sin(_.clock.elapsedTime * 2));
         bloom1.current.intensity = 0.3 + value;
-        bloom2.current.intensity = 0.35 + value;
+        // bloom2.current.intensity = 0.35 + value;
     });
 
     return (
@@ -101,7 +114,7 @@ function AnimatedBloom({
                 luminanceThreshold={0}
                 luminanceSmoothing={0}
             />
-            <SelectiveBloom
+            {/* <SelectiveBloom
                 ref={bloom2}
                 lights={lights}
                 selection={meshes}
@@ -113,7 +126,7 @@ function AnimatedBloom({
                 kernelSize={3}
                 luminanceThreshold={0}
                 luminanceSmoothing={0.4}
-            />
+            /> */}
         </>
     );
 }
@@ -122,6 +135,7 @@ export default function ReflectorFloorPage() {
     const ambientLight = useRef<THREE.AmbientLight>();
     const spotLight = useRef<THREE.SpotLight>();
     const wall = useRef<THREE.Mesh>();
+    const chipsa = useRef<THREE.Mesh>();
 
     return (
         <DefaultLayout documentTitle="Reflector floor">
@@ -135,27 +149,27 @@ export default function ReflectorFloorPage() {
                     depth: false,
                 }}
                 camera={{ position: [0, 0, 10], fov: 30 }}
+                mode="concurrent"
             >
                 <color attach="background" args={['black']} />
                 <fog attach="fog" args={['black', 12, 20]} />
-                <ambientLight ref={ambientLight} intensity={1} />
+                <ambientLight ref={ambientLight} intensity={0.65} />
                 <spotLight ref={spotLight} position={[0, 10, 0]} intensity={0.35} />
                 {/* <directionalLight position={[-20, 0, -10]} intensity={0.7} /> */}
                 {/* <pointLight intensity={0.35} position={[2, 10, 5]} /> */}
                 {/* <OrbitControls enableZoom={true} enablePan={false} enableRotate={true} /> */}
                 <Suspense fallback={null}>
-                    {/* <Rig> */}
-                    {/* <ChipsaLogo color="orange" scale={0.1} position={[-1.5, 0, -1]} /> */}
-                    <mesh ref={wall} position={[0, 0.001, -3]}>
-                        <planeBufferGeometry args={[5, 5, 1, 1]} />
-                        <meshStandardMaterial metalness={0} color="orange" />
-                    </mesh>
-                    <mesh position={[1, 0.001, 5]}>
-                        <planeBufferGeometry args={[1, 1, 1, 1]} />
-                        <meshStandardMaterial metalness={0} color="red" />
-                    </mesh>
-                    <Ground position-y={-0.8} />
-                    <EffectComposer frameBufferType={THREE.HalfFloatType}>
+                    <Rig>
+                        <group position={[0, 0.001, -3]}>
+                            <mesh ref={wall}>
+                                <planeBufferGeometry args={[5, 5, 1, 1]} />
+                                <meshStandardMaterial metalness={0} color="#FCCF69" />
+                            </mesh>
+                            <ChipsaLogo ref={chipsa} color="black" scale={0.1} position={[-1.5, 0.2, 0.002]} />
+                        </group>
+                        <Ground position-y={-0.8} />
+                    </Rig>
+                    <EffectComposer frameBufferType={THREE.HalfFloatType} multisampling={0}>
                         <SMAA />
                         <AnimatedBloom lights={[ambientLight, spotLight]} meshes={[wall]} />
                     </EffectComposer>
