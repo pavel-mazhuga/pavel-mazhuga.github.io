@@ -58,16 +58,24 @@ function Ground(props) {
 
     return (
         <Reflector
+            blur={[400, 100]}
             resolution={1024}
             args={[20, 15]}
-            mirror={0.2}
-            mixBlur={5}
-            mixStrength={0.9}
+            mirror={0.4}
+            mixBlur={6}
+            mixStrength={1.5}
             rotation={[-Math.PI / 2, 0, Math.PI / 2]}
             {...props}
         >
             {(Material, props) => (
-                <Material metalness={0} color="#888" roughnessMap={roughnessMap} normalMap={normalMap} {...props} />
+                <Material
+                    metalness={0.4}
+                    color="#888"
+                    roughnessMap={roughnessMap}
+                    normalMap={normalMap}
+                    normalScale={[2, 2]}
+                    {...props}
+                />
             )}
         </Reflector>
     );
@@ -125,7 +133,7 @@ export default function ReflectorFloorPage() {
                     stencil: false,
                     depth: false,
                 }}
-                camera={{ position: [0, 0, 10], fov: 30 }}
+                camera={{ position: [0, 0, 10], fov: 30, far: 100 }}
                 mode="concurrent"
             >
                 <color attach="background" args={['black']} />
