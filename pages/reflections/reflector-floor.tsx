@@ -1,11 +1,13 @@
 import * as THREE from 'three';
-import { useRef, Suspense, useMemo, MutableRefObject, useEffect, forwardRef } from 'react';
+import { useRef, Suspense, useMemo, MutableRefObject, forwardRef } from 'react';
 import { Canvas, useThree, useFrame, useLoader } from '@react-three/fiber';
 import { Reflector, CameraShake, OrbitControls, useTexture, Stats } from '@react-three/drei';
 import { EffectComposer, SMAA, SelectiveBloom, Bloom } from '@react-three/postprocessing';
-import { BlurPass, Resizer, KernelSize } from 'postprocessing';
+import { Resizer, KernelSize } from 'postprocessing';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 import DefaultLayout from 'components/layout/DefaultLayout';
+
+const DEBUG = process.env.NODE_ENV === 'development';
 
 const ChipsaLogo = forwardRef<THREE.Mesh>(({ color, ...props }, ref) => {
     const { paths: [path] } = useLoader(SVGLoader, '/chipsa-logo.svg') // prettier-ignore
@@ -18,19 +20,6 @@ const ChipsaLogo = forwardRef<THREE.Mesh>(({ color, ...props }, ref) => {
     );
 });
 ChipsaLogo.displayName = 'ChipsaLogo';
-
-// function ChipsaLogo({ color, ...props }) {
-//     const { paths: [path] } = useLoader(SVGLoader, '/chipsa-logo.svg') // prettier-ignore
-//     const geom = useMemo(() => SVGLoader.pointsToStroke(path.subPaths[0].getPoints(), path.userData.style), []);
-
-//     return forwardRef((props, ref) => (
-//         <group>
-//             <mesh ref={ref} geometry={geom} {...props}>
-//                 <meshBasicMaterial color={color} toneMapped={false} />
-//             </mesh>
-//         </group>
-//     ));
-// }
 
 function Rig({ children }) {
     const ref = useRef();
@@ -47,10 +36,6 @@ function Rig({ children }) {
 }
 
 function Ground(props) {
-    // const [roughnessMap, normalMap] = useTexture([
-    //     '/SurfaceImperfections003_1K_var1.jpg',
-    //     '/SurfaceImperfections003_1K_Normal.jpg',
-    // ]);
     const [roughnessMap, normalMap] = useTexture([
         '/Surface_Imperfections_Stains_001_SD/Surface_Imperfections_Stains_001_roughness.jpg',
         '/Surface_Imperfections_Stains_001_SD/Surface_Imperfections_Stains_001_normal.jpg',
@@ -61,19 +46,19 @@ function Ground(props) {
             blur={[400, 100]}
             resolution={1024}
             args={[20, 15]}
-            mirror={0.4}
-            mixBlur={6}
+            mirror={0.2}
+            mixBlur={4}
             mixStrength={1.5}
             rotation={[-Math.PI / 2, 0, Math.PI / 2]}
             {...props}
         >
             {(Material, props) => (
                 <Material
-                    metalness={0.4}
+                    metalness={0.1}
                     color="#888"
                     roughnessMap={roughnessMap}
                     normalMap={normalMap}
-                    normalScale={[2, 2]}
+                    // normalScale={[2, 2]}
                     {...props}
                 />
             )}
@@ -92,7 +77,7 @@ function AnimatedBloom({
     // const bloom2 = useRef();
 
     useFrame((_) => {
-        const value = Math.abs(Math.sin(_.clock.elapsedTime * 2));
+        const value = Math.abs(Math.sin(_.clock.elapsedTime * 2)) * 0.5;
         bloom1.current.intensity = 0.3 + value;
         // bloom2.current.intensity = 0.35 + value;
     });
@@ -140,8 +125,6 @@ export default function ReflectorFloorPage() {
                 <fog attach="fog" args={['black', 12, 20]} />
                 <ambientLight ref={ambientLight} intensity={0.65} />
                 <spotLight ref={spotLight} position={[0, 10, 0]} intensity={0.35} />
-                {/* <directionalLight position={[-20, 0, -10]} intensity={0.7} /> */}
-                {/* <pointLight intensity={0.35} position={[2, 10, 5]} /> */}
                 {/* <OrbitControls enableZoom={true} enablePan={false} enableRotate={true} /> */}
                 <Suspense fallback={null}>
                     <Rig>
@@ -156,11 +139,11 @@ export default function ReflectorFloorPage() {
                     </Rig>
                     <EffectComposer frameBufferType={THREE.HalfFloatType} multisampling={0}>
                         <SMAA />
-                        <AnimatedBloom lights={[ambientLight, spotLight]} meshes={[wall]} />
+                        {/* <AnimatedBloom lights={[ambientLight, spotLight]} meshes={[wall]} /> */}
                     </EffectComposer>
                 </Suspense>
                 <CameraShake yawFrequency={0.2} pitchFrequency={0.2} rollFrequency={0.2} intensity={0.5} />
-                {/* <Stats /> */}
+                {DEBUG && <Stats />}
             </Canvas>
         </DefaultLayout>
     );
