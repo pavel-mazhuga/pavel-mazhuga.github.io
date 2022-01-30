@@ -4,6 +4,15 @@ import DefaultLayout from 'components/layout/DefaultLayout';
 
 const sitemap = [
     {
+        title: 'Materials',
+        pages: [
+            {
+                title: 'Distortion Material',
+                url: '/materials/distortion',
+            },
+        ],
+    },
+    {
         title: 'Particles',
         pages: [
             {

@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import type { NextPage } from 'next';
-import Head from 'next/head';
 import { useMemo, useRef } from 'react';
 import DefaultLayout from 'components/layout/DefaultLayout';
 import useMousePosition from 'hooks/useMousePosition';
