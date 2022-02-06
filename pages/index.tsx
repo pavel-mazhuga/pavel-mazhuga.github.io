@@ -4,6 +4,15 @@ import DefaultLayout from 'components/layout/DefaultLayout';
 
 const sitemap = [
     {
+        title: 'Configurators',
+        pages: [
+            {
+                title: 'Props',
+                url: '/configurators/props',
+            },
+        ],
+    },
+    {
         title: 'Materials',
         pages: [
             {
@@ -43,7 +52,7 @@ const HomePage: NextPage = () => {
             <ul>
                 {sitemap.map((section) => (
                     <li key={section.title}>
-                        <div>Particles</div>
+                        <div>{section.title}</div>
                         <ul>
                             {section.pages.map((page) => (
                                 <li key={page.url}>
