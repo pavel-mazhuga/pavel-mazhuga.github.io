@@ -8,4 +8,8 @@ module.exports = {
         // !! WARN !!
         ignoreBuildErrors: true,
     },
+    // experimental: {
+    //     runtime: 'nodejs',
+    //     serverComponents: true,
+    // },
 };
