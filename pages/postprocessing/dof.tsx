@@ -9,24 +9,30 @@ import Shoe from 'components/gltfjsx/Shoe';
 // const DEBUG = process.env.NODE_ENV === 'development';
 
 function Experience() {
-    const { bokehScale, focalLength, focusDistance } = useControls({
+    const { bokehScale, focalLength, focusDistance, noiseOpacity } = useControls({
         focalLength: {
-            value: 0.02,
+            value: 0.1,
             min: 0,
-            max: 0.1,
-            step: 0.001,
+            max: 1,
+            step: 0.0001,
         },
         focusDistance: {
             value: 0,
             min: 0,
-            max: 0.1,
-            step: 0.001,
+            max: 1,
+            step: 0.0001,
         },
         bokehScale: {
-            value: 2,
+            value: 1,
             min: 0,
             max: 5,
             step: 0.001,
+        },
+        noiseOpacity: {
+            value: 0.25,
+            min: 0,
+            max: 1,
+            step: 0.0001,
         },
     });
 
@@ -43,10 +49,10 @@ function Experience() {
                     focusDistance={focusDistance}
                     focalLength={focalLength}
                     bokehScale={bokehScale}
-                    height={1024}
+                    height={480}
                 />
                 {/* <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} opacity={3} /> */}
-                <Noise opacity={0.025} />
+                <Noise opacity={noiseOpacity} />
             </EffectComposer>
             <OrbitControls />
         </>
