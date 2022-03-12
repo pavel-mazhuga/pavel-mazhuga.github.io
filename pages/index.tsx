@@ -31,6 +31,15 @@ const sitemap = [
         ],
     },
     {
+        title: 'Postprocessing',
+        pages: [
+            {
+                title: 'Depth of Field',
+                url: '/postprocessing/dof',
+            },
+        ],
+    },
+    {
         title: 'Reflections',
         pages: [
             {
