@@ -4,6 +4,19 @@ import DefaultLayout from 'components/layout/DefaultLayout';
 
 const sitemap = [
     {
+        title: 'Blur',
+        pages: [
+            {
+                title: 'Cheap Blur',
+                url: '/blur/cheap',
+            },
+            {
+                title: 'Fast Gaussian Blur',
+                url: '/blur/fast-gaussian',
+            },
+        ],
+    },
+    {
         title: 'Configurators',
         pages: [
             {
