@@ -11,8 +11,16 @@ const sitemap = [
                 url: '/blur/cheap',
             },
             {
-                title: 'Fast Gaussian Blur',
-                url: '/blur/fast-gaussian',
+                title: 'Fast Gaussian Blur (5)',
+                url: '/blur/fast-gaussian-5',
+            },
+            {
+                title: 'Fast Gaussian Blur (9)',
+                url: '/blur/fast-gaussian-9',
+            },
+            {
+                title: 'Fast Gaussian Blur (13)',
+                url: '/blur/fast-gaussian-13',
             },
         ],
     },

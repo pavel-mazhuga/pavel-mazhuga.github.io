@@ -12,9 +12,12 @@
         "@react-three/fiber": "^7.0.26",
         "@react-three/postprocessing": "^2.0.5",
         "@types/three": "^0.138.0",
+        "glsl-fast-gaussian-blur": "^1.0.2",
+        "glslify-loader": "^2.0.0",
         "leva": "^0.9.23",
         "next": "^12.1.0",
         "postprocessing": "^6.25.0",
+        "raw-loader": "^4.0.2",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "three": "^0.138.3"
