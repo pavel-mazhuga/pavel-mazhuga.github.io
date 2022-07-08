@@ -68,7 +68,7 @@ const computeUpness = (geometry) => {
 
 const InstancedSpheres = ({ count = 3000 }) => (
     <instancedMesh args={[null, null, count]}>
-        <sphereGeometry args={[0.003, 16, 16]} />
+        <sphereGeometry args={[MathUtils.randFloat(0.0015, 0.0025), 8, 8]} />
         <meshNormalMaterial />
     </instancedMesh>
 );
@@ -91,13 +91,13 @@ export default function Shoe({ color, ...props }) {
     return (
         <group {...props} dispose={null}>
             <SampledGeometry geometry={nodes.shoe.geometry} />
-            <SampledGeometry geometry={nodes.shoe_1.geometry} />
-            <SampledGeometry geometry={nodes.shoe_2.geometry} count={1000} />
+            <SampledGeometry geometry={nodes.shoe_1.geometry} count={4000} />
+            <SampledGeometry geometry={nodes.shoe_2.geometry} count={1200} />
             <SampledGeometry geometry={nodes.shoe_3.geometry} />
             <SampledGeometry geometry={nodes.shoe_4.geometry} />
             <SampledGeometry geometry={nodes.shoe_5.geometry} />
-            <SampledGeometry geometry={nodes.shoe_6.geometry} count={1000} />
-            <SampledGeometry geometry={nodes.shoe_7.geometry} count={2000} />
+            <SampledGeometry geometry={nodes.shoe_6.geometry} count={1200} />
+            <SampledGeometry geometry={nodes.shoe_7.geometry} count={1200} />
         </group>
     );
 }
