@@ -49,6 +49,10 @@ const sitemap = [
                 title: 'Basic',
                 url: '/particles/basic',
             },
+            {
+                title: 'Model',
+                url: '/particles/model',
+            },
         ],
     },
     {

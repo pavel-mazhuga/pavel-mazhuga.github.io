@@ -6,6 +6,7 @@ import { useGLTF } from '@react-three/drei';
 
 export default function Shoe({ color, ...props }) {
     const { nodes, materials } = useGLTF('/gltf/shoe.gltf');
+
     return (
         <group {...props} dispose={null}>
             <mesh
