@@ -70,6 +70,7 @@ const computeUpness = (geometry) => {
 
 const SampledGeometry = ({ geometry, material = new MeshBasicMaterial(), count = 3000 }: any) => {
     const attrName = 'upness';
+    const dpr = Math.min(devicePixelRatio, 2);
 
     return (
         <Sampler weight={attrName} transform={transformInstances}>
@@ -79,7 +80,7 @@ const SampledGeometry = ({ geometry, material = new MeshBasicMaterial(), count =
                 </bufferGeometry>
             </mesh>
             <instancedMesh args={[null, null, count]} material={material}>
-                <sphereGeometry args={[MathUtils.randFloat(0.0015, 0.0025), 8, 8]} />
+                <sphereGeometry args={[MathUtils.randFloat(0.003, 0.005) / dpr, 8, 8]} />
             </instancedMesh>
         </Sampler>
     );

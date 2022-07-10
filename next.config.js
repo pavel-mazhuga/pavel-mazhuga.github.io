@@ -21,4 +21,7 @@ module.exports = {
 
         return config;
     },
+    experiments: {
+        concurrentFeatures: true,
+    },
 };
