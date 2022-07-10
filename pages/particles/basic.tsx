@@ -74,17 +74,15 @@ const ParticlesBasicPage: NextPage = () => {
 
     return (
         <DefaultLayout documentTitle="Basic Particles">
-            {process.browser && (
-                <Canvas
-                    dpr={[1, 2]}
-                    gl={{ antialias: false, alpha: false }}
-                    onCreated={({ gl }) => {
-                        gl.setClearColor(new THREE.Color('#020207'));
-                    }}
-                >
-                    <Particles count={10000} mouse={mouse} />
-                </Canvas>
-            )}
+            <Canvas
+                dpr={[1, 2]}
+                gl={{ antialias: false, alpha: false }}
+                onCreated={({ gl }) => {
+                    gl.setClearColor(new THREE.Color('#020207'));
+                }}
+            >
+                <Particles count={10000} mouse={mouse} />
+            </Canvas>
         </DefaultLayout>
     );
 };
