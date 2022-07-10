@@ -11,7 +11,10 @@ const DEBUG = process.env.NODE_ENV === 'development';
 
 const ChipsaLogo = forwardRef<THREE.Mesh>(({ color, ...props }, ref) => {
     const { paths: [path] } = useLoader(SVGLoader, '/chipsa-logo.svg') // prettier-ignore
-    const geom = useMemo(() => SVGLoader.pointsToStroke(path.subPaths[0].getPoints(), path.userData.style), []);
+    const geom = useMemo(
+        () => SVGLoader.pointsToStroke(path.subPaths[0].getPoints(), path.userData.style),
+        [path.subPaths, path.userData.style],
+    );
 
     return (
         <mesh ref={ref} geometry={geom} {...props}>

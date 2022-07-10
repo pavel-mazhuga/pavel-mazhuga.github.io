@@ -64,19 +64,15 @@ const sitemap = [
             },
         ],
     },
-    {
-        title: 'Reflections',
-        pages: [
-            {
-                title: 'Reflector floor',
-                url: '/reflections/reflector-floor',
-            },
-            // {
-            //     title: 'Mirrors',
-            //     url: '/reflections/mirrors',
-            // },
-        ],
-    },
+    // {
+    //     title: 'Reflections',
+    //     pages: [
+    //         {
+    //             title: 'Reflector floor',
+    //             url: '/reflections/reflector-floor',
+    //         },
+    //     ],
+    // },
 ];
 
 const HomePage: NextPage = () => {
