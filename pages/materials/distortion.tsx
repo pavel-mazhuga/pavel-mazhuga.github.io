@@ -23,18 +23,14 @@ function Flag() {
     );
 }
 
-const DistortionMaterialPage: NextPage = () => {
-    const mouse = useMousePosition(true);
-
-    return (
-        <DefaultLayout documentTitle="Distortion Material">
-            {process.browser && (
-                <Canvas gl={{ antialias: false, alpha: false }}>
-                    <Flag />
-                </Canvas>
-            )}
-        </DefaultLayout>
-    );
+const DistortionMaterialPage = () => {
+    return <DefaultLayout documentTitle="Distortion Material"></DefaultLayout>;
 };
+
+const R3F = () => {
+    return <Flag />;
+};
+
+DistortionMaterialPage.R3F = R3F;
 
 export default DistortionMaterialPage;

@@ -1,5 +1,5 @@
-import { Suspense } from 'react';
-import { Canvas, extend } from '@react-three/fiber';
+import { Suspense, useEffect } from 'react';
+import { extend } from '@react-three/fiber';
 import { shaderMaterial, useTexture } from '@react-three/drei';
 import { useControls } from 'leva';
 import DefaultLayout from 'components/layout/DefaultLayout';
@@ -80,6 +80,8 @@ function Experience() {
         },
     });
 
+    useEffect(() => {}, []);
+
     return (
         <mesh>
             <planeGeometry args={[6, 8]} />
@@ -88,23 +90,18 @@ function Experience() {
     );
 }
 
-export default function Page() {
-    return (
-        <DefaultLayout documentTitle="Blur">
-            <Canvas
-                dpr={[1, 2]}
-                gl={{
-                    alpha: false,
-                    powerPreference: 'high-performance',
-                    antialias: false,
-                    stencil: false,
-                    depth: false,
-                }}
-            >
-                <Suspense fallback={null}>
-                    <Experience />
-                </Suspense>
-            </Canvas>
-        </DefaultLayout>
-    );
+function Page() {
+    return <DefaultLayout documentTitle="Blur"></DefaultLayout>;
 }
+
+const R3F = () => {
+    return (
+        <Suspense fallback={null}>
+            <Experience />
+        </Suspense>
+    );
+};
+
+Page.R3F = R3F;
+
+export default Page;

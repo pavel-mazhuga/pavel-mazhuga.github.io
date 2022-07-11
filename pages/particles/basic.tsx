@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import type { NextPage } from 'next';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import DefaultLayout from 'components/layout/DefaultLayout';
 import useMousePosition from 'hooks/useMousePosition';
@@ -70,12 +69,14 @@ function Particles({ count }: { count: number }) {
     );
 }
 
-const ParticlesBasicPage: NextPage = () => {
+const ParticlesBasicPage = () => {
     return <DefaultLayout documentTitle="Basic Particles" />;
 };
 
-ParticlesBasicPage.r3f = () => {
+const R3F = () => {
     return <Particles count={10000} />;
 };
+
+ParticlesBasicPage.R3F = R3F;
 
 export default ParticlesBasicPage;

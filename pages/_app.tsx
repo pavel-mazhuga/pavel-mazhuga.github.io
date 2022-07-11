@@ -1,33 +1,25 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import Canvas from 'components/layout/Canvas';
-import { useEffect, useRef } from 'react';
-import { Group } from 'three';
-import { RecoilRoot, useRecoilState } from 'recoil';
-import { rootGroupState } from 'atoms/root-group';
+import { RecoilRoot } from 'recoil';
+import Dom from 'components/layout/Dom';
+// import dynamic from 'next/dynamic';
+
+// const Canvas = dynamic(() => import('components/layout/Canvas'), { ssr: false });
 
 function MyApp({ Component, pageProps }: AppProps) {
-    const group = useRef<Group>(null);
-    const [_, setRootGroup] = useRecoilState(rootGroupState);
-
-    useEffect(() => {
-        if (group.current) {
-            setRootGroup(group.current);
-        }
-    }, [setRootGroup]);
+    const R3F = (Component as any).R3F as (() => JSX.Element) | undefined;
 
     return (
         <RecoilRoot>
-            <div className="canvas">
-                {/* {Component.r3f && ( */}
+            {R3F && (
                 <Canvas>
-                    <group ref={group}>{/* {Component.r3f(pageProps)} */}</group>
+                    <R3F {...pageProps} />
                 </Canvas>
-                {/* )} */}
-            </div>
-            <main className="main">
+            )}
+            <Dom>
                 <Component {...pageProps} />
-            </main>
+            </Dom>
         </RecoilRoot>
     );
 }
