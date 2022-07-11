@@ -5,9 +5,10 @@ import { useMemo, useRef } from 'react';
 import DefaultLayout from 'components/layout/DefaultLayout';
 import useMousePosition from 'hooks/useMousePosition';
 
-function Particles({ count, mouse }: { count: number; mouse: [number, number] }) {
+function Particles({ count }: { count: number }) {
     const mesh = useRef<THREE.InstancedMesh>(null!);
     const light = useRef<THREE.PointLight>(null!);
+    const mouse = useMousePosition(true);
     const { size, viewport } = useThree();
     const aspect = size.width / viewport.width;
     const dummy = useMemo(() => new THREE.Object3D(), []);
@@ -70,21 +71,11 @@ function Particles({ count, mouse }: { count: number; mouse: [number, number] })
 }
 
 const ParticlesBasicPage: NextPage = () => {
-    const mouse = useMousePosition(true);
+    return <DefaultLayout documentTitle="Basic Particles" />;
+};
 
-    return (
-        <DefaultLayout documentTitle="Basic Particles">
-            <Canvas
-                dpr={[1, 2]}
-                gl={{ antialias: false, alpha: false }}
-                onCreated={({ gl }) => {
-                    gl.setClearColor(new THREE.Color('#020207'));
-                }}
-            >
-                <Particles count={10000} mouse={mouse} />
-            </Canvas>
-        </DefaultLayout>
-    );
+ParticlesBasicPage.r3f = () => {
+    return <Particles count={10000} />;
 };
 
 export default ParticlesBasicPage;

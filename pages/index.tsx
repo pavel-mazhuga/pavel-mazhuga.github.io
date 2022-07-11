@@ -1,6 +1,9 @@
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import DefaultLayout from 'components/layout/DefaultLayout';
+import { createPortal } from '@react-three/fiber';
+import { useRecoilState } from 'recoil';
+import { rootGroupState } from 'atoms/root-group';
 
 const sitemap = [
     {
@@ -76,25 +79,54 @@ const sitemap = [
 ];
 
 const HomePage: NextPage = () => {
+    const [rootGroup] = useRecoilState(rootGroupState);
+
     return (
-        <DefaultLayout>
-            <h1>WebGL Sandbox</h1>
-            <ul>
-                {sitemap.map((section) => (
-                    <li key={section.title}>
-                        <div>{section.title}</div>
-                        <ul>
-                            {section.pages.map((page) => (
-                                <li key={page.url}>
-                                    <Link href={page.url}>{page.title}</Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </li>
-                ))}
-            </ul>
-        </DefaultLayout>
+        <>
+            <DefaultLayout>
+                <h1>WebGL Sandbox</h1>
+                <ul>
+                    {sitemap.map((section) => (
+                        <li key={section.title}>
+                            <div>{section.title}</div>
+                            <ul>
+                                {section.pages.map((page) => (
+                                    <li key={page.url}>
+                                        <Link href={page.url}>{page.title}</Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </li>
+                    ))}
+                </ul>
+            </DefaultLayout>
+            {rootGroup &&
+                createPortal(
+                    <>
+                        <mesh>
+                            <sphereBufferGeometry args={[1, 32, 32]} />
+                            <meshStandardMaterial color="red" />
+                        </mesh>
+                        <pointLight position={[1, 1, 1]} />
+                    </>,
+                    rootGroup,
+                )}
+        </>
     );
 };
+
+// const R3F = () => {
+//     return (
+//         <>
+//             <mesh>
+//                 <sphereBufferGeometry args={[1, 32, 32]} />
+//                 <meshStandardMaterial color="red" />
+//             </mesh>
+//             <pointLight position={[1, 1, 1]} />
+//         </>
+//     );
+// };
+
+// HomePage.r3f = R3F;
 
 export default HomePage;

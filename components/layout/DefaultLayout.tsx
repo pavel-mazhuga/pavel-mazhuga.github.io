@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { ReactNode } from 'react';
 
 type Props = {
-    children: ReactNode;
+    children?: ReactNode;
     documentTitle?: string;
 };
 
@@ -16,11 +16,7 @@ const DefaultLayout: NextPage<Props> = ({ children, documentTitle }) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <main className="main">
-                <div className="canvas" suppressHydrationWarning={true}>
-                    {children}
-                </div>
-            </main>
+            {children}
         </>
     );
 };
