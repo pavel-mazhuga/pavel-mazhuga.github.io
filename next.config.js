@@ -1,5 +1,7 @@
+const withPWA = require('next-pwa');
+
 /** @type {import('next').NextConfig} */
-module.exports = {
+module.exports = withPWA({
     reactStrictMode: true,
     typescript: {
         // !! WARN !!
@@ -8,10 +10,10 @@ module.exports = {
         // !! WARN !!
         ignoreBuildErrors: true,
     },
-    // experimental: {
-    //     runtime: 'nodejs',
-    //     serverComponents: true,
-    // },
+    experimental: {
+        concurrentFeatures: true,
+        runtime: 'nodejs',
+    },
     webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
         config.module.rules.push({
             test: /\.(glsl|vs|fs|vert|frag)$/,
@@ -21,7 +23,8 @@ module.exports = {
 
         return config;
     },
-    experiments: {
-        concurrentFeatures: true,
+    pwa: {
+        disable: true,
+        dest: 'public',
     },
-};
+});
