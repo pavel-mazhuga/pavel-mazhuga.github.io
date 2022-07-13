@@ -24,7 +24,7 @@ module.exports = withPWA({
         return config;
     },
     pwa: {
-        disable: true,
+        // disable: true,
         dest: 'public',
     },
 });
