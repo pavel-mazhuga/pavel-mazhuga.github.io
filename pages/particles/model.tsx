@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { useControls } from 'leva';
-import DefaultLayout from 'components/layout/DefaultLayout';
+import InnerPageLayout from 'components/layout/InnerPageLayout';
 import ParticledShoe from 'components/gltfjsx/ParticledShoe';
 
 // const DEBUG = process.env.NODE_ENV === 'development';
@@ -14,7 +14,7 @@ function Experience() {
 }
 
 function Page() {
-    return <DefaultLayout documentTitle="Model in particles" />;
+    return <InnerPageLayout documentTitle="Model in particles" />;
 }
 
 const R3F = () => {

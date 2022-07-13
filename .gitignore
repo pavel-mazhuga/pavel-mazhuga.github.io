@@ -37,6 +37,6 @@ yarn-error.log*
 *.tsbuildinfo
 
 _old
-/public/workbox*.js
-/public/sw.js
-/public/fallback*.js
+/public/workbox*.js*
+/public/sw.js*
+/public/fallback*.js*

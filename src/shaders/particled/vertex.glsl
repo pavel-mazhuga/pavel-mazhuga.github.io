@@ -77,13 +77,26 @@ float snoise(vec3 v){
                                 dot(p2,x2), dot(p3,x3) ) );
 }
 
+float rand(vec2 co){
+  return fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453);
+}
+
 void main()	{
     vUv = uv;
     
     vec3 newPosition = position;
-    // newPosition.x = sin(uTime);
-    float noise = snoise(vec3(instanceMatrix[3].x, instanceMatrix[3].y ,uTime )) * 0.2 * sin(uTime * 0.2);
-    // newPosition.z += noise;
+    // float noiseX = snoise(vec3(uTime * 0.3, instanceMatrix[3].yz));
+    // float noiseY = snoise(vec3(instanceMatrix[3].x, uTime * 0.3, instanceMatrix[3].z));
+    // float noiseZ = snoise(vec3(instanceMatrix[3].xy, uTime * 0.3));
+
+    // vec3 velocity = currPosition - prevPosition;
+    // vec2 velocity = vec2(1.);
+		// vec2 random = 0.5 - vec2(rand(newPosition.xy), rand(10.0 * newPosition.xy));
+		// vec2 position = newPosition.xy + (0.95 * velocity) + (0.0005 * random);
+
+    newPosition.x += rand(instanceMatrix[3].yz) * 0.03 * sin(uTime * instanceMatrix[3].z);
+    newPosition.y += rand(instanceMatrix[3].xz) * 0.02 * sin(uTime * 1.02 * instanceMatrix[3].x);
+    newPosition.z += rand(instanceMatrix[3].xy) * 0.05 * sin(uTime * instanceMatrix[3].y);
 
     // if (length(newPosition.xy - uMouse) < 0.1) {
     //     newPosition += vec3(1., 0., 0.);
